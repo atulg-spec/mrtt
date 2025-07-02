@@ -1,0 +1,849 @@
+{% extends 'home/base.html' %}
+{% load social_tags %}
+{% block meta %}
+{% if head.favicon %}
+<link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+{% endif %}
+<meta name="description" content="Track your environmental impact and referral network with our premium dashboard">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+{% endblock meta %}
+
+{% block page %}My Dashboard{% endblock page %}
+
+{% block body %}
+<div class="min-h-screen bg-forest-50 leaf-pattern">
+    <!-- Main Content -->
+    <main class="bg-forest-50 leaf-pattern container mx-auto px-4 py-6 max-w-7xl">
+        <!-- Welcome Banner -->
+        <div
+            class="bg-gradient-to-r from-green-600 to-green-800 rounded-2xl p-6 mb-8 shadow-lg relative overflow-hidden">
+            <div class="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/10"></div>
+            <div class="absolute -right-5 -bottom-5 w-24 h-24 rounded-full bg-white/5"></div>
+            <div class="relative z-10">
+                <h2 class="text-2xl font-bold text-white mb-2">Welcome back, {{ request.user.first_name|default:"Member"
+                    }}!</h2>
+                <p class="text-green-100 max-w-2xl">You've helped plant {{ total_trees|floatformat:0 }} trees and offset
+                    {{ total_co2|floatformat:0 }}kg of CO₂. Keep up the amazing work!</p>
+            </div>
+        </div>
+
+        <!-- Stats Grid with Hover Effects -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
+            <!-- Donations Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Donated</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">₹{{ total_donated|floatformat:2 }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-blue-50/80 text-blue-600 backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm text-blue-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span>12% from last month</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Trees Planted Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Trees Planted</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">{{ total_trees|floatformat:0 }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-green-50/80 text-green-600 backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M13 10V3L4 14h7v7l9-11h-7z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm text-green-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span>{{ total_trees|divisibleby:"100"|yesno:"100,0"|floatformat:"0" }}% of goal</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CO2 Reduced Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">CO₂ Reduced</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">{{ total_co2|floatformat:0 }} kg</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-amber-50/80 text-amber-600 backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4 flex items-center text-sm text-amber-600">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        <span>Equivalent to {{ cars_off_road|floatformat:1 }} cars</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referrals Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Referrals</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">{{ total_referrals }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-purple-50/80 text-purple-600 backdrop-blur-sm">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>Leaderboard Rank</span>
+                            <span class="font-semibold text-purple-600">#{{ request.user.rank }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Impact and Referral Section -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <!-- Impact Summary -->
+            <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none"
+                                viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            Your Environmental Impact
+                        </h2>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <!-- Impact Card 1 -->
+                        <div
+                            class="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg border border-green-100 shadow-sm transition-transform duration-300 hover:scale-[1.02]">
+                            <div class="flex items-center">
+                                <div class="bg-green-600 p-2 rounded-lg mr-3 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-600">Carbon offset</p>
+                                    <p class="text-lg font-semibold text-gray-800">{{ cars_off_road|floatformat:1 }}
+                                        cars</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Impact Card 2 -->
+                        <div
+                            class="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg border border-blue-100 shadow-sm transition-transform duration-300 hover:scale-[1.02]">
+                            <div class="flex items-center">
+                                <div class="bg-blue-600 p-2 rounded-lg mr-3 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-600">Oxygen produced</p>
+                                    <p class="text-lg font-semibold text-gray-800">{{ oxygen_produced|floatformat:1 }}
+                                        kg/year</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Impact Card 3 -->
+                        <div
+                            class="p-4 bg-gradient-to-br from-amber-50 to-amber-100 rounded-lg border border-amber-100 shadow-sm transition-transform duration-300 hover:scale-[1.02]">
+                            <div class="flex items-center">
+                                <div class="bg-amber-600 p-2 rounded-lg mr-3 shadow-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-white" fill="none"
+                                        viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                    </svg>
+                                </div>
+                                <div>
+                                    <p class="text-xs font-medium text-gray-600">Employment created</p>
+                                    <p class="text-lg font-semibold text-gray-800">{{ jobs_created|floatformat:1 }} days
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Impact Chart (Placeholder) -->
+                    <div class="mt-6 bg-gray-50/50 rounded-lg p-4 border border-gray-200 backdrop-blur-sm">
+                        <div class="flex items-center justify-between mb-3">
+                            <h3 class="text-sm font-medium text-gray-700">Your Impact Over Time</h3>
+                            <div class="flex space-x-2">
+                                <button
+                                    class="px-2 py-1 text-xs bg-green-600 text-white rounded-md">Contribution</button>
+                            </div>
+                        </div>
+                        <div class="relative h-48 w-full">
+                            <div class="absolute inset-0">
+                                <canvas id="donation-chart" class="w-full h-full" aria-label="Donation history chart"
+                                    role="img"></canvas>
+                            </div>
+                            <div id="chart-loading"
+                                class="absolute inset-0 flex items-center justify-center bg-white/50 backdrop-blur-sm transition-opacity duration-300">
+                                <div class="animate-pulse text-gray-500">
+                                    Loading chart...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Actions Sidebar -->
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="p-6">
+                    <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                        </svg>
+                        Quick Actions
+                    </h2>
+
+                    <!-- Referral Code Box -->
+                    <div
+                        class="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-gray-200 shadow-sm backdrop-blur-sm">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Your Referral Code</label>
+                        <div class="flex">
+                            <input type="text" id="referral-code"
+                                value="{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}"
+                                readonly
+                                class="flex-1 bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm font-medium">
+                            <button onclick="copyReferralCode()"
+                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Share Buttons -->
+                    <div class="space-y-3">
+                        <button onclick="share()"
+                            class="w-full flex items-center justify-center bg-[#25D366] hover:bg-[#128C7E] text-white px-4 py-3 rounded-lg transition-colors shadow-sm hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" class="mr-2"
+                                viewBox="0 0 24 24" fill="currentColor">
+                                <path
+                                    d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z">
+                                </path>
+                            </svg>
+                            Share via WhatsApp
+                        </button>
+
+                        <button onclick="share()"
+                            class="w-full flex items-center justify-center bg-[#1877F2] hover:bg-[#166FE5] text-white px-4 py-3 rounded-lg transition-colors shadow-sm hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" viewBox="0 0 24 24"
+                                fill="currentColor">
+                                <path
+                                    d="M22.675 0h-21.35c-.732 0-1.325.593-1.325 1.325v21.351c0 .731.593 1.324 1.325 1.324h11.495v-9.294h-3.128v-3.622h3.128v-2.671c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.795.143v3.24l-1.918.001c-1.504 0-1.795.715-1.795 1.763v2.313h3.587l-.467 3.622h-3.12v9.293h6.116c.73 0 1.323-.593 1.323-1.325v-21.35c0-.732-.593-1.325-1.325-1.325z" />
+                            </svg>
+                            Share on Facebook
+                        </button>
+
+                        <button onclick="share()"
+                            class="w-full flex items-center justify-center bg-gray-600 hover:bg-gray-700 text-white px-4 py-3 rounded-lg transition-colors shadow-sm hover:shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                            </svg>
+                            Invite via Email
+                        </button>
+                    </div>
+
+                    <!-- Quick Donate Button -->
+                    <div class="mt-6">
+                        <a href="{% url 'donate' %}"
+                            class="block w-full bg-gradient-to-r from-green-600 to-green-800 hover:from-green-700 hover:to-green-900 text-white text-center font-medium py-3 px-4 rounded-lg shadow-md transition-all duration-300 transform hover:scale-[1.02]">
+                            Make a Donation
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Referral Network Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div class="p-6">
+                <div class="flex items-center justify-between mb-6">
+                    <h2 class="text-xl font-bold text-gray-800 flex items-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                        </svg>
+                        Your Referral Network
+                    </h2>
+                    <div class="text-sm text-gray-500">
+                        Total: <span class="font-semibold text-green-600">{{ total_referrals }} people</span>
+                    </div>
+                </div>
+
+                <!-- Elegant Pyramid Visualization -->
+                <div class="py-8">
+                    <div class="flex flex-col items-center relative">
+                        <!-- Decorative background elements -->
+                        <div class="absolute inset-0 overflow-hidden pointer-events-none">
+                            <div
+                                class="absolute top-0 left-1/2 w-1/2 h-full bg-gradient-to-r from-teal-500/5 to-transparent">
+                            </div>
+                            <div
+                                class="absolute top-0 right-1/2 w-1/2 h-full bg-gradient-to-l from-emerald-500/5 to-transparent">
+                            </div>
+                        </div>
+
+                        {% for row in user_rows %}
+                        <div class="flex justify-center mb-6 last:mb-0 relative"
+                            style="z-index: {{ forloop.revcounter }};">
+                            <!-- Level indicator -->
+                            <div
+                                class="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-gradient-to-b from-amber-400 to-amber-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md">
+                                {{ forloop.counter }}
+                            </div>
+
+                            {% for user in row %}
+                            <div class="relative group px-1"
+                                style="transition-delay: {{ forloop.counter0|add:forloop.parentloop.counter0 }}ms;">
+                                <!-- User node with animated border -->
+                                <div class="relative">
+                                    <!-- Connecting lines - top -->
+                                    {% if not forloop.parentloop.first %}
+                                    <div
+                                        class="absolute bottom-full left-1/2 transform -translate-x-1/2 h-6 w-px bg-gradient-to-t from-teal-400 to-transparent">
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Main avatar -->
+                                    <div
+                                        class="p-0.5 rounded-full bg-gradient-to-br from-teal-400 via-emerald-500 to-cyan-500 shadow-lg transform transition-all duration-300 group-hover:scale-110 group-hover:shadow-xl group-hover:rotate-3 animate-float">
+                                        <div
+                                            class="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center text-white font-medium text-sm relative overflow-hidden border-2 border-gray-900">
+                                            {% if user.profile_image %}
+                                            <img src="{{ user.profile_image }}" alt="{{ user.username }}"
+                                                class="w-full h-full object-cover" loading="lazy">
+                                            {% else %}
+                                            <span class="z-10 text-xs">{{ user.username|slice:":2"|upper }}</span>
+                                            {% endif %}
+                                            <div
+                                                class="absolute inset-0 bg-gradient-to-t from-gray-900/40 to-transparent">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Connecting lines - horizontal -->
+                                    {% if not forloop.first %}
+                                    <div
+                                        class="absolute top-1/2 right-full transform -translate-y-1/2 w-4 h-px bg-gradient-to-r from-teal-400/50 to-teal-400">
+                                    </div>
+                                    {% endif %}
+                                    {% if not forloop.last %}
+                                    <div
+                                        class="absolute top-1/2 left-full transform -translate-y-1/2 w-4 h-px bg-gradient-to-l from-emerald-400/50 to-emerald-400">
+                                    </div>
+                                    {% endif %}
+
+                                    <!-- Active status indicator -->
+                                    <div
+                                        class="absolute top-0 right-0 w-2 h-2 rounded-full bg-emerald-400 shadow-sm animate-pulse">
+                                    </div>
+                                </div>
+
+                                <!-- Enhanced tooltip -->
+                                <!-- TOOLTIP -->
+                                <div
+                                    class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-4 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-2 group-hover:translate-y-0 z-20">
+                                    <div
+                                        class="bg-gray-900 text-white px-4 py-3 rounded-lg shadow-2xl text-sm font-medium min-w-max backdrop-blur-sm bg-opacity-90">
+                                        <div class="flex items-center space-x-3">
+                                            {% if user.profile_image %}
+                                            <img src="{{ user.profile_image }}" alt="{{ user.username }}"
+                                                class="w-8 h-8 rounded-full border-2 border-white/20" loading="lazy">
+                                            {% endif %}
+                                            <div>
+                                                <div class="font-bold">{{ user.username }}</div>
+                                                <div class="text-xs text-teal-300">Level {{
+                                                    forloop.parentloop.revcounter }}</div>
+                                            </div>
+                                        </div>
+                                        <div
+                                            class="absolute bottom-0 left-1/2 transform -translate-x-1/2 translate-y-1 w-3 h-3 bg-gray-900 rotate-45">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% endfor %}
+
+                        <!-- Pyramid base decoration -->
+                        <div class="w-full h-1 mt-4 bg-gradient-to-r from-transparent via-teal-500/30 to-transparent">
+                        </div>
+                    </div>
+
+                    <!-- Legend with animated elements -->
+                    <div class="mt-8 text-center">
+                        <div
+                            class="inline-flex flex-wrap justify-center items-center gap-4 bg-gray-100/80 backdrop-blur-sm px-6 py-3 rounded-xl border border-gray-200/50 shadow-sm">
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-emerald-400 animate-pulse"></div>
+                                <span class="text-sm font-medium text-gray-700">Active Member</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                                <span class="text-sm font-medium text-gray-700">Your Level</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-gray-400"></div>
+                                <span class="text-sm font-medium text-gray-700">Inactive</span>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <div class="w-3 h-3 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500"></div>
+                                <span class="text-sm font-medium text-gray-700">Connections</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Referrals Table -->
+                <div class="mt-8">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-lg font-semibold text-gray-800">Recent Referrals</h3>
+                        <a href="#" class="text-sm text-green-600 hover:text-green-800 font-medium">View All</a>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Name</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Status</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Date Joined</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Level</th>
+                                    <th scope="col"
+                                        class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                        Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for referral in request.user.getCommunity %}
+                                <tr class="hover:bg-gray-50 transition-colors">
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <div class="flex items-center">
+                                            <div class="flex-shrink-0 h-10 w-10">
+                                                {% if user.is_authenticated %}
+                                                {% with profile_picture=user|google_profile_picture %}
+                                                {% if profile_picture %}
+                                                <img src="{{ profile_picture }}" alt="Profile Picture"
+                                                    class="h-10 w-10 rounded-full object-cover" loading="lazy">
+                                                {% else %}
+                                                {% include 'partials/default_avatar.svg' %}
+                                                {% endif %}
+                                                {% endwith %}
+                                                {% else %}
+                                                {% include 'partials/default_avatar.svg' %}
+                                                {% endif %}
+                                            </div>
+                                            <div class="ml-4">
+                                                <div class="text-sm font-medium text-gray-900">
+                                                    {{referral.get_full_name|default:referral.username}}</div>
+                                                <div class="text-sm text-gray-500">{{ referral.email }}</div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap">
+                                        <span
+                                            class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full {% if referral.is_donated %}bg-green-100 text-green-800{% else %}bg-blue-100 text-blue-800{% endif %}">
+                                            {% if referral.is_donated %}Donor{% else %}Supporter{% endif %}
+                                        </span>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        {{ referral.date_joined|date:"M d, Y" }}
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                        <div class="flex items-center">
+                                            <span class="mr-2">Level {{ referral.level }}</span>
+                                            {% if referral.level > 2 %}
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-amber-500"
+                                                viewBox="0 0 20 20" fill="currentColor">
+                                                <path fill-rule="evenodd"
+                                                    d="M5.05 3.636a1 1 0 010 1.414 7 7 0 000 9.9 1 1 0 11-1.414 1.414 9 9 0 010-12.728 1 1 0 011.414 0zm9.9 0a1 1 0 011.414 0 9 9 0 010 12.728 1 1 0 11-1.414-1.414 7 7 0 000-9.9 1 1 0 010-1.414zM7.879 6.464a1 1 0 010 1.414 3 3 0 000 4.243 1 1 0 11-1.415 1.414 5 5 0 010-7.07 1 1 0 011.415 0zm4.242 0a1 1 0 011.415 0 5 5 0 010 7.07 1 1 0 01-1.415-1.414 3 3 0 000-4.243 1 1 0 010-1.414zM10 9a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1z"
+                                                    clip-rule="evenodd" />
+                                            </svg>
+                                            {% endif %}
+                                        </div>
+                                    </td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                                        <a href="#" class="text-green-600 hover:text-green-900">Message</a>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center text-sm text-gray-500">
+                                        <div class="flex flex-col items-center justify-center py-6">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 text-gray-400"
+                                                fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                            </svg>
+                                            <p class="mt-2 text-gray-600">No referrals yet</p>
+                                            <p class="text-sm text-gray-500">Invite friends to join your network</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Activity -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-6">
+                <h2 class="text-xl font-bold text-gray-800 mb-6 flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-green-600" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                    Recent Activity
+                </h2>
+
+                <div class="space-y-4">
+                    {% for activity in recent_activities %}
+                    <div class="flex items-start pb-4 border-b border-gray-100 last:border-0 last:pb-0">
+                        <div class="flex-shrink-0 mt-1">
+                            <div
+                                class="h-10 w-10 rounded-full flex items-center justify-center 
+                                        {% cycle 'bg-blue-100 text-blue-600' 'bg-green-100 text-green-600' 'bg-amber-100 text-amber-600' 'bg-purple-100 text-purple-600' %}">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                            </div>
+                        </div>
+                        <div class="ml-4 flex-1">
+                            <div class="flex items-center justify-between">
+                                <p class="text-sm font-medium text-gray-900">{{ activity.title }}</p>
+                                <span class="text-xs text-gray-500">{{ activity.date|timesince }} ago</span>
+                            </div>
+                            <p class="text-sm text-gray-500 mt-1">{{ activity.description }}</p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="text-center py-8">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1"
+                                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <p class="mt-2 text-gray-600">No recent activity</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- Floating Action Button -->
+<div class="fixed bottom-6 right-6 z-40">
+    <button onclick="window.scrollTo({top: 0, behavior: 'smooth'})"
+        class="p-3 bg-green-600 hover:bg-green-700 text-white rounded-full shadow-lg transition-all duration-300 transform hover:scale-110 focus:outline-none">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+        </svg>
+    </button>
+</div>
+
+<style>
+    @keyframes float {
+
+        0%,
+        100% {
+            transform: translateY(0) rotate(0);
+        }
+
+        50% {
+            transform: translateY(-6px) rotate(1deg);
+        }
+    }
+
+    .animate-float {
+        animation: float 4s ease-in-out infinite;
+    }
+
+    .group:hover .animate-float {
+        animation: float 2s ease-in-out infinite;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+<script
+    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get chart context
+        const ctx = document.getElementById('donation-chart');
+        if (!ctx) return;
+
+        // Prepare data from Django template
+        const donationData = [
+            {% for donation in donations %}
+    {
+            x: new Date('{{ donation.time|date:"Y-m-d" }}'),
+            y: {{ donation.amount }},
+        r: Math.min(20, Math.max(5, {{ donation.amount }} / 10))
+    }{% if not forloop.last %}, {% endif %}
+    {% endfor %}
+  ];
+
+    // Hide loading indicator when chart is ready
+    const loadingElement = document.getElementById('chart-loading');
+
+    try {
+        // Create chart with proper configuration
+        const donationChart = new Chart(ctx, {
+            type: 'bubble',
+            data: {
+                datasets: [{
+                    label: 'Donation Amount',
+                    data: donationData,
+                    backgroundColor: 'rgba(5, 150, 105, 0.7)',
+                    borderColor: 'rgba(5, 150, 105, 1)',
+                    borderWidth: 1,
+                    hoverBackgroundColor: 'rgba(5, 150, 105, 0.9)',
+                    hoverBorderColor: 'rgba(5, 150, 105, 1)'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                animation: {
+                    duration: 1000,
+                    onComplete: () => {
+                        if (loadingElement) {
+                            loadingElement.style.opacity = '0';
+                            setTimeout(() => {
+                                loadingElement.style.display = 'none';
+                            }, 300);
+                        }
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'month',
+                            tooltipFormat: 'MMM d, yyyy',
+                            displayFormats: {
+                                month: 'MMM yyyy'
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Date'
+                        },
+                        grid: {
+                            display: false
+                        }
+                    },
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Amount (₹)'
+                        },
+                        ticks: {
+                            callback: function (value) {
+                                return '₹' + value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    tooltip: {
+                        callbacks: {
+                            label: function (context) {
+                                return 'Amount: ₹' + context.raw.y;
+                            },
+                            afterLabel: function (context) {
+                                return 'Date: ' + new Date(context.raw.x).toLocaleDateString();
+                            }
+                        }
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                elements: {
+                    point: {
+                        hoverRadius: function (context) {
+                            return Math.min(context.dataset.data[context.dataIndex].r + 5, 25);
+                        }
+                    }
+                }
+            }
+        });
+
+        // Handle window resize with debounce
+        let resizeTimeout;
+        window.addEventListener('resize', function () {
+            clearTimeout(resizeTimeout);
+            resizeTimeout = setTimeout(function () {
+                donationChart.resize();
+            }, 200);
+        });
+
+    } catch (error) {
+        console.error('Error initializing chart:', error);
+        if (loadingElement) {
+            loadingElement.innerHTML = '<div class="text-red-500">Failed to load chart data</div>';
+        }
+    }
+});
+</script>
+
+
+<script>
+    // Copy functions with improved feedback
+    function copyReferralCode() {
+        const code = document.getElementById('referral-code');
+        code.select();
+        document.execCommand('copy');
+
+        showToast('Referral code copied to clipboard!', 'success');
+    }
+
+    function copyReferralLink() {
+        const link = document.getElementById('referral-link');
+        link.select();
+        document.execCommand('copy');
+
+        showToast('Referral link copied to clipboard!', 'success');
+    }
+
+    function share() {
+        const title = "{{ single_product.title|escapejs }}";
+        const url = "{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}";
+        const text = `Join me in planting trees across India! Donate Now: ${url}`;
+
+        if (navigator.share) {
+            navigator.share({ title, text, url })
+                .catch((err) => {
+                    console.warn('Share failed or cancelled:', err);
+                    copyToClipboard(url);
+                });
+        } else {
+            copyToClipboard(url);
+        }
+    }
+
+    // Toast notification function
+    function showToast(message, type) {
+        const toast = document.createElement('div');
+        toast.className = `fixed flex justify-center bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-md shadow-lg text-white font-medium ${type === 'success' ? 'bg-green-600' : 'bg-red-600'
+            }`;
+        toast.textContent = message;
+        document.body.appendChild(toast);
+
+        setTimeout(() => {
+            toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+
+    // Lazy loading for images
+    document.addEventListener('DOMContentLoaded', function () {
+        if ('IntersectionObserver' in window) {
+            const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
+
+            let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        let lazyImage = entry.target;
+                        if (lazyImage.dataset.src) {
+                            lazyImage.src = lazyImage.dataset.src;
+                        }
+                        lazyImageObserver.unobserve(lazyImage);
+                    }
+                });
+            });
+
+            lazyImages.forEach(function (lazyImage) {
+                lazyImageObserver.observe(lazyImage);
+            });
+        }
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,196 @@
+{% extends 'home/base.html' %}
+{% block body %}
+<!-- Careers Hero Section -->
+<section class="relative bg-primary text-white py-20 md:py-32">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold mb-6">Join the Green Mission</h1>
+        <p class="text-xl md:text-2xl max-w-3xl mx-auto mb-8">Help us plant 100 crore trees by 2030 — contribute to a greener tomorrow</p>
+        <a href="#open-positions"
+           class="bg-white text-primary font-bold py-3 px-8 rounded-md hover:bg-gray-100 transition duration-300 inline-block">
+            View Opportunities
+        </a>
+    </div>
+    <div class="absolute bottom-0 left-0 right-0 h-16 bg-gradient-to-t from-gray-50 to-transparent"></div>
+</section>
+
+<!-- Why Join Us Section -->
+<section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Why Join <span class="text-accent">MRT</span></h2>
+            <div class="w-20 h-1 bg-accent mx-auto"></div>
+        </div>
+
+        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-seedling text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-primary mb-2">Make Real Impact</h3>
+                <p class="text-gray-600">Contribute directly to climate restoration and reforestation efforts</p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-leaf text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-primary mb-2">Eco-Driven Culture</h3>
+                <p class="text-gray-600">Be part of a passionate, inclusive community of green changemakers</p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-lightbulb text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-primary mb-2">Learn & Grow</h3>
+                <p class="text-gray-600">Gain experience in sustainability, campaign management, and community building</p>
+            </div>
+
+            <div class="bg-gray-50 p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-globe text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold text-primary mb-2">Global Vision</h3>
+                <p class="text-gray-600">Join a mission that's making environmental change at scale</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Listings Section -->
+<section id="open-positions" class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Volunteer & <span class="text-accent">Internship Roles</span></h2>
+            <div class="w-20 h-1 bg-accent mx-auto"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Browse current open roles to support our green campaigns</p>
+        </div>
+
+        <!-- Job Listings -->
+        <div class="space-y-6">
+            {% for job in job_list %}
+            <div class="bg-white rounded-lg shadow-md overflow-hidden transition-all duration-300 hover:shadow-xl">
+                <div class="p-6 md:flex md:items-center md:justify-between">
+                    <div class="md:flex-1 mb-4 md:mb-0">
+                        <h3 class="text-xl font-bold text-primary">{{ job.title }}</h3>
+                        <div class="flex flex-wrap items-center mt-2 text-sm text-gray-600">
+                            <span class="flex items-center mr-4">
+                                <i class="fas fa-building mr-2 text-accent"></i> {{ job.department }}
+                            </span>
+                            <span class="flex items-center mr-4">
+                                <i class="fas fa-map-marker-alt mr-2 text-accent"></i> {{ job.location }}
+                            </span>
+                            <span class="flex items-center">
+                                <i class="fas fa-briefcase mr-2 text-accent"></i> {{ job.employment_type }}
+                            </span>
+                        </div>
+                    </div>
+                    <div class="md:text-right">
+                        <a href="{% url 'apply_job' %}"
+                            class="inline-block bg-accent hover:bg-primary text-white font-medium py-2 px-6 rounded-md transition duration-300">
+                            Apply Now
+                        </a>
+                    </div>
+                </div>
+                <div class="border-t border-gray-200 px-6 py-4 bg-gray-50">
+                    <h4 class="font-semibold text-primary mb-2">Role Description:</h4>
+                    <p class="text-gray-600 mb-4">{{ job.description }}</p>
+                    <h4 class="font-semibold text-primary mb-2">Requirements:</h4>
+                    <ul class="list-disc list-inside text-gray-600 space-y-1">
+                        {% for requirement in job.requirements_list %}
+                        <li>{{ requirement }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-10 text-center">
+            <p class="text-gray-600">Don't see your perfect role? <a href="#apply-now"
+                class="text-accent font-medium hover:underline">Send a general application</a></p>
+        </div>
+    </div>
+</section>
+
+<!-- Application Form -->
+<section id="apply-now" class="py-20 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">
+                Apply for <span class="text-accent">{{ job.title }}</span>
+            </h2>
+            <div class="w-20 h-1 bg-accent mx-auto"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">
+                Fill out the form below and take your first step towards growing with MRT
+            </p>
+        </div>
+
+        <div class="bg-gray-50 rounded-lg shadow-md p-6 md:p-8">
+            <form method="post" action="{% url 'apply_job' %}" enctype="multipart/form-data" class="space-y-6">
+                {% csrf_token %}
+                {% for field in form %}
+                <div>
+                    <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">
+                        {{ field.label }} {% if field.field.required %}*{% endif %}
+                    </label>
+                    {{ field }}
+                    {% if field.help_text %}
+                        <p class="text-sm text-gray-500 mt-1">{{ field.help_text }}</p>
+                    {% endif %}
+                    {% for error in field.errors %}
+                        <p class="text-sm text-red-500 mt-1">{{ error }}</p>
+                    {% endfor %}
+                </div>
+                {% endfor %}
+                <div>
+                    <button type="submit"
+                        class="w-full bg-accent hover:bg-primary text-white font-bold py-3 px-4 rounded-md transition duration-300">
+                        Submit Application
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- HR Contact Section -->
+<section class="py-20 bg-primary text-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-12">
+            <h2 class="text-3xl md:text-4xl font-bold mb-4">Volunteer <span class="text-accent">Support Team</span></h2>
+            <div class="w-20 h-1 bg-accent mx-auto"></div>
+            <p class="mt-4 max-w-2xl mx-auto">Need help applying or want to partner as an institution? Reach out to our team.</p>
+        </div>
+
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="bg-secondary p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-phone-alt text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Call Us</h3>
+                <p class="text-gray-300 mb-2">+91 88888 99999</p>
+                <p class="text-gray-300">Mon-Fri, 10AM–5PM</p>
+            </div>
+
+            <div class="bg-secondary p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-envelope text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Email Us</h3>
+                <p class="text-gray-300 mb-2">careers@mrtgreen.in</p>
+                <p class="text-gray-300">Replies within 48 hours</p>
+            </div>
+
+            <div class="bg-secondary p-6 rounded-lg text-center">
+                <div class="bg-accent text-white w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-map-marker-alt text-2xl"></i>
+                </div>
+                <h3 class="text-xl font-bold mb-2">Visit Us</h3>
+                <p class="text-gray-300">MRT HQ, Nature Avenue</p>
+                <p class="text-gray-300">Gwalior, Madhya Pradesh, 474001</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock body %}

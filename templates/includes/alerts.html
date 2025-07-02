@@ -1,0 +1,25 @@
+{% if messages %}
+    {% for message in messages %}
+        <div class="fixed inset-0 flex items-center justify-center z-50" id="message-{{ forloop.counter }}">
+            <div class="bg-black/80 bg-opacity-90 text-white py-4 px-6 rounded-lg max-w-xs">
+                <p class="text-center text-xs font-semibold uppercase">
+                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}Error: {% endif %}
+                    {{ message }}
+                </p>
+                
+                <button type="button" 
+                        class="absolute top-4 right-4 text-lg font-semibold text-gray-300 hover:text-white"
+                        onclick="document.getElementById('message-{{ forloop.counter }}').remove()">
+                    &times;
+                </button>
+            </div>
+        </div>
+        
+        <script>
+            // Auto-remove message after 5 seconds
+            setTimeout(function() {
+                document.getElementById('message-{{ forloop.counter }}')?.remove();
+            }, 20000);
+        </script>
+    {% endfor %}
+{% endif %}

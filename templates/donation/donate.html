@@ -1,0 +1,205 @@
+{% extends 'home/base.html' %}
+{% block meta %}
+    {% if head.favicon %}
+    <link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+    {% endif %}
+{% endblock meta %}
+
+{% block page %}Donate for Green India{% endblock page %}
+{% block body %}
+<!-- Nature-themed background with subtle leaf pattern -->
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
+    <!-- Hero section with tree plantation background -->
+    <div class="relative bg-green-800 text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <img src="https://images.unsplash.com/photo-1500382017468-9049fed747ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+             alt="Tree plantation" 
+             class="w-full h-48 md:h-64 object-cover absolute mix-blend-overlay">
+        
+        <div class="relative z-10 py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center mb-2">
+                <!-- Indian flag with donation icon -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-white">
+                        <path d="M12 7.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5z" />
+                        <path fill-rule="evenodd" d="M1.5 4.875C1.5 3.839 2.34 3 3.375 3h17.25c1.035 0 1.875.84 1.875 1.875v9.75c0 1.036-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 14.625v-9.75zM8.25 9.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM18.75 9a.75.75 0 00-.75.75v.008c0 .414.336.75.75.75h.008a.75.75 0 00.75-.75V9.75a.75.75 0 00-.75-.75h-.008zM4.5 9.75A.75.75 0 015.25 9h.008a.75.75 0 01.75.75v.008a.75.75 0 01-.75.75H5.25a.75.75 0 01-.75-.75V9.75z" clip-rule="evenodd" />
+                        <path fill-rule="evenodd" d="M2.25 18a.75.75 0 000 1.5c5.4 0 10.63.722 15.6 2.075 1.19.324 2.4-.558 2.4-1.82V18.75a.75.75 0 00-.75-.75H2.25z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="absolute -top-2 -right-3 text-lg">🇮🇳</span>
+                </div>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Plant Trees with Your Donation</h1>
+            <p class="text-green-100 max-w-2xl mx-auto">Every ₹100 plants one tree and supports local communities</p>
+        </div>
+        
+        <!-- Leaf decoration -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white rounded-t-3xl"></div>
+    </div>
+
+    <!-- Main content container -->
+    <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 relative z-20">
+        <!-- Semi-transparent white donation card -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-green-100">
+            <div class="px-6 py-4 border-b border-green-50 bg-green-50/30">
+                <h2 class="text-lg font-semibold text-green-800">Make a Difference Today</h2>
+                <p class="text-sm text-green-600">Your donation is tax-deductible under 80G</p>
+            </div>
+            
+            <div class="px-6 py-6">
+                <!-- Alerts -->
+                {% include 'includes/alerts.html' %}
+                
+                <!-- Donation Form -->
+                <form method="post" class="space-y-6" action="/donate/proceed-payment/">
+                    {% csrf_token %}
+                    
+                    <!-- Amount Selection -->
+                    <div>
+                        <label class="block text-sm font-medium text-green-800 mb-3 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                <path d="M10.75 10.818v2.614A3.13 3.13 0 0011.888 13c.482-.315.612-.648.612-.875 0-.227-.13-.56-.612-.875a3.13 3.13 0 00-1.138-.432zM8.33 8.62c.053.055.115.11.184.164.208.16.46.284.736.363V6.603a2.45 2.45 0 00-.35.13c-.14.065-.27.143-.386.233-.377.292-.514.627-.514.909 0 .184.058.39.202.592.037.051.08.102.128.152z" />
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-6a.75.75 0 01.75.75v.316a3.78 3.78 0 011.653.713c.426.33.744.74.925 1.2a.75.75 0 01-1.395.55 1.35 1.35 0 00-.447-.563 2.187 2.187 0 00-.736-.363V9.3c.698.093 1.383.32 1.959.696.787.514 1.29 1.27 1.29 2.13 0 .86-.504 1.616-1.29 2.13-.576.377-1.261.603-1.96.696v.299a.75.75 0 11-1.5 0v-.3c-.697-.092-1.382-.318-1.958-.695-.482-.315-.857-.717-1.078-1.188a.75.75 0 111.359-.636c.08.173.245.376.54.569.313.205.706.353 1.138.432v-2.748a3.782 3.782 0 01-1.653-.713C6.9 9.433 6.5 8.681 6.5 7.875c0-.805.4-1.558 1.097-2.096a3.78 3.78 0 011.653-.713V4.75A.75.75 0 0110 4z" clip-rule="evenodd" />
+                            </svg>
+                            Select Donation Amount
+                        </label>
+                        
+                        <!-- Quick amount buttons -->
+                        <div class="grid grid-cols-3 gap-3 mb-4">
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="1">
+                                ₹1
+                            </button>
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="50">
+                                ₹50
+                            </button>
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="100">
+                                ₹100
+                            </button>
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="500">
+                                ₹500
+                            </button>
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="1000">
+                                ₹1000
+                            </button>
+                            <button type="button" 
+                                    class="amount-btn py-2 px-3 border border-green-200 rounded-lg bg-white text-green-800 font-medium hover:bg-green-50 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors"
+                                    data-amount="10000">
+                                ₹10000
+                            </button>
+                        </div>
+                        
+                        <!-- Custom amount input -->
+                        <div class="relative rounded-md shadow-sm">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <span class="text-green-700 font-medium">₹</span>
+                            </div>
+                            <input type="number" 
+                                   id="amount" 
+                                   name="amount" 
+                                   min="1" 
+                                   required
+                                   class="block w-full pl-10 pr-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70"
+                                   placeholder="Enter amount" value="1">
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <span class="text-green-500 text-sm">.00</span>
+                            </div>
+                        </div>
+                        <p class="mt-1 text-xs text-green-600">Minimum donation: ₹1</p>
+                    </div>
+                    
+                    <!-- Impact Summary -->
+                    <div class="p-4 bg-green-50 rounded-lg border border-green-100">
+                        <h3 class="text-sm font-medium text-green-800 mb-2">Your Impact</h3>
+                        <div class="flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 text-green-600 mr-2">
+                                <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                            </svg>
+                            <div>
+                                <p class="text-sm text-green-800">
+                                    <span id="trees-count">1</span> tree planted
+                                </p>
+                                <p class="text-xs text-green-600">
+                                    <span id="co2-amount">20</span> kg CO₂ absorbed annually
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Payment Button -->
+                    <div class="pt-2">
+                        <button type="submit" 
+                                class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:scale-[1.01] active:scale-[0.99]">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM5.94 5.5c.944-.945 2.56-.276 2.56 1.06V8h5.75a.75.75 0 010 1.5H8.5v4.275c0 .296.144.455.26.499a3.5 3.5 0 004.402-1.77h-.412a.75.75 0 010-1.5h.537c.462 0 .887.21 1.156.556.278.355.383.852.184 1.337a5.001 5.001 0 01-6.4 2.78C7.376 15.353 7 14.512 7 13.774V9.5H5.75a.75.75 0 010-1.5H7V6.56l-.22.22a.75.75 0 11-1.06-1.06l.22-.22z" clip-rule="evenodd" />
+                            </svg>
+                            Donate Now
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Security assurance -->
+                <div class="mt-6 pt-4 border-t border-green-100 text-center text-xs text-green-600">
+                    <div class="flex items-center justify-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-700">
+                            <path fill-rule="evenodd" d="M5.5 3A2.5 2.5 0 003 5.5v2.879a2.5 2.5 0 00.732 1.767l6.5 6.5a2.5 2.5 0 003.536 0l2.878-2.878a2.5 2.5 0 000-3.536l-6.5-6.5A2.5 2.5 0 008.38 3H5.5zM6 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-medium text-green-800">Secure payment processing</span>
+                    </div>
+                    <p>We accept UPI, cards, net banking, and wallets</p>
+                </div>
+            </div>
+            
+            <!-- Impact counter footer -->
+            <div class="px-6 py-3 bg-green-50/30 text-center text-xs text-green-600 border-t border-green-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1">
+                    <path fill-rule="evenodd" d="M9.661 2.237a.531.531 0 01.678 0 11.947 11.947 0 007.078 2.749.5.5 0 01.479.425c.069.52.104 1.05.104 1.59 0 5.162-3.26 9.563-7.834 11.256a.48.48 0 01-.332 0C5.26 16.564 2 12.163 2 6.999c0-.538.035-1.069.104-1.589a.5.5 0 01.48-.425 11.947 11.947 0 007.077-2.75zm4.196 5.954a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                </svg>
+                Community has planted 342,891 trees so far
+            </div>
+        </div>
+        
+        <!-- Footer with Indian touch -->
+        <div class="mt-6 text-center text-xs text-green-700">
+            <p>80G tax benefits available <span class="ml-1">🇮🇳</span></p>
+            <p class="mt-1">© 2025 Green India Initiative. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Update amount and impact when quick buttons are clicked
+    document.querySelectorAll('.amount-btn').forEach(button => {
+        button.addEventListener('click', function() {
+            const amount = this.getAttribute('data-amount');
+            document.getElementById('amount').value = amount;
+            updateImpact(amount);
+        });
+    });
+
+    // Update impact when custom amount changes
+    document.getElementById('amount').addEventListener('input', function() {
+        updateImpact(this.value);
+    });
+
+    // Calculate and display impact
+    function updateImpact(amount) {
+        const trees = Math.floor(amount / 100);
+        const co2 = trees * 20; // Assuming each tree absorbs 20kg CO2 annually
+        
+        document.getElementById('trees-count').textContent = trees;
+        document.getElementById('co2-amount').textContent = co2;
+    }
+
+    // Initialize with default values
+    updateImpact(document.getElementById('amount').value || 100);
+</script>
+{% endblock %}

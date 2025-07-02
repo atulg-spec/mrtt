@@ -1,0 +1,57 @@
+<!-- Navigation -->
+<nav class="bg-white shadow-md sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-20 items-center">
+            <!-- Logo -->
+            <a href="/" class="flex-shrink-0 flex items-center">
+                <img src="/static/img/logo.png" alt="MRT Logo" class="w-20 h-20 md:w-24 md:h-24 lg:w-28 lg:h-28">
+                <span class="text-2xl font-bold text-primary tracking-tight">MRT <span class="text-accent">GREEN</span></span>
+            </a>
+
+            <!-- Mobile Menu Button -->
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-700 hover:text-accent focus:outline-none">
+                    <svg class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M4 6h16M4 12h16M4 18h16" />
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Desktop Menu -->
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="/" class="text-secondary hover:text-accent font-medium transition duration-300">Home</a>
+                <a href="/aboutus/" class="text-secondary hover:text-accent font-medium transition duration-300">About
+                    Us</a>
+                <a href="/projects/" class="text-secondary hover:text-accent font-medium transition duration-300">Projects</a>
+                <a href="/impact/" class="text-secondary hover:text-accent font-medium transition duration-300">Impact</a>
+                <a href="/donate/" class="text-secondary hover:text-accent font-medium transition duration-300">Donate</a>
+                <a href="/accounts/login/"
+                    class="bg-accent text-white px-6 py-2 rounded-md hover:bg-primary transition duration-300 font-medium">
+                    <i class="fas fa-leaf mr-2"></i> Plant Now
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu bg-white md:hidden">
+        <div class="px-4 pt-2 pb-4 space-y-2">
+            <a href="#home"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-primary">Home</a>
+            <a href="#about"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-primary">About
+                Us</a>
+            <a href="#projects"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-primary">Projects</a>
+            <a href="#impact"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-primary">Impact</a>
+            <a href="#donate"
+                class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-white hover:bg-primary">Donate</a>
+            <a href="/accounts/login/"
+                class="block px-3 py-2 rounded-md text-base font-medium text-white bg-accent hover:bg-primary text-center">
+                <i class="fas fa-leaf mr-2"></i> Plant Now
+            </a>
+        </div>
+    </div>
+</nav>

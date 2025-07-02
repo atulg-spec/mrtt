@@ -1,0 +1,74 @@
+{% extends 'home/base.html' %}
+{% block meta %}
+    {% if head.favicon %}
+    <link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+    {% endif %}
+{% endblock meta %}
+
+{% block page %}Login or Signup{% endblock page %}
+{% block body %}
+<div class="flex items-center justify-center min-h-screen bg-gray-50">
+  <div class="w-full md:max-w-md bg-white rounded-lg shadow-md overflow-hidden">
+    <!-- Header with nature-inspired design -->
+    <div class="bg-primary py-4 px-6 flex items-center">
+      <h2 class="text-xl font-bold text-white text-center w-full">JOIN THE GREEN MOVEMENT</h2>
+    </div>
+    
+    <div class="px-8 py-6">
+      <!-- Nature-themed welcome message -->
+      <div class="text-center mb-6">
+        <div class="flex justify-center mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#22c55e" class="w-10 h-10">
+            <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+          </svg>
+        </div>
+        <h3 class="text-lg font-semibold text-primary">Welcome to MRT Tree Plantation</h3>
+        <p class="text-sm text-gray-600 mt-1">Login to track your contributions and help grow our forest</p>
+      </div>
+
+      <!-- Alerts -->
+      {% include 'includes/alerts.html' %}
+      
+      <!-- Google Login Button - Nature Themed -->
+      <a href="/login/{% if request.GET.ref %}?ref={{ request.GET.ref }}{% endif %}"
+        class="w-full bg-white border border-gray-300 rounded-lg my-4 py-3 px-4 flex items-center justify-center space-x-3 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-leaf focus:ring-offset-2 transition-all shadow-sm">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" height="24" width="24">
+          <path fill="#4285f4"
+            d="M23.5151 12.2611c0 -0.9661 -0.0784 -1.6711 -0.24805 -2.4022H12.2351v4.3605h6.4755c-0.1305 1.08365 -0.8355 2.7156 -2.4022 3.8122l-0.02195 0.146 3.4881 2.702175 0.24165 0.024125c2.2194 -2.04975 3.4989 -5.0656 3.4989 -8.6428Z"
+            stroke-width="0.25"></path>
+          <path fill="#34a853"
+            d="M12.234975 23.75c3.17245 0 5.83575 -1.0445 7.7811 -2.8461L16.308275 18.031625c-0.9922 0.69195 -2.3239 1.175 -4.0733 1.175 -3.1072 0 -5.7444 -2.049675 -6.6845 -4.882725l-0.137775 0.0117L1.7857125 17.14255l-0.0474325 0.13185C3.670475 21.112725 7.639375 23.75 12.234975 23.75Z"
+            stroke-width="0.25"></path>
+          <path fill="#fbbc05"
+            d="M5.550625 14.3239c-0.248075 -0.7311 -0.391625 -1.5145 -0.391625 -2.3239 0 -0.8095 0.143575 -1.5928 0.378575 -2.3239l-0.006575 -0.1557L1.858565 6.66835l-0.120155 0.05715C0.9420575 8.3183 0.4851075 10.10695 0.4851075 12c0 1.89305 0.45695 3.6816 1.2533025 5.2744l3.812215 -2.9505Z"
+            stroke-width="0.25"></path>
+          <path fill="#eb4335"
+            d="M12.234975 4.7933c2.20635 0 3.69465 0.95305 4.5433 1.7495L20.094375 3.305C18.057775 1.41195 15.407425 0.25 12.234975 0.25 7.639375 0.25 3.670475 2.8872 1.73828 6.7255L5.537425 9.6761c0.95315 -2.83305 3.59035 -4.8828 6.69755 -4.8828Z"
+            stroke-width="0.25"></path>
+        </svg>
+        <span class="text-gray-700 font-medium">Continue with Google</span>
+      </a>
+
+      <!-- Divider with leaf motif -->
+      <div class="relative my-6">
+        <div class="absolute inset-0 flex items-center">
+          <div class="w-full border-t border-gray-300"></div>
+        </div>
+        <div class="relative flex justify-center">
+          <span class="px-2 bg-white text-sm text-gray-500">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#22c55e" class="w-5 h-5">
+              <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+          </span>
+        </div>
+      </div>
+
+      <!-- Footer note -->
+      <div class="mt-8 text-center text-xs text-gray-500">
+        <p>By continuing, you agree to our <a href="#" class="text-primary hover:underline">Terms</a> and <a href="#" class="text-primary hover:underline">Privacy Policy</a></p>
+        <p class="mt-1">Every login helps us plant more trees</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

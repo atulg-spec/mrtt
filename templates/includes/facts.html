@@ -1,0 +1,117 @@
+<!-- Animated Facts Section -->
+<section class="py-20 bg-gray-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="text-center mb-16">
+            <h2 class="text-3xl md:text-4xl font-bold text-primary mb-4">Our <span class="text-accent">Impact</span></h2>
+            <div class="w-20 h-1 bg-accent mx-auto"></div>
+            <p class="mt-4 text-gray-600 max-w-2xl mx-auto">Driving environmental change across India — together with you.</p>
+        </div>
+
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6">
+            <!-- Trees Planted -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="treesCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">Trees Planted</div>
+                <div class="mt-4">
+                    <i class="fas fa-tree text-primary text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- Volunteers -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="volunteersCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">Student Volunteers</div>
+                <div class="mt-4">
+                    <i class="fas fa-users text-primary text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- Districts -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="districtsCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">Districts Covered</div>
+                <div class="mt-4">
+                    <i class="fas fa-map-marked-alt text-primary text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- Villagers Employed -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="villagersCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">Villagers Employed</div>
+                <div class="mt-4">
+                    <i class="fas fa-hand-holding-heart text-primary text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- CSR Partners -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="csrCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">CSR Partners</div>
+                <div class="mt-4">
+                    <i class="fas fa-building text-primary text-4xl"></i>
+                </div>
+            </div>
+
+            <!-- CO₂ Offset -->
+            <div class="bg-white p-6 rounded-lg shadow-md text-center transition-all duration-300 hover:shadow-xl hover:transform hover:-translate-y-2">
+                <div class="text-4xl font-bold text-accent mb-2" id="carbonCounter">0</div>
+                <div class="text-sm font-medium text-gray-500">Tons of CO₂ Offset</div>
+                <div class="mt-4">
+                    <i class="fas fa-leaf text-primary text-4xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Counter Animation Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const duration = 2000;
+        const section = document.querySelector('.bg-gray-100');
+
+        const animateCounters = () => {
+            const targetValues = {
+                trees: 625000,
+                volunteers: 18000,
+                districts: 65,
+                villagers: 2500,
+                csr: 12,
+                carbon: 14000
+            };
+
+            const animate = (id, target) => {
+                const el = document.getElementById(id);
+                let current = 0;
+                const increment = target / (duration / 16);
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        clearInterval(timer);
+                        current = target;
+                    }
+                    el.textContent = Math.floor(current).toLocaleString();
+                }, 16);
+            };
+
+            animate('treesCounter', targetValues.trees);
+            animate('volunteersCounter', targetValues.volunteers);
+            animate('districtsCounter', targetValues.districts);
+            animate('villagersCounter', targetValues.villagers);
+            animate('csrCounter', targetValues.csr);
+            animate('carbonCounter', targetValues.carbon);
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateCounters();
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        observer.observe(section);
+    });
+</script>

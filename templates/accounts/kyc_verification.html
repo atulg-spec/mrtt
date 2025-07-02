@@ -1,0 +1,157 @@
+{% extends 'home/base.html' %}
+{% block meta %}
+    {% if head.favicon %}
+    <link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+    {% endif %}
+{% endblock meta %}
+
+{% block page %}KYC Verification{% endblock page %}
+{% block body %}
+<!-- Nature-themed background with subtle pattern -->
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
+    <!-- Hero section with Indian document theme -->
+    <div class="relative bg-green-700 text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-30"></div>
+        <img src="https://images.unsplash.com/photo-1600585152220-90363fe7e115?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+             alt="Document verification" 
+             class="w-full h-48 md:h-64 object-cover absolute mix-blend-overlay">
+        
+        <div class="relative z-10 py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center mb-2">
+                <!-- Indian flag with document icon -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-10 h-10 text-white">
+                        <path fill-rule="evenodd" d="M5.625 1.5c-1.036 0-1.875.84-1.875 1.875v17.25c0 1.035.84 1.875 1.875 1.875h12.75c1.035 0 1.875-.84 1.875-1.875V12.75A3.75 3.75 0 0016.5 9h-1.875a1.875 1.875 0 01-1.875-1.875V5.25A3.75 3.75 0 009 1.5H5.625zM7.5 15a.75.75 0 01.75-.75h7.5a.75.75 0 010 1.5h-7.5A.75.75 0 017.5 15zm.75 2.25a.75.75 0 000 1.5H12a.75.75 0 000-1.5H8.25z" clip-rule="evenodd" />
+                        <path d="M12.971 1.816A5.23 5.23 0 0114.25 5.25v1.875c0 .207.168.375.375.375H16.5a5.23 5.23 0 013.434 1.279 9.768 9.768 0 00-6.963-6.963z" />
+                    </svg>
+                    <span class="absolute -top-2 -right-3 text-lg">🇮🇳</span>
+                </div>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Complete Your KYC Verification</h1>
+            <p class="text-green-100 max-w-2xl mx-auto">Secure your account with government-approved identification</p>
+        </div>
+        
+        <!-- Document edge decoration -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white rounded-t-3xl"></div>
+    </div>
+
+    <!-- Main content container -->
+    <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 relative z-20">
+        <!-- Semi-transparent white form card with document theme -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-green-100">
+            <div class="px-6 py-4 border-b border-green-50 bg-green-50/30">
+                <h2 class="text-lg font-semibold text-green-800">Indian Identity Verification</h2>
+                <p class="text-sm text-green-600">Required for planting contributions tracking</p>
+            </div>
+            
+            <div class="px-6 py-6">
+                <!-- Alerts -->
+                {% include 'includes/alerts.html' %}
+                
+                <!-- KYC Verification Form -->
+                <form method="post" class="space-y-5">
+                    {% csrf_token %}
+                    
+                    <!-- Aadhaar Number Field -->
+                    <div>
+                        <label for="aadhaar_number" class="block text-sm font-medium text-green-800 mb-1 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v8a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 0011.172 2H8.828a2 2 0 00-1.414.586L6.293 3.707A1 1 0 015.586 4H4zm6 9a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd" />
+                            </svg>
+                            Aadhaar Number
+                        </label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="text" 
+                                   id="aadhaar_number" 
+                                   name="aadhaar_number" 
+                                   maxlength="12"
+                                   required
+                                   class="block w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70"
+                                   placeholder="1234 5678 9012"
+                                   pattern="[0-9]{12}"
+                                   title="12-digit Aadhaar number">
+                        </div>
+                        <p class="mt-1 text-xs text-green-600">Enter 12-digit Aadhaar number without spaces</p>
+                    </div>
+                    
+                    <!-- Date of Birth Field -->
+                    <div>
+                        <label for="date_of_birth" class="block text-sm font-medium text-green-800 mb-1 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                <path fill-rule="evenodd" d="M5.75 2a.75.75 0 01.75.75V4h7V2.75a.75.75 0 011.5 0V4h.25A2.75 2.75 0 0118 6.75v8.5A2.75 2.75 0 0115.25 18H4.75A2.75 2.75 0 012 15.25v-8.5A2.75 2.75 0 014.75 4H5V2.75A.75.75 0 015.75 2zm-1 5.5c-.69 0-1.25.56-1.25 1.25v6.5c0 .69.56 1.25 1.25 1.25h10.5c.69 0 1.25-.56 1.25-1.25v-6.5c0-.69-.56-1.25-1.25-1.25H4.75z" clip-rule="evenodd" />
+                            </svg>
+                            Date of Birth
+                        </label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="date" 
+                                   id="date_of_birth" 
+                                   name="date_of_birth" 
+                                   required
+                                   class="block w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70">
+                        </div>
+                    </div>
+                    
+                    <!-- PAN Number Field -->
+                    <div>
+                        <label for="pan_number" class="block text-sm font-medium text-green-800 mb-1 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                <path d="M5.433 13.917l1.262-3.155A4 4 0 017.58 9.42l6.92-6.918a2.121 2.121 0 013 3l-6.92 6.918c-.383.383-.84.685-1.343.886l-3.154 1.262a.5.5 0 01-.65-.65z" />
+                                <path d="M3.5 5.75c0-.69.56-1.25 1.25-1.25H10A.75.75 0 0010 3H4.75A2.75 2.75 0 002 5.75v9.5A2.75 2.75 0 004.75 18h9.5A2.75 2.75 0 0017 15.25V10a.75.75 0 00-1.5 0v5.25c0 .69-.56 1.25-1.25 1.25h-9.5c-.69 0-1.25-.56-1.25-1.25v-9.5z" />
+                            </svg>
+                            PAN Number
+                        </label>
+                        <div class="mt-1 relative rounded-md shadow-sm">
+                            <input type="text" 
+                                   id="pan_number" 
+                                   name="pan_number" 
+                                   maxlength="10"
+                                   required
+                                   class="block w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70 uppercase"
+                                   placeholder="ABCDE1234F"
+                                   pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}"
+                                   title="10-character PAN number (e.g. ABCDE1234F)">
+                        </div>
+                        <p class="mt-1 text-xs text-green-600">Format: AAAAA9999A</p>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="pt-3">
+                        <button type="submit" 
+                                class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:scale-[1.01] active:scale-[0.99]">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                <path fill-rule="evenodd" d="M16.403 12.652a3 3 0 000-5.304 3 3 0 00-3.75-3.751 3 3 0 00-5.305 0 3 3 0 00-3.751 3.75 3 3 0 000 5.305 3 3 0 003.75 3.751 3 3 0 005.305 0 3 3 0 003.751-3.75zm-2.546-4.46a.75.75 0 00-1.214-.883l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                            Verify & Continue
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Security assurance -->
+                <div class="mt-6 pt-4 border-t border-green-100 text-center text-xs text-green-600">
+                    <div class="flex items-center justify-center mb-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-700">
+                            <path fill-rule="evenodd" d="M5.5 3A2.5 2.5 0 003 5.5v2.879a2.5 2.5 0 00.732 1.767l6.5 6.5a2.5 2.5 0 003.536 0l2.878-2.878a2.5 2.5 0 000-3.536l-6.5-6.5A2.5 2.5 0 008.38 3H5.5zM6 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                        <span class="font-medium text-green-800">Your information is securely encrypted</span>
+                    </div>
+                    <p>We use RBI-approved KYC verification partners</p>
+                </div>
+            </div>
+            
+            <!-- Document footer decoration -->
+            <div class="px-6 py-3 bg-green-50/30 text-center text-xs text-green-600 border-t border-green-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1">
+                    <path d="M7 4a1 1 0 011-1h4a1 1 0 110 2H8a1 1 0 01-1-1zM6 2a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V4a2 2 0 00-2-2h-1.586a1 1 0 01-.707-.293l-1.121-1.121A2 2 0 009.172 2H6z" />
+                </svg>
+                Required for planting more than 10 trees annually
+            </div>
+        </div>
+        
+        <!-- Footer with Indian touch -->
+        <div class="mt-6 text-center text-xs text-green-700">
+            <p>Verified by Government of India <span class="ml-1">🇮🇳</span></p>
+            <p class="mt-1">© 2023 Green India Initiative. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

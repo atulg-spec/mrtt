@@ -1,0 +1,145 @@
+{% extends 'home/base.html' %}
+{% block meta %}
+    {% if head.favicon %}
+    <link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+    {% endif %}
+{% endblock meta %}
+
+{% block page %}Register with Phone{% endblock page %}
+{% block body %}
+<!-- Nature-themed background with subtle leaf pattern -->
+<div class="min-h-screen bg-gradient-to-b from-green-50 to-amber-50">
+    <!-- Hero section with forest background -->
+    <div class="relative bg-green-800 text-white overflow-hidden">
+        <div class="absolute inset-0 bg-black opacity-40"></div>
+        <img src="https://images.unsplash.com/photo-1448375240586-882707db888b?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" 
+             alt="Lush green forest" 
+             class="w-full h-48 md:h-64 object-cover absolute mix-blend-overlay">
+        
+        <div class="relative z-10 py-8 px-4 sm:px-6 lg:px-8 text-center">
+            <div class="flex justify-center mb-2">
+                <!-- Indian flag touch with tree icon -->
+                <div class="relative">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="#22c55e" class="w-10 h-10">
+                        <path fill-rule="evenodd" d="M12.516 2.17a.75.75 0 00-1.032 0 11.209 11.209 0 01-7.877 3.08.75.75 0 00-.722.515A12.74 12.74 0 002.25 9.75c0 5.942 4.064 10.933 9.563 12.348a.749.749 0 00.374 0c5.499-1.415 9.563-6.406 9.563-12.348 0-1.39-.223-2.73-.635-3.985a.75.75 0 00-.722-.516l-.143.001c-2.996 0-5.717-1.17-7.734-3.08zm3.094 8.016a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                    </svg>
+                    <span class="absolute -top-2 -right-3 text-lg">🇮🇳</span>
+                </div>
+            </div>
+            <h1 class="text-2xl md:text-3xl font-bold mb-2">Join Our Green Community</h1>
+            <p class="text-green-100 max-w-2xl mx-auto">Register to track your tree-planting contributions and help restore India's greenery</p>
+        </div>
+        
+        <!-- Leaf decoration -->
+        <div class="absolute bottom-0 left-0 right-0 h-8 bg-white rounded-t-3xl"></div>
+    </div>
+
+    <!-- Main content container -->
+    <div class="max-w-md mx-auto px-4 sm:px-6 lg:px-8 py-8 -mt-8 relative z-20">
+        <!-- Semi-transparent white form card -->
+        <div class="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-green-100">
+            <div class="px-6 py-4 border-b border-green-50 bg-green-50/30">
+                <h2 class="text-lg font-semibold text-green-800">Your Planting Journey Starts Here</h2>
+                <p class="text-sm text-green-600">Help us grow 1 million trees across India</p>
+            </div>
+            
+            <div class="px-6 py-6">
+                <!-- Alerts -->
+                {% include 'includes/alerts.html' %}
+                
+                <!-- Registration Form -->
+                <form method="post" action="/accounts/phone-number-registration/" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    <!-- Name fields in grid for larger screens -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <!-- First Name Field -->
+                        <div>
+                            <label class="block text-sm font-medium text-green-800 mb-1 flex items-center">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                    <path d="M10 8a3 3 0 100-6 3 3 0 000 6zM3.465 14.493a1.23 1.23 0 00.41 1.412A9.957 9.957 0 0010 18c2.31 0 4.438-.784 6.131-2.1.43-.333.604-.903.408-1.41a7.002 7.002 0 00-13.074.003z" />
+                                </svg>
+                                First Name
+                            </label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="text" name="first_name" required value="{{request.user.first_name}}"
+                                    class="block w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70"
+                                    placeholder="Your first name">
+                            </div>
+                        </div>
+                        
+                        <!-- Last Name Field -->
+                        <div>
+                            <label class="block text-sm font-medium text-green-800 mb-1">Last Name</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="text" name="last_name" value="{{request.user.last_name}}" required
+                                    class="block w-full px-4 py-3 rounded-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-300 text-green-800 bg-white/70"
+                                    placeholder="Your last name">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Phone Number Field -->
+                    <div>
+                        <label class="block text-sm font-medium text-green-800 mb-1 flex items-center">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1 text-green-600">
+                                <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.263-.15-3.326-.43A13.022 13.022 0 012.43 8.326 13.019 13.019 0 012 5V3.5z" clip-rule="evenodd" />
+                            </svg>
+                            Phone Number
+                        </label>
+                        <div class="mt-1 flex rounded-md shadow-sm">
+                            <span class="inline-flex items-center px-4 rounded-l-lg border border-r-0 border-green-200 bg-green-50 text-green-800 text-sm">
+                                +91
+                            </span>
+                            <input type="tel" name="phone_number" value="{% if request.user.phone_number %}{{request.user.phone_number}}{% endif %}" required
+                                class="flex-1 block w-full px-4 py-3 rounded-r-lg border border-green-200 focus:ring-2 focus:ring-green-500 focus:border-green-500 placeholder-green-100 text-green-800 bg-white/70"
+                                placeholder="98765 43210">
+                        </div>
+                    </div>
+                    
+                    <!-- Submit Button -->
+                    <div class="pt-2">
+                        <button type="submit" 
+                            class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-lg font-medium text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-all duration-200 transform hover:scale-[1.01] active:scale-[0.99]">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-5 h-5 mr-2">
+                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
+                            </svg>
+                            Continue to Green Future
+                        </button>
+                    </div>
+                </form>
+                
+                <!-- Terms and conditions -->
+                <div class="mt-6 text-center text-xs text-green-600">
+                    <p class="flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 mr-1">
+                            <path fill-rule="evenodd" d="M5.5 3A2.5 2.5 0 003 5.5v2.879a2.5 2.5 0 00.732 1.767l6.5 6.5a2.5 2.5 0 003.536 0l2.878-2.878a2.5 2.5 0 000-3.536l-6.5-6.5A2.5 2.5 0 008.38 3H5.5zM6 7a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                        </svg>
+                            By registering, you agree to our Terms and Privacy Policy
+                    </p>
+                    <p class="mt-2 flex items-center justify-center">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3 h-3 mr-1">
+                            <path d="M10 1a6 6 0 00-3.815 10.631C7.237 12.5 8 13.443 8 14.456v.644a.75.75 0 00.572.729 6.016 6.016 0 002.856 0A.75.75 0 0012 15.1v-.644c0-1.013.762-1.957 1.815-2.825A6 6 0 0010 1zM8.863 17.414a.75.75 0 00-.226 1.483 9.066 9.066 0 002.726 0 .75.75 0 00-.226-1.483 7.553 7.553 0 01-2.274 0z" />
+                        </svg>
+                        Every registration helps us plant more trees across India
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Leaf pattern decoration at bottom -->
+            <div class="px-6 py-3 bg-green-50/30 text-center text-xs text-green-600 border-t border-green-100 flex items-center justify-center">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 mr-1">
+                    <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z" clip-rule="evenodd" />
+                </svg>
+                Together we've planted 342,891 trees so far
+            </div>
+        </div>
+        
+        <!-- Footer with Indian touch -->
+        <div class="mt-6 text-center text-xs text-green-700">
+            <p>Proudly made in India <span class="ml-1">🇮🇳</span></p>
+            <p class="mt-1">© 2025 Green India Initiative. All rights reserved.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}
