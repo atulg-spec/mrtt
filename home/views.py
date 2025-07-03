@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from management.models import JobOpening
+from management.models import JobOpening, Announcement
 from dashboard.forms import JobApplicationForm, ContactFormForm
 
 # Create your views here.
@@ -45,3 +45,10 @@ def careers(request):
         'form': form,
     }
     return render(request, 'home/careers.html',context)
+
+def news(request):
+    announcements = Announcement.objects.all()
+    context = {
+        'announcements': announcements,
+    }
+    return render(request, 'home/news.html',context)
