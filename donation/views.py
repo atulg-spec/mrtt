@@ -10,12 +10,10 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
 
 
-
 def donate(request):
     context = {
     }
     return render(request, 'donation/donate.html', context)
-
 
 @login_required
 @phone_number_required
