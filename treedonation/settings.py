@@ -31,6 +31,10 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
+    'paper_admin',
+    'paper_admin.patches.django_money',
+    'paper_admin.patches.django_solo',
+    'paper_admin.patches.mptt',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

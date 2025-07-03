@@ -1,118 +1,208 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GreenFuture - Tree Plantation Campaign</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'playfair': ['"Playfair Display"', 'serif'],
-                        'poppins': ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        'forest': {
-                            '50': '#f4f9f4',
-                            '100': '#e6f2e6',
-                            '200': '#cde4cd',
-                            '300': '#a4cea5',
-                            '400': '#73b174',
-                            '500': '#4f9351',
-                            '600': '#3d753f',
-                            '700': '#325e33',
-                            '800': '#2b4c2c',
-                            '900': '#253f26',
-                            '950': '#102211',
-                        },
-                        'sage': {
-                            '50': '#f6f8f4',
-                            '100': '#e9f0e4',
-                            '200': '#d4e1cb',
-                            '300': '#b1c9a4',
-                            '400': '#86aa75',
-                            '500': '#648d54',
-                            '600': '#4e7140',
-                            '700': '#3f5a35',
-                            '800': '#34492d',
-                            '900': '#2c3d27',
-                            '950': '#152012',
-                        },
-                    }
-                }
-            }
-        }
-    </script>
-    <style>
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
-        }
-        @keyframes float {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-20px); }
-        }
-        .leaf-pattern {
-            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 18.307c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM30.59 7.615c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM9.412 21.429c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785z' fill='%233d753f' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
-        }
-    </style>
+    <title>Simple Pong Game</title>
 </head>
-<body class="bg-forest-50 min-h-screen leaf-pattern">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 md:py-24">
-        <div class="text-center">
-            <div class="flex justify-center mb-8">
-                <svg xmlns="http://www.w3.org/2000/svg" class="h-24 w-24 text-forest-600 animate-float" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M12.586 4.586a2 2 0 112.828 2.828l-3 3a2 2 0 01-2.828 0 1 1 0 00-1.414 1.414 4 4 0 005.656 0l3-3a4 4 0 00-5.656-5.656l-1.5 1.5a1 1 0 101.414 1.414l1.5-1.5zm-5 5a2 2 0 012.828 0 1 1 0 101.414-1.414 4 4 0 00-5.656 0l-3 3a4 4 0 105.656 5.656l1.5-1.5a1 1 0 10-1.414-1.414l-1.5 1.5a2 2 0 11-2.828-2.828l3-3z" clip-rule="evenodd" />
-                </svg>
-            </div>
-            <h1 class="text-4xl md:text-6xl font-playfair font-bold text-forest-900 mb-6">
-                <span class="text-sage-600">GreenFuture</span> Campaign
-            </h1>
-            <p class="text-xl md:text-2xl font-poppins text-forest-700 max-w-3xl mx-auto mb-10">
-                Join us in our mission to plant 10,000 trees and create a greener, healthier planet for future generations.
-            </p>
-            
-            <div class="bg-white bg-opacity-80 rounded-xl shadow-lg p-8 max-w-2xl mx-auto mb-16 border border-forest-100">
-                <h2 class="text-2xl md:text-3xl font-playfair font-semibold text-forest-800 mb-4">Coming Soon</h2>
-                <p class="text-forest-700 font-poppins mb-6">
-                    Our tree plantation campaign will launch soon.
-                </p>
-            </div>
-        </div>
-    </div>
-    
-    <footer class="py-8 text-center">
-        <p class="text-forest-600 font-poppins text-sm">
-            &copy; 2025 GreenFuture Initiative. All rights reserved.
-        </p>
-    </footer>
+<style>
+    body {
+        background: #0e1013;
+        color: #f5f5f5;
+        font-family: Arial, Helvetica, sans-serif;
+        text-align: center;
+        margin: 0;
+        padding: 0;
+    }
 
+    h1 {
+        margin-top: 32px;
+        margin-bottom: 12px;
+        font-weight: normal;
+        letter-spacing: 2px;
+    }
+
+    #pong {
+        background: #222831;
+        display: block;
+        margin: 0 auto;
+        border: 4px solid #393e46;
+        border-radius: 10px;
+        box-shadow: 0 6px 18px #08090b;
+    }
+</style>
+
+<body>
+    <h1>Simple Pong Game</h1>
+    <canvas id="pong" width="800" height="500"></canvas>
     <script>
-        // Countdown timer
-        const countdown = () => {
-            const countDate = new Date("September 15, 2023 00:00:00").getTime();
-            const now = new Date().getTime();
-            const gap = countDate - now;
+        const canvas = document.getElementById('pong');
+        const ctx = canvas.getContext('2d');
 
-            const second = 1000;
-            const minute = second * 60;
-            const hour = minute * 60;
-            const day = hour * 24;
+        // Game constants
+        const PADDLE_WIDTH = 12;
+        const PADDLE_HEIGHT = 100;
+        const BALL_SIZE = 14;
+        const PADDLE_MARGIN = 16;
+        const PLAYER_COLOR = '#00adb5';
+        const AI_COLOR = '#ff5722';
+        const BALL_COLOR = '#eeeeee';
+        const NET_COLOR = '#393e46';
 
-            const textDay = Math.floor(gap / day);
-            const textHour = Math.floor((gap % day) / hour);
-            const textMinute = Math.floor((gap % hour) / minute);
-            const textSecond = Math.floor((gap % minute) / second);
-
-            document.getElementById("days").innerText = textDay < 10 ? `0${textDay}` : textDay;
-            document.getElementById("hours").innerText = textHour < 10 ? `0${textHour}` : textHour;
-            document.getElementById("minutes").innerText = textMinute < 10 ? `0${textMinute}` : textMinute;
-            document.getElementById("seconds").innerText = textSecond < 10 ? `0${textSecond}` : textSecond;
+        // Paddle objects
+        const player = {
+            x: PADDLE_MARGIN,
+            y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+            width: PADDLE_WIDTH,
+            height: PADDLE_HEIGHT,
+            color: PLAYER_COLOR,
+            dy: 0
         };
 
-        setInterval(countdown, 1000);
+        const ai = {
+            x: canvas.width - PADDLE_MARGIN - PADDLE_WIDTH,
+            y: canvas.height / 2 - PADDLE_HEIGHT / 2,
+            width: PADDLE_WIDTH,
+            height: PADDLE_HEIGHT,
+            color: AI_COLOR,
+            dy: 0
+        };
+
+        const ball = {
+            x: canvas.width / 2 - BALL_SIZE / 2,
+            y: canvas.height / 2 - BALL_SIZE / 2,
+            size: BALL_SIZE,
+            speed: 6,
+            dx: 6,
+            dy: 4
+        };
+
+        function drawRect(x, y, w, h, color) {
+            ctx.fillStyle = color;
+            ctx.fillRect(x, y, w, h);
+        }
+
+        function drawCircle(x, y, r, color) {
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(x, y, r, 0, Math.PI * 2, false);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawNet() {
+            const netWidth = 4, netHeight = 32, gap = 18;
+            ctx.fillStyle = NET_COLOR;
+            for (let y = 0; y < canvas.height; y += netHeight + gap) {
+                ctx.fillRect(canvas.width / 2 - netWidth / 2, y, netWidth, netHeight);
+            }
+        }
+
+        function draw() {
+            // Clear canvas
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Net
+            drawNet();
+
+            // Player paddle
+            drawRect(player.x, player.y, player.width, player.height, player.color);
+
+            // AI paddle
+            drawRect(ai.x, ai.y, ai.width, ai.height, ai.color);
+
+            // Ball
+            drawCircle(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, BALL_COLOR);
+        }
+
+        function resetBall() {
+            ball.x = canvas.width / 2 - BALL_SIZE / 2;
+            ball.y = canvas.height / 2 - BALL_SIZE / 2;
+            // Change direction randomly
+            ball.dx = Math.random() > 0.5 ? ball.speed : -ball.speed;
+            ball.dy = (Math.random() - 0.5) * 2 * ball.speed;
+        }
+
+        function update() {
+            // Move ball
+            ball.x += ball.dx;
+            ball.y += ball.dy;
+
+            // Ball collision with top/bottom
+            if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
+                ball.dy *= -1;
+            }
+
+            // Ball collision with player paddle (left)
+            if (
+                ball.x <= player.x + player.width &&
+                ball.x >= player.x &&
+                ball.y + ball.size > player.y &&
+                ball.y < player.y + player.height
+            ) {
+                ball.dx *= -1;
+                // Add spin based on where it hits the paddle
+                let collidePoint = (ball.y + ball.size / 2) - (player.y + player.height / 2);
+                collidePoint /= player.height / 2;
+                let angleRad = (Math.PI / 4) * collidePoint;
+                let direction = 1;
+                ball.dx = direction * ball.speed * Math.cos(angleRad);
+                ball.dy = ball.speed * Math.sin(angleRad);
+            }
+
+            // Ball collision with AI paddle (right)
+            if (
+                ball.x + ball.size >= ai.x &&
+                ball.x + ball.size <= ai.x + ai.width &&
+                ball.y + ball.size > ai.y &&
+                ball.y < ai.y + ai.height
+            ) {
+                ball.dx *= -1;
+                // Add spin based on where it hits the paddle
+                let collidePoint = (ball.y + ball.size / 2) - (ai.y + ai.height / 2);
+                collidePoint /= ai.height / 2;
+                let angleRad = (Math.PI / 4) * collidePoint;
+                let direction = -1;
+                ball.dx = direction * ball.speed * Math.cos(angleRad);
+                ball.dy = ball.speed * Math.sin(angleRad);
+            }
+
+            // Score: ball goes past left or right
+            if (ball.x < 0 || ball.x + ball.size > canvas.width) {
+                resetBall();
+            }
+
+            // AI paddle movement (simple: follow the ball)
+            let aiCenter = ai.y + ai.height / 2;
+            if (aiCenter < ball.y + ball.size / 2 - 10) {
+                ai.y += 5;
+            } else if (aiCenter > ball.y + ball.size / 2 + 10) {
+                ai.y -= 5;
+            }
+            // Prevent AI paddle from going out of bounds
+            ai.y = Math.max(0, Math.min(canvas.height - ai.height, ai.y));
+        }
+
+        function gameLoop() {
+            update();
+            draw();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Mouse movement for player paddle
+        canvas.addEventListener('mousemove', function (evt) {
+            const rect = canvas.getBoundingClientRect();
+            const mouseY = evt.clientY - rect.top;
+            player.y = mouseY - player.height / 2;
+            // Prevent out of bounds
+            if (player.y < 0) player.y = 0;
+            if (player.y > canvas.height - player.height) player.y = canvas.height - player.height;
+        });
+
+        // Start game
+        resetBall();
+        gameLoop();
     </script>
 </body>
+
 </html>
