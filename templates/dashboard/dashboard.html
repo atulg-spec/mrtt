@@ -352,10 +352,12 @@
                         <div class="flex justify-center mb-6 last:mb-0 relative"
                             style="z-index: {{ forloop.revcounter }};">
                             <!-- Level indicator -->
+                            {% if forloop.counter0 > 0 %}
                             <div
                                 class="absolute -left-6 top-1/2 transform -translate-y-1/2 bg-gradient-to-b from-amber-400 to-amber-600 text-white text-xs font-bold w-6 h-6 rounded-full flex items-center justify-center shadow-md">
-                                {{ forloop.counter }}
+                                {{ forloop.counter0 }}
                             </div>
+                            {% endif %}
 
                             {% for user in row %}
                             <div class="relative group px-1"
