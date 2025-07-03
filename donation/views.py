@@ -11,8 +11,6 @@ from django.contrib import messages
 
 
 
-@login_required(login_url = 'login')
-@phone_number_required
 def donate(request):
     context = {
     }

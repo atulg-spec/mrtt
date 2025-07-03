@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-8zr*+w9tfq)gfs3#u*7xt-7k@vh3pk_tcwpa47c148i8uy%m0-'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -119,7 +119,7 @@ SOCIAL_AUTH_PIPELINE = (
 
 LOGIN_REDIRECT_URL = "phone_number_registration"
 LOGOUT_REDIRECT_URL = "/"
-LOGIN_URL = '/social-auth/login/google-oauth2/'
+LOGIN_URL = '/accounts/login/'
 SOCIAL_AUTH_LOGIN_ERROR_URL = '/'
 SOCIAL_AUTH_RAISE_EXCEPTIONS = False
 
@@ -162,11 +162,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.2/howto/static-files/
 
 STATIC_URL = 'static/'
-# STATIC_ROOT = 'static'
+STATIC_ROOT = 'static'
 
-STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, 'static'),
-)
+# STATICFILES_DIRS = (
+#     os.path.join(BASE_DIR, 'static'),
+# )
 
 
 MEDIA_ROOT=os.path.join(BASE_DIR,'static/media/')
