@@ -1,4 +1,4 @@
-{% extends 'home/base.html' %}
+{% extends 'dashboard/base.html' %}
 {% load social_tags %}
 {% block meta %}
 {% if head.favicon %}
@@ -11,7 +11,7 @@
 {% block page %}My Dashboard{% endblock page %}
 
 {% block body %}
-<div class="min-h-screen bg-forest-50 leaf-pattern">
+<div class="min-h-screen">
     <!-- Main Content -->
     <main class="bg-forest-50 leaf-pattern container mx-auto px-4 py-6 max-w-7xl">
         <!-- Welcome Banner -->
@@ -20,8 +20,9 @@
             <div class="absolute -right-10 -top-10 w-32 h-32 rounded-full bg-white/10"></div>
             <div class="absolute -right-5 -bottom-5 w-24 h-24 rounded-full bg-white/5"></div>
             <div class="relative z-10">
-                <h2 class="text-2xl font-bold text-white mb-2">Welcome back, {{ request.user.first_name|default:"Member"
-                    }}!</h2>
+                <h2 class="text-2xl font-bold text-white mb-2">
+                    Welcome back, {{ request.user.first_name|default:"Member" }}!
+                </h2>
                 <p class="text-green-100 max-w-2xl">You've helped plant {{ total_trees|floatformat:0 }} trees and offset
                     {{ total_co2|floatformat:0 }}kg of CO₂. Keep up the amazing work!</p>
             </div>
@@ -416,8 +417,8 @@
                                             {% endif %}
                                             <div>
                                                 <div class="font-bold">{{ user.username }}</div>
-                                                <div class="text-xs text-teal-300">Level {{
-                                                    forloop.parentloop.revcounter }}</div>
+                                                <div class="text-xs text-teal-300">
+                                                    Level {{forloop.parentloop.revcounter}}</div>
                                             </div>
                                         </div>
                                         <div
@@ -488,7 +489,7 @@
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                {% for referral in request.user.getCommunity %}
+                                {% for referral in abc %}
                                 <tr class="hover:bg-gray-50 transition-colors">
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex items-center">
@@ -499,11 +500,11 @@
                                                 <img src="{{ profile_picture }}" alt="Profile Picture"
                                                     class="h-10 w-10 rounded-full object-cover" loading="lazy">
                                                 {% else %}
-                                                {% include 'partials/default_avatar.svg' %}
+                                                {% include 'includes/partials/default-avatar.html' %}
                                                 {% endif %}
                                                 {% endwith %}
                                                 {% else %}
-                                                {% include 'partials/default_avatar.svg' %}
+                                                {% include 'includes/partials/default-avatar.html' %}
                                                 {% endif %}
                                             </div>
                                             <div class="ml-4">
@@ -644,206 +645,130 @@
         animation: float 2s ease-in-out infinite;
     }
 </style>
+    
+{% endblock %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
-<script
-    src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get chart context
-        const ctx = document.getElementById('donation-chart');
-        if (!ctx) return;
-
-        // Prepare data from Django template
-        const donationData = [
-            {% for donation in donations %}
-    {
-            x: new Date('{{ donation.time|date:"Y-m-d" }}'),
-            y: {{ donation.amount }},
-        r: Math.min(20, Math.max(5, {{ donation.amount }} / 10))
-    }{% if not forloop.last %}, {% endif %}
-    {% endfor %}
-  ];
-
-    // Hide loading indicator when chart is ready
-    const loadingElement = document.getElementById('chart-loading');
-
-    try {
-        // Create chart with proper configuration
-        const donationChart = new Chart(ctx, {
-            type: 'bubble',
-            data: {
-                datasets: [{
-                    label: 'Donation Amount',
-                    data: donationData,
-                    backgroundColor: 'rgba(5, 150, 105, 0.7)',
-                    borderColor: 'rgba(5, 150, 105, 1)',
-                    borderWidth: 1,
-                    hoverBackgroundColor: 'rgba(5, 150, 105, 0.9)',
-                    hoverBorderColor: 'rgba(5, 150, 105, 1)'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                animation: {
-                    duration: 1000,
-                    onComplete: () => {
-                        if (loadingElement) {
-                            loadingElement.style.opacity = '0';
-                            setTimeout(() => {
-                                loadingElement.style.display = 'none';
-                            }, 300);
-                        }
-                    }
+{% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Get chart context
+            const ctx = document.getElementById('donation-chart');
+            if (!ctx) return;
+        
+            // Prepare data from Django template
+            const donationData = [
+                {% for donation in donations %}
+        {
+                x: new Date('{{ donation.time|date:"Y-m-d" }}'),
+                y: {{ donation.amount }},
+            r: Math.min(20, Math.max(5, {{ donation.amount }} / 10))
+        }{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      ];
+    
+        // Hide loading indicator when chart is ready
+        const loadingElement = document.getElementById('chart-loading');
+    
+        try {
+            // Create chart with proper configuration
+            const donationChart = new Chart(ctx, {
+                type: 'bubble',
+                data: {
+                    datasets: [{
+                        label: 'Donation Amount',
+                        data: donationData,
+                        backgroundColor: 'rgba(5, 150, 105, 0.7)',
+                        borderColor: 'rgba(5, 150, 105, 1)',
+                        borderWidth: 1,
+                        hoverBackgroundColor: 'rgba(5, 150, 105, 0.9)',
+                        hoverBorderColor: 'rgba(5, 150, 105, 1)'
+                    }]
                 },
-                scales: {
-                    x: {
-                        type: 'time',
-                        time: {
-                            unit: 'month',
-                            tooltipFormat: 'MMM d, yyyy',
-                            displayFormats: {
-                                month: 'MMM yyyy'
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: {
+                        duration: 1000,
+                        onComplete: () => {
+                            if (loadingElement) {
+                                loadingElement.style.opacity = '0';
+                                setTimeout(() => {
+                                    loadingElement.style.display = 'none';
+                                }, 300);
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                unit: 'month',
+                                tooltipFormat: 'MMM d, yyyy',
+                                displayFormats: {
+                                    month: 'MMM yyyy'
+                                }
+                            },
+                            title: {
+                                display: true,
+                                text: 'Date'
+                            },
+                            grid: {
+                                display: false
                             }
                         },
-                        title: {
-                            display: true,
-                            text: 'Date'
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Amount (₹)'
+                            },
+                            ticks: {
+                                callback: function (value) {
+                                    return '₹' + value;
+                                }
+                            }
+                        }
+                    },
+                    plugins: {
+                        tooltip: {
+                            callbacks: {
+                                label: function (context) {
+                                    return 'Amount: ₹' + context.raw.y;
+                                },
+                                afterLabel: function (context) {
+                                    return 'Date: ' + new Date(context.raw.x).toLocaleDateString();
+                                }
+                            }
                         },
-                        grid: {
+                        legend: {
                             display: false
                         }
                     },
-                    y: {
-                        beginAtZero: true,
-                        title: {
-                            display: true,
-                            text: 'Amount (₹)'
-                        },
-                        ticks: {
-                            callback: function (value) {
-                                return '₹' + value;
+                    elements: {
+                        point: {
+                            hoverRadius: function (context) {
+                                return Math.min(context.dataset.data[context.dataIndex].r + 5, 25);
                             }
-                        }
-                    }
-                },
-                plugins: {
-                    tooltip: {
-                        callbacks: {
-                            label: function (context) {
-                                return 'Amount: ₹' + context.raw.y;
-                            },
-                            afterLabel: function (context) {
-                                return 'Date: ' + new Date(context.raw.x).toLocaleDateString();
-                            }
-                        }
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                elements: {
-                    point: {
-                        hoverRadius: function (context) {
-                            return Math.min(context.dataset.data[context.dataIndex].r + 5, 25);
                         }
                     }
                 }
+            });
+        
+            // Handle window resize with debounce
+            let resizeTimeout;
+            window.addEventListener('resize', function () {
+                clearTimeout(resizeTimeout);
+                resizeTimeout = setTimeout(function () {
+                    donationChart.resize();
+                }, 200);
+            });
+        
+        } catch (error) {
+            console.error('Error initializing chart:', error);
+            if (loadingElement) {
+                loadingElement.innerHTML = '<div class="text-red-500">Failed to load chart data</div>';
             }
-        });
-
-        // Handle window resize with debounce
-        let resizeTimeout;
-        window.addEventListener('resize', function () {
-            clearTimeout(resizeTimeout);
-            resizeTimeout = setTimeout(function () {
-                donationChart.resize();
-            }, 200);
-        });
-
-    } catch (error) {
-        console.error('Error initializing chart:', error);
-        if (loadingElement) {
-            loadingElement.innerHTML = '<div class="text-red-500">Failed to load chart data</div>';
-        }
-    }
-});
-</script>
-
-
-<script>
-    // Copy functions with improved feedback
-    function copyReferralCode() {
-        const code = document.getElementById('referral-code');
-        code.select();
-        document.execCommand('copy');
-
-        showToast('Referral code copied to clipboard!', 'success');
-    }
-
-    function copyReferralLink() {
-        const link = document.getElementById('referral-link');
-        link.select();
-        document.execCommand('copy');
-
-        showToast('Referral link copied to clipboard!', 'success');
-    }
-
-    function share() {
-        const title = "{{ single_product.title|escapejs }}";
-        const url = "{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}";
-        const text = `Join me in planting trees across India! Donate Now: ${url}`;
-
-        if (navigator.share) {
-            navigator.share({ title, text, url })
-                .catch((err) => {
-                    console.warn('Share failed or cancelled:', err);
-                    copyToClipboard(url);
-                });
-        } else {
-            copyToClipboard(url);
-        }
-    }
-
-    // Toast notification function
-    function showToast(message, type) {
-        const toast = document.createElement('div');
-        toast.className = `fixed flex justify-center bottom-4 left-1/2 transform -translate-x-1/2 px-6 py-3 rounded-md shadow-lg text-white font-medium ${type === 'success' ? 'bg-green-600' : 'bg-red-600'
-            }`;
-        toast.textContent = message;
-        document.body.appendChild(toast);
-
-        setTimeout(() => {
-            toast.classList.add('opacity-0', 'transition-opacity', 'duration-300');
-            setTimeout(() => {
-                document.body.removeChild(toast);
-            }, 300);
-        }, 3000);
-    }
-
-    // Lazy loading for images
-    document.addEventListener('DOMContentLoaded', function () {
-        if ('IntersectionObserver' in window) {
-            const lazyImages = [].slice.call(document.querySelectorAll('img[loading="lazy"]'));
-
-            let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
-                entries.forEach(function (entry) {
-                    if (entry.isIntersecting) {
-                        let lazyImage = entry.target;
-                        if (lazyImage.dataset.src) {
-                            lazyImage.src = lazyImage.dataset.src;
-                        }
-                        lazyImageObserver.unobserve(lazyImage);
-                    }
-                });
-            });
-
-            lazyImages.forEach(function (lazyImage) {
-                lazyImageObserver.observe(lazyImage);
-            });
         }
     });
-</script>
-{% endblock %}
+    </script>
+    {% endblock %}
