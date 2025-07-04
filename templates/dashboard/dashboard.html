@@ -254,25 +254,27 @@
                     </h2>
 
                     <!-- Invitation Code Box -->
-                    <div
-                        class="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-gray-200 shadow-sm backdrop-blur-sm">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Your Invitation Code</label>
-                        <div class="flex">
-                            <input type="text" id="referral-code"
-                                value="{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}"
-                                readonly
-                                class="flex-1 bg-white border border-gray-300 text-gray-800 py-2 px-4 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm font-medium">
-                            <button onclick="copyReferralCode()"
-                                class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-r-lg focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors flex items-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none"
-                                    viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                        d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
-                                </svg>
-                            </button>
-                        </div>
-                    </div>
-
+<div class="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-gray-200 shadow-sm backdrop-blur-sm">
+    <label class="block text-sm font-medium text-gray-700 mb-2">Your Invitation Code</label>
+    <div class="flex flex-nowrap overflow-hidden rounded-lg">
+        <input 
+            type="text" 
+            id="referral-code"
+            value="{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}"
+            readonly
+            class="flex-1 min-w-0 bg-white border border-gray-300 text-gray-800 py-2 px-4 focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent text-sm font-medium truncate"
+        >
+        <button 
+            onclick="copyReferralCode()"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 border-l-0 focus:outline-none focus:ring-2 focus:ring-green-500 transition-colors flex items-center justify-center whitespace-nowrap"
+        >
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" />
+            </svg>
+            <span class="sr-only sm:not-sr-only sm:ml-1">Copy</span>
+        </button>
+    </div>
+</div>
                     <!-- Share Buttons -->
                     <div class="space-y-3">
                         <button onclick="share()"
