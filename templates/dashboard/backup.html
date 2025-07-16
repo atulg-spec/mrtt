@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+{% load social_tags %}
+<html lang="en" class="h-full">
+
+<head>
+    {% block meta %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <meta name="description" content="Track your environmental impact and referral network with our premium dashboard">
+    <meta name="theme-color" content="#253f26">
+    {% if head.favicon %}
+    <link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
+    {% endif %}
+    {% endblock meta %}
+
+    <title>{% block title %}{% endblock title %} | EcoImpact</title>
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        forest: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            200: '#bbf7d0',
+                            300: '#86efac',
+                            400: '#4ade80',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            800: '#166534',
+                            900: '#14532d',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui'],
+                    },
+                    animation: {
+                        'float': 'float 4s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0) rotate(0)' },
+                            '50%': { transform: 'translateY(-6px) rotate(1deg)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Custom CSS -->
+    <style>
+        .leaf-pattern {
+            background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 18.307c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM30.59 7.615c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM9.412 21.429c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785z' fill='%233d753f' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+        }
+
+        .sidebar-transition {
+            transition: all 0.3s ease-in-out;
+        }
+
+        .dropdown-enter {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .dropdown-enter-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: opacity 200ms, transform 200ms;
+        }
+
+        .dropdown-exit {
+            opacity: 1;
+        }
+
+        .dropdown-exit-active {
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 200ms, transform 200ms;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8;
+        }
+    </style>
+
+    {% block extra_css %}{% endblock extra_css %}
+</head>
+
+<body class="h-full bg-gray-50 font-sans antialiased text-gray-800">
+    <!-- Main Layout -->
+    <div class="flex h-full" x-data="{ mobileSidebarOpen: false }">
+        <!-- Mobile sidebar overlay -->
+        <div x-show="mobileSidebarOpen" x-transition:enter="transition-opacity ease-linear duration-300"
+            x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100"
+            x-transition:leave="transition-opacity ease-linear duration-300" x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0" class="fixed inset-0 z-40 lg:hidden bg-gray-600 bg-opacity-75"
+            @click="mobileSidebarOpen = false"></div>
+
+        <!-- Sidebar -->
+        <div class="hidden lg:flex lg:flex-shrink-0">
+            <div class="flex flex-col w-64 border-r border-gray-200 bg-forest-50">
+                <!-- Sidebar header -->
+                <div class="flex items-center h-16 flex-shrink-0 border-b border-forest-100 shadow-md">
+                    <a href="{% url 'dashboard' %}" class="flex flex-shrink-0 items-center">
+                        <img src="/static/img/logo.png" alt="MRT Logo" class="w-12 h-12 lg:m-4">
+                        <span class="text-2xl font-bold text-primary tracking-tight">MRT <span
+                                class="text-accent">GREEN</span></span>
+                    </a>
+                </div>
+
+                <!-- Sidebar content -->
+                <div class="flex-1 flex flex-col overflow-y-auto">
+                    <nav class="flex-1 px-4 py-4 space-y-1">
+                        <!-- Dashboard -->
+                        <a href="{% url 'dashboard' %}"
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'dashboard' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                            </svg>
+                            Dashboard
+                        </a>
+
+                        <!-- Donations -->
+                        <a href="/dashboard/my-donations/"
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'my_donations' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Donations
+                        </a>
+
+                        <!-- Transactions -->
+                        <a href="/dashboard/my-transactions/"
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+         {% if request.resolver_match.url_name == 'my_transactions' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
+                                class="mr-3 h-5 w-5 flex-shrink-0 stroke-current">
+                                <desc>Credit Card 1 Streamline Icon: https://streamlinehq.com</desc>
+                                <g>
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12.5 2.25h-11c-0.552285 0 -1 0.44772 -1 1v7.5c0 0.5523 0.447715 1 1 1h11c0.5523 0 1 -0.4477 1 -1v-7.5c0 -0.55228 -0.4477 -1 -1 -1Z"
+                                        stroke-width="1" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M0.5 5.75h13"
+                                        stroke-width="1" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 9.25H11"
+                                        stroke-width="1" />
+                                </g>
+                            </svg>
+                            Transactions
+                        </a>
+
+
+                        <!-- Referrals -->
+                        <a href=""
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'referrals' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                            Referrals
+                        </a>
+
+                        <!-- Impact -->
+                        <a href=""
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'impact' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                            </svg>
+                            Your Impact
+                        </a>
+
+                        <!-- Settings -->
+                        <a href=""
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'settings' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                            </svg>
+                            Settings
+                        </a>
+                    </nav>
+
+                    <!-- Sidebar footer -->
+                    <div class="px-4 py-4 border-t border-gray-200">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                {% if request.user.is_authenticated %}
+                                {% with profile_picture=request.user|google_profile_picture %}
+                                {% if profile_picture %}
+                                <img class="h-10 w-10 rounded-full" src="{{ profile_picture }}" alt="Profile Picture">
+                                {% else %}
+                                <div
+                                    class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                    {{ request.user.username|slice:":1"|upper }}
+                                </div>
+                                {% endif %}
+                                {% endwith %}
+                                {% else %}
+                                <div
+                                    class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                    G
+                                </div>
+                                {% endif %}
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm font-medium text-gray-700">
+                                    {% if request.user.is_authenticated %}
+                                    {{ request.user.get_full_name|default:request.user.username }}
+                                    {% else %}
+                                    Guest User
+                                    {% endif %}
+                                </p>
+                                <a href="/" class="text-xs font-medium text-gray-500 hover:text-gray-700">Sign out</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex flex-col flex-1 overflow-hidden">
+            <!-- Mobile top navigation -->
+            <div class="lg:hidden">
+                <div class="flex items-center justify-between bg-white border-b border-gray-200 px-4 py-3">
+                    <div>
+                        <button @click="mobileSidebarOpen = true"
+                            class="text-gray-500 hover:text-gray-600 focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                    </div>
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center h-16 flex-shrink-0">
+                            <a href="{% url 'dashboard' %}" class="flex flex-shrink-0 items-center">
+                                <img src="/static/img/logo.png" alt="MRT Logo" class="w-12 h-12 lg:m-4 mr-2">
+                                <span class="text-2xl font-bold text-primary tracking-tight">MRT <span
+                                        class="text-accent">GREEN</span></span>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <button class="p-1 text-gray-400 hover:text-gray-500 focus:outline-none">
+                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="flex-1 overflow-auto focus:outline-none">
+                <!-- Page header -->
+                <div class="bg-white shadow-sm border-b border-gray-200">
+                    <div class="px-4 sm:px-6 lg:px-8 py-4">
+                        <div class="flex items-center justify-between">
+                            <div class="flex-1 min-w-0">
+                                <h1 class="text-xl font-semibold text-gray-900">
+                                    {% block page %}{% endblock page %}
+                                </h1>
+                            </div>
+                            <div class="flex items-center space-x-3">
+                                <a href="{% url 'donate' %}"
+                                    class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                    <svg class="-ml-1 mr-2 h-5 w-5" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 4v16m8-8H4" />
+                                    </svg>
+                                    Donate
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Page content -->
+                <div class="bg-gray-50 flex-1">
+                    <div class="px-1 md:px-2 py-2">
+                        {% block body %}{% endblock body %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile sidebar -->
+        <div class="lg:hidden">
+            <div x-show="mobileSidebarOpen" @click.away="mobileSidebarOpen = false"
+                x-transition:enter="transition ease-in-out duration-300 transform"
+                x-transition:enter-start="-translate-x-full" x-transition:enter-end="translate-x-0"
+                x-transition:leave="transition ease-in-out duration-300 transform" x-transition:leave-start="translate-x-0"
+                x-transition:leave-end="-translate-x-full" class="fixed inset-y-0 left-0 z-50 flex w-64">
+                <div class="flex flex-col w-64 border-r border-gray-200 bg-white">
+                    <!-- Mobile sidebar header -->
+                    <div class="flex items-center h-16 flex-shrink-0 px-6 bg-gradient-to-r from-green-600 to-green-800">
+                        <a href="{% url 'dashboard' %}" class="flex items-center">
+                            <img src="/static/img/logo.png" alt="MRT Logo" class="h-8 w-auto">
+                            <span class="text-white font-bold text-xl ml-2">MRT GREEN</span>
+                        </a>
+                    </div>
+
+                    <!-- Mobile sidebar content -->
+                    <div class="flex-1 flex flex-col overflow-y-auto">
+                        <nav class="flex-1 px-4 py-4 space-y-1">
+                            <!-- Dashboard -->
+                            <a href="{% url 'dashboard' %}"
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                      {% if request.resolver_match.url_name == 'dashboard' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
+                                </svg>
+                                Dashboard
+                            </a>
+
+                        <!-- Donations -->
+                        <a href="/dashboard/my-donations/"
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                  {% if request.resolver_match.url_name == 'my_donations' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                            Donations
+                        </a>
+
+                        <!-- Transactions -->
+                        <a href="/dashboard/my-transactions/"
+                            class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+         {% if request.resolver_match.url_name == 'my_transactions' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 14 14"
+                                class="mr-3 h-5 w-5 flex-shrink-0 stroke-current">
+                                <desc>Credit Card 1 Streamline Icon: https://streamlinehq.com</desc>
+                                <g>
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M12.5 2.25h-11c-0.552285 0 -1 0.44772 -1 1v7.5c0 0.5523 0.447715 1 1 1h11c0.5523 0 1 -0.4477 1 -1v-7.5c0 -0.55228 -0.4477 -1 -1 -1Z"
+                                        stroke-width="1" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M0.5 5.75h13"
+                                        stroke-width="1" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M9.5 9.25H11"
+                                        stroke-width="1" />
+                                </g>
+                            </svg>
+                            Transactions
+                        </a>
+
+
+                            <!-- Referrals -->
+                            <a href=""
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                      {% if request.resolver_match.url_name == 'referrals' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                </svg>
+                                Referrals
+                            </a>
+
+                            <!-- Impact -->
+                            <a href=""
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                      {% if request.resolver_match.url_name == 'impact' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Your Impact
+                            </a>
+
+                            <!-- Settings -->
+                            <a href=""
+                                class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                                      {% if request.resolver_match.url_name == 'settings' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                <svg class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24"
+                                    stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                </svg>
+                                Settings
+                            </a>
+                        </nav>
+
+                        <!-- Mobile sidebar footer -->
+                        <div class="px-4 py-4 border-t border-gray-200">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0">
+                                    {% if request.user.is_authenticated %}
+                                    {% with profile_picture=request.user|google_profile_picture %}
+                                    {% if profile_picture %}
+                                    <img class="h-10 w-10 rounded-full" src="{{ profile_picture }}" alt="Profile Picture">
+                                    {% else %}
+                                    <div
+                                        class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                        {{ request.user.username|slice:":1"|upper }}
+                                    </div>
+                                    {% endif %}
+                                    {% endwith %}
+                                    {% else %}
+                                    <div
+                                        class="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center text-gray-600 font-medium">
+                                        G
+                                    </div>
+                                    {% endif %}
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-gray-700">
+                                        {% if request.user.is_authenticated %}
+                                        {{ request.user.get_full_name|default:request.user.username }}
+                                        {% else %}
+                                        Guest User
+                                        {% endif %}
+                                    </p>
+                                    <a href="" class="text-xs font-medium text-gray-500 hover:text-gray-700">Sign out</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast notification container -->
+    <div aria-live="assertive"
+        class="fixed inset-0 flex items-end px-4 py-6 pointer-events-none sm:p-6 sm:items-start z-50">
+        <div class="w-full flex flex-col items-center space-y-4 sm:items-end">
+            <!-- Toast notifications will be inserted here -->
+        </div>
+    </div>
+
+    <!-- Alpine.js for interactivity -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.10.5/dist/cdn.min.js" defer></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.7.1/dist/chart.min.js"></script>
+    <script
+        src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@2.0.0/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
+
+    <!-- Custom JavaScript -->
+    <script>
+        // Initialize Alpine.js
+        document.addEventListener('alpine:init', () => {
+            Alpine.data('main', () => ({
+                mobileSidebarOpen: false,
+                userDropdownOpen: false,
+
+                toggleUserDropdown() {
+                    this.userDropdownOpen = !this.userDropdownOpen;
+                },
+
+                closeUserDropdown() {
+                    this.userDropdownOpen = false;
+                }
+            }));
+        });
+
+        // Show toast notification
+        function showToast(message, type = 'success') {
+            const toastContainer = document.querySelector('[aria-live="assertive"] .w-full');
+            const toastId = 'toast-' + Date.now();
+
+            const toast = document.createElement('div');
+            toast.id = toastId;
+            toast.className = `max-w-sm w-full bg-white shadow-lg rounded-lg pointer-events-auto ring-1 ring-black ring-opacity-5 overflow-hidden transition-all duration-300 transform ${type === 'success' ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`;
+            toast.innerHTML = `
+                <div class="p-4">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            ${type === 'success' ?
+                    '<svg class="h-5 w-5 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>' :
+                    '<svg class="h-5 w-5 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>'}
+                        </div>
+                        <div class="ml-3 w-0 flex-1 pt-0.5">
+                            <p class="text-sm font-medium">${message}</p>
+                        </div>
+                        <div class="ml-4 flex-shrink-0 flex">
+                            <button onclick="document.getElementById('${toastId}').remove()" class="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500">
+                                <span class="sr-only">Close</span>
+                                <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            toastContainer.appendChild(toast);
+
+            // Auto-remove toast after 5 seconds
+            setTimeout(() => {
+                const toastElement = document.getElementById(toastId);
+                if (toastElement) {
+                    toastElement.classList.add('opacity-0', 'translate-y-2');
+                    setTimeout(() => {
+                        toastElement.remove();
+                    }, 300);
+                }
+            }, 5000);
+        }
+
+        // Copy functions with toast feedback
+        function copyReferralCode() {
+            const code = document.getElementById('referral-code');
+            code.select();
+            document.execCommand('copy');
+
+            showToast('Referral code copied to clipboard!', 'success');
+        }
+
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                showToast('Copied to clipboard!', 'success');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                showToast('Failed to copy to clipboard', 'error');
+            });
+        }
+
+        // Share functionality
+        function share() {
+            const title = "Join me in planting trees across India!";
+            const url = "{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}";
+            const text = `Help make a difference by planting trees. Join using my referral link: ${url}`;
+
+            if (navigator.share) {
+                navigator.share({ title, text, url })
+                    .catch((err) => {
+                        console.warn('Share failed or cancelled:', err);
+                        copyToClipboard(url);
+                    });
+            } else {
+                copyToClipboard(url);
+            }
+        }
+    </script>
+
+    {% block extra_js %}{% endblock extra_js %}
+</body>
+
+</html>

@@ -1,208 +1,46 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
-    <title>Simple Pong Game</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MRT Green - Tree Plantation Campaign</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<style>
-    body {
-        background: #0e1013;
-        color: #f5f5f5;
-        font-family: Arial, Helvetica, sans-serif;
-        text-align: center;
-        margin: 0;
-        padding: 0;
-    }
-
-    h1 {
-        margin-top: 32px;
-        margin-bottom: 12px;
-        font-weight: normal;
-        letter-spacing: 2px;
-    }
-
-    #pong {
-        background: #222831;
-        display: block;
-        margin: 0 auto;
-        border: 4px solid #393e46;
-        border-radius: 10px;
-        box-shadow: 0 6px 18px #08090b;
-    }
-</style>
-
-<body>
-    <h1>Simple Pong Game</h1>
-    <canvas id="pong" width="800" height="500"></canvas>
-    <script>
-        const canvas = document.getElementById('pong');
-        const ctx = canvas.getContext('2d');
-
-        // Game constants
-        const PADDLE_WIDTH = 12;
-        const PADDLE_HEIGHT = 100;
-        const BALL_SIZE = 14;
-        const PADDLE_MARGIN = 16;
-        const PLAYER_COLOR = '#00adb5';
-        const AI_COLOR = '#ff5722';
-        const BALL_COLOR = '#eeeeee';
-        const NET_COLOR = '#393e46';
-
-        // Paddle objects
-        const player = {
-            x: PADDLE_MARGIN,
-            y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-            width: PADDLE_WIDTH,
-            height: PADDLE_HEIGHT,
-            color: PLAYER_COLOR,
-            dy: 0
-        };
-
-        const ai = {
-            x: canvas.width - PADDLE_MARGIN - PADDLE_WIDTH,
-            y: canvas.height / 2 - PADDLE_HEIGHT / 2,
-            width: PADDLE_WIDTH,
-            height: PADDLE_HEIGHT,
-            color: AI_COLOR,
-            dy: 0
-        };
-
-        const ball = {
-            x: canvas.width / 2 - BALL_SIZE / 2,
-            y: canvas.height / 2 - BALL_SIZE / 2,
-            size: BALL_SIZE,
-            speed: 6,
-            dx: 6,
-            dy: 4
-        };
-
-        function drawRect(x, y, w, h, color) {
-            ctx.fillStyle = color;
-            ctx.fillRect(x, y, w, h);
-        }
-
-        function drawCircle(x, y, r, color) {
-            ctx.fillStyle = color;
-            ctx.beginPath();
-            ctx.arc(x, y, r, 0, Math.PI * 2, false);
-            ctx.closePath();
-            ctx.fill();
-        }
-
-        function drawNet() {
-            const netWidth = 4, netHeight = 32, gap = 18;
-            ctx.fillStyle = NET_COLOR;
-            for (let y = 0; y < canvas.height; y += netHeight + gap) {
-                ctx.fillRect(canvas.width / 2 - netWidth / 2, y, netWidth, netHeight);
-            }
-        }
-
-        function draw() {
-            // Clear canvas
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-            // Net
-            drawNet();
-
-            // Player paddle
-            drawRect(player.x, player.y, player.width, player.height, player.color);
-
-            // AI paddle
-            drawRect(ai.x, ai.y, ai.width, ai.height, ai.color);
-
-            // Ball
-            drawCircle(ball.x + ball.size / 2, ball.y + ball.size / 2, ball.size / 2, BALL_COLOR);
-        }
-
-        function resetBall() {
-            ball.x = canvas.width / 2 - BALL_SIZE / 2;
-            ball.y = canvas.height / 2 - BALL_SIZE / 2;
-            // Change direction randomly
-            ball.dx = Math.random() > 0.5 ? ball.speed : -ball.speed;
-            ball.dy = (Math.random() - 0.5) * 2 * ball.speed;
-        }
-
-        function update() {
-            // Move ball
-            ball.x += ball.dx;
-            ball.y += ball.dy;
-
-            // Ball collision with top/bottom
-            if (ball.y <= 0 || ball.y + ball.size >= canvas.height) {
-                ball.dy *= -1;
-            }
-
-            // Ball collision with player paddle (left)
-            if (
-                ball.x <= player.x + player.width &&
-                ball.x >= player.x &&
-                ball.y + ball.size > player.y &&
-                ball.y < player.y + player.height
-            ) {
-                ball.dx *= -1;
-                // Add spin based on where it hits the paddle
-                let collidePoint = (ball.y + ball.size / 2) - (player.y + player.height / 2);
-                collidePoint /= player.height / 2;
-                let angleRad = (Math.PI / 4) * collidePoint;
-                let direction = 1;
-                ball.dx = direction * ball.speed * Math.cos(angleRad);
-                ball.dy = ball.speed * Math.sin(angleRad);
-            }
-
-            // Ball collision with AI paddle (right)
-            if (
-                ball.x + ball.size >= ai.x &&
-                ball.x + ball.size <= ai.x + ai.width &&
-                ball.y + ball.size > ai.y &&
-                ball.y < ai.y + ai.height
-            ) {
-                ball.dx *= -1;
-                // Add spin based on where it hits the paddle
-                let collidePoint = (ball.y + ball.size / 2) - (ai.y + ai.height / 2);
-                collidePoint /= ai.height / 2;
-                let angleRad = (Math.PI / 4) * collidePoint;
-                let direction = -1;
-                ball.dx = direction * ball.speed * Math.cos(angleRad);
-                ball.dy = ball.speed * Math.sin(angleRad);
-            }
-
-            // Score: ball goes past left or right
-            if (ball.x < 0 || ball.x + ball.size > canvas.width) {
-                resetBall();
-            }
-
-            // AI paddle movement (simple: follow the ball)
-            let aiCenter = ai.y + ai.height / 2;
-            if (aiCenter < ball.y + ball.size / 2 - 10) {
-                ai.y += 5;
-            } else if (aiCenter > ball.y + ball.size / 2 + 10) {
-                ai.y -= 5;
-            }
-            // Prevent AI paddle from going out of bounds
-            ai.y = Math.max(0, Math.min(canvas.height - ai.height, ai.y));
-        }
-
-        function gameLoop() {
-            update();
-            draw();
-            requestAnimationFrame(gameLoop);
-        }
-
-        // Mouse movement for player paddle
-        canvas.addEventListener('mousemove', function (evt) {
-            const rect = canvas.getBoundingClientRect();
-            const mouseY = evt.clientY - rect.top;
-            player.y = mouseY - player.height / 2;
-            // Prevent out of bounds
-            if (player.y < 0) player.y = 0;
-            if (player.y > canvas.height - player.height) player.y = canvas.height - player.height;
-        });
-
-        // Start game
-        resetBall();
-        gameLoop();
-    </script>
+<body class="min-h-screen bg-gradient-to-br from-green-50 to-green-100">
+    <div class="min-h-screen flex flex-col items-center justify-center p-6">
+        <!-- Main Content -->
+        <div class="w-full max-w-4xl bg-white/80 backdrop-blur-sm rounded-2xl shadow-xl overflow-hidden border border-green-200">
+            <!-- Hero Section -->
+            <div class="p-8 md:p-12 lg:p-16 text-center">
+                <!-- Logo/Heading -->
+                <div class="flex items-center justify-center mb-6">
+                    <div class="w-12 h-12 rounded-full bg-green-600 flex items-center justify-center text-white font-bold text-2xl mr-3">M</div>
+                    <h1 class="text-4xl font-bold text-green-800">MRT <span class="text-green-600">Green</span></h1>
+                </div>
+                
+                <!-- Tagline -->
+                <h2 class="text-2xl md:text-3xl font-semibold text-green-700 mb-2">Secure Nature, Save Life</h2>
+                
+                <!-- Subtitle -->
+                <p class="text-lg text-green-600 mb-8">Mission: Planting 100 Crore Trees by 2030</p>
+                
+                <!-- Launching Soon -->
+                <div class="inline-block px-6 py-3 bg-green-100 rounded-full mb-8 animate-pulse">
+                    <p class="text-green-800 font-medium">Launching Soon</p>
+                </div>
+                                
+                
+            </div>
+        </div>
+        
+        <!-- Leaf Decoration (Optional) -->
+        <div class="absolute top-10 left-10 opacity-20 -rotate-12 hidden md:block">
+            <i class="fas fa-leaf text-green-600 text-6xl"></i>
+        </div>
+        <div class="absolute bottom-10 right-10 opacity-20 rotate-45 hidden md:block">
+            <i class="fas fa-leaf text-green-600 text-6xl"></i>
+        </div>
+    </div>
 </body>
-
 </html>

@@ -39,6 +39,25 @@ class Payments(models.Model):
         return self.razorpay_payment_id
 
 
+class Registration_fee(models.Model): 
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    time = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Registration Fee" 
+        verbose_name_plural = "Registration Fees"
+
+    def save(self, *args, **kwargs):
+        if not self.user.registration_fee_paid:
+            self.user.registration_fee_paid = True
+            self.user.amount_paid = self.amount
+            self.user.save()
+        super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f'{self.user.first_name} paid {self.amount}'
+
 
 class Donation(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -48,12 +67,6 @@ class Donation(models.Model):
     class Meta:
         verbose_name = "Donation"
         verbose_name_plural = "Donations"
-
-    def save(self, *args, **kwargs):
-        if not self.user.is_donated:
-            self.user.is_donated = True
-            self.user.save()
-        super().save(*args, **kwargs)
 
     def __str__(self):
         return f'{self.user.first_name} donated {self.amount}'

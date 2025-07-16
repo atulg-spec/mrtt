@@ -4,7 +4,7 @@ from .models import CustomUser
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('username', 'email', 'phone_number', 'is_staff', 'date_joined', 'is_donated')
+    list_display = ('username', 'email', 'phone_number', 'is_staff', 'date_joined', 'registration_fee_paid', 'amount_paid')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'referred_by')
 
     fieldsets = (
@@ -14,7 +14,12 @@ class CustomUserAdmin(UserAdmin):
                 'first_name', 'last_name', 'phone_number', 'profile_picture',
                 'address_line_1', 'address_line_2', 'state', 'country',
                 'region_name', 'city', 'zip_code', 'lat', 'lon',
-                'timezone', 'isp', 'aadhaar_number', 'date_of_birth', 'pan_number', 'is_donated'
+                'timezone', 'isp', 'aadhaar_number', 'date_of_birth', 'pan_number',
+            )
+        }),
+        ('Registration Info', {
+            'fields': (
+                'registration_fee_paid', 'amount_paid'
             )
         }),
         ('Invite Information', {

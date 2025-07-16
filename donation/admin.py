@@ -1,5 +1,22 @@
 from django.contrib import admin
-from .models import PaymentGateway, Payments, Donation
+from .models import PaymentGateway, Payments, Donation, Registration_fee
+
+@admin.register(Registration_fee)
+class RegistrationFeeAdmin(admin.ModelAdmin):
+    list_display = ['user', 'amount', 'time']
+    list_filter = ['time']
+    search_fields = ['user__username', 'user__first_name', 'user__last_name']
+
+    def save_model(self, request, obj, form, change):
+        if not obj.user.registration_fee_paid:
+            obj.user.registration_fee_paid = True
+            obj.user.amount_paid = obj.amount
+            obj.user.save()
+        super().save_model(request, obj, form, change)
+
+    def __str__(self):
+        return f'{self.user.first_name} paid {self.amount}'
+
 
 @admin.register(PaymentGateway)
 class PaymentGatewayAdmin(admin.ModelAdmin):

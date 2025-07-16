@@ -21,7 +21,8 @@ class CustomUser(AbstractUser):
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
     date_joined = models.DateTimeField(auto_now_add=True)
-    is_donated = models.BooleanField(default=False)
+    registration_fee_paid = models.BooleanField(default=False)
+    amount_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
     aadhaar_number = models.CharField(max_length=12, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)

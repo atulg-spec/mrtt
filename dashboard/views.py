@@ -25,8 +25,8 @@ def pyramid_users(user):
 def dashboard(request):
     user = request.user
 
-    if not user.is_donated:
-        return redirect('/donate/')
+    if not user.registration_fee_paid:
+        return redirect('/donate/complete-registration/')
     
     # Calculate donation metrics
     donations = Donation.objects.filter(user=user).aggregate(

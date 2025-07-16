@@ -33,7 +33,7 @@ def phone_number_registration(request):
         if not user.aadhaar_number or not user.date_of_birth or not user.pan_number:
             return redirect('/accounts/kyc-verification/')
         else:
-            return redirect('/donate/')
+            return redirect('/dashboard/')
 
     if request.method == 'POST':
         form = PhoneNumberForm(request.POST, instance=user)
@@ -59,17 +59,17 @@ def kyc_verification(request):
             request.user.date_of_birth = form.cleaned_data['date_of_birth']
             request.user.pan_number = form.cleaned_data['pan_number']
             request.user.save()
-            return redirect('/donate/')
+            return redirect('/dashboard/')
     else:
         if request.user.aadhaar_number:
-            return redirect('/donate/')
+            return redirect('/dashboard/')
         form = KYCVerificationForm()
     return render(request, 'accounts/kyc_verification.html', {'form': form})
 
 
 def login(request):
     if request.user.is_authenticated:
-        return redirect('/donate/')
+        return redirect('/dashboard/')
     return render(request, 'accounts/login-signup.html')
 
 
