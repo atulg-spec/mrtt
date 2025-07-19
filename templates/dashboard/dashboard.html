@@ -1,12 +1,8 @@
 {% extends 'dashboard/base.html' %}
 {% load social_tags %}
-{% block meta %}
-{% if head.favicon %}
-<link rel="icon" href="{{ head.favicon.url }}" type="image/x-icon">
-{% endif %}
-<meta name="description" content="Track your environmental impact and Invitation network with our premium dashboard">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-{% endblock meta %}
+{% block title %}
+MRT Tree Plantation | Dashboard
+{% endblock %}
 
 {% block page %}My Dashboard{% endblock page %}
 

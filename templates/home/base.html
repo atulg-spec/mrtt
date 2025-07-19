@@ -3,12 +3,59 @@
 
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MRT Tree Plantation | Secure Nature, Save Life</title>
-    <meta name="description"
-        content="MRT is on a mission to plant 100 crore trees to restore India's green cover. Join the green revolution today.">
-    <meta name="theme-color" content="#253f26">
-    <!-- Tailwind CSS CDN -->
+    <title>
+        {% block title %}
+        MRT Tree Plantation | Secure Nature, Save Life
+        {% endblock %}
+    </title>
+    <!-- Basic SEO -->
+    <meta name="description" content="Join MRT's mission to plant 100 crore trees and restore India’s green cover. Together, let's build a greener, sustainable future.">
+    <meta name="keywords" content="tree plantation, green india, environmental NGO, plant trees, climate change India, MRT Green, 100 crore trees">
+    <meta name="author" content="MRT Group">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://www.mrtt.org.in/" />
+
+    <!-- Favicon -->
+    <link rel="icon" href="/static/img/logo.png" type="image/x-icon" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="MRT Tree Plantation | Secure Nature, Save Life" />
+    <meta property="og:description" content="Join MRT's mission to plant 100 crore trees across India and help fight climate change." />
+    <meta property="og:image" content="https://www.mrtt.org.in/static/img/logo.png" />
+    <meta property="og:url" content="https://www.mrtt.org.in/" />
+    <meta property="og:site_name" content="MRT Tree Plantation" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="MRT Tree Plantation | Secure Nature, Save Life" />
+    <meta name="twitter:description" content="Help us restore India's forests by planting 100 crore trees. Be part of the green revolution!" />
+    <meta name="twitter:image" content="https://www.mrtt.org.in/static/img/logo.png" />
+    <meta name="twitter:site" content="@mrtgreen" />
+    <meta name="twitter:creator" content="@mrtgreen" />
+
+    <!-- Theme Color -->
+    <meta name="theme-color" content="#253f26" />
+
+    <!-- Schema.org Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Organization",
+        "name": "MRT Tree Plantation",
+        "url": "https://www.mrtt.org.in/",
+        "logo": "https://www.mrtt.org.in/static/img/logo.png",
+        "sameAs": [
+            "https://facebook.com/mrtgreen",
+            "https://instagram.com/mrtgreen",
+            "https://twitter.com/mrtgreen",
+            "https://linkedin.com/company/mrtgreen"
+        ],
+        "description": "MRT is on a mission to plant 100 crore trees and create a greener, healthier India for future generations."
+    }
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
