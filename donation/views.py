@@ -149,7 +149,7 @@ def registration_razorpay_callback(request):
                             'request': request,
                         }
                         message = render_to_string('emails/registration-confirmation.html', variables)
-                        # send_emails('Donation Completed', message, [payment.user.email], message)
+                        # send_emails('Donation Successful', message, [payment.user.email], message)
                     except Exception as e:
                         print(f'Error sending email: {e}')
 
@@ -183,7 +183,7 @@ def registration_razorpay_success(request):
         payment = Payments.objects.filter(razorpay_order_id=razorpay_order_id).first()
 
         if payment:
-            payment.status = 'Completed'
+            payment.status = 'Successful'
             payment.razorpay_payment_id = razorpay_payment_id
             payment.razorpay_signature = razorpay_signature
             payment.save()
@@ -195,7 +195,7 @@ def registration_razorpay_success(request):
                     'request': request,
                 }
                 message = render_to_string('emails/registration-confirmation.html', variables)
-                # send_emails('Donation Completed', message, [payment.user.email], message)
+                # send_emails('Donation Successful', message, [payment.user.email], message)
             except Exception as e:
                 print(f'Error sending email: {e}')
 
@@ -368,7 +368,7 @@ def razorpay_callback(request):
                             'request': request,
                         }
                         message = render_to_string('emails/donation-confirmation.html', variables)
-                        # send_emails('Donation Completed', message, [payment.user.email], message)
+                        # send_emails('Donation Successful', message, [payment.user.email], message)
                     except Exception as e:
                         print(f'Error sending email: {e}')
 
@@ -401,7 +401,7 @@ def razorpay_success(request):
         payment = Payments.objects.filter(razorpay_order_id=razorpay_order_id).first()
 
         if payment:
-            payment.status = 'Completed'
+            payment.status = 'Successful'
             payment.razorpay_payment_id = razorpay_payment_id
             payment.razorpay_signature = razorpay_signature
             payment.save()
@@ -413,7 +413,7 @@ def razorpay_success(request):
                     'request': request,
                 }
                 message = render_to_string('emails/donation-confirmation.html', variables)
-                # send_emails('Donation Completed', message, [payment.user.email], message)
+                # send_emails('Donation Successful', message, [payment.user.email], message)
             except Exception as e:
                 print(f'Error sending email: {e}')
 

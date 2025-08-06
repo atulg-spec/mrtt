@@ -1,0 +1,261 @@
+{% extends 'dashboard/base.html' %}
+{% load static %}
+
+{% block body %}
+<div class="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8 py-8">
+    <div class="lg:flex lg:space-x-8">
+        <!-- Sidebar Navigation -->
+        <div class="lg:w-1/4 mb-8 lg:mb-0">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
+                <!-- Profile Summary -->
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-col items-center">
+                        <div class="relative mb-4">
+                            {% if user.profile_picture %}
+                                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" 
+                                     class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-gray-700 shadow-sm">
+                            {% else %}
+                                <div class="h-24 w-24 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-3xl font-bold text-gray-500 dark:text-gray-300">
+                                    {{ user.username|first|upper }}
+                                </div>
+                            {% endif %}
+                            <span class="absolute bottom-0 right-0 bg-green-500 rounded-full w-4 h-4 border-2 border-white dark:border-gray-700"></span>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ user.get_full_name|default:user.username }}</h3>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ user.email }}</p>
+                        <span class="mt-2 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                            {% if user.is_staff %}Admin{% else %}Member{% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Referral Card -->
+            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Your Referral Code</h4>
+                <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
+                    <span class="font-mono text-gray-900 dark:text-gray-100">{{ request.user.referral_code }}</span>
+                    <button onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}')" 
+                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
+                        </svg>
+                    </button>
+                </div>
+                <p class="text-sm text-gray-500 dark:text-gray-400">Share your code with friends and earn rewards when they sign up.</p>
+            </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="lg:w-3/4">
+            <!-- Profile Section -->
+            <div id="profile" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Profile Information</h2>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Full Name</h4>
+                        <p class="text-gray-900 dark:text-white">
+                            {% if user.get_full_name %}
+                                {{ user.get_full_name }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Username</h4>
+                        <p class="text-gray-900 dark:text-white">{{ user.username }}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email</h4>
+                        <p class="text-gray-900 dark:text-white">{{ user.email }}</p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Phone</h4>
+                        <p class="text-gray-900 dark:text-white">
+                            {% if user.phone_number %}
+                                {{ user.phone_number }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date of Birth</h4>
+                        <p class="text-gray-900 dark:text-white">
+                            {% if user.date_of_birth %}
+                                {{ user.date_of_birth|date:"M d, Y" }}
+                            {% else %}
+                                Not provided
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div>
+                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Member Since</h4>
+                        <p class="text-gray-900 dark:text-white">{{ user.date_joined|date:"M d, Y" }}</p>
+                    </div>
+                </div>
+
+                <!-- Address Section -->
+                <div class="mt-8">
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Address Information</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="md:col-span-2">
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Address Line 1</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.address_line_1 %}
+                                    {{ user.address_line_1 }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div class="md:col-span-2">
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Address Line 2</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.address_line_2 %}
+                                    {{ user.address_line_2 }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">City</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.city %}
+                                    {{ user.city }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">State</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.state %}
+                                    {{ user.state }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Country</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.country %}
+                                    {{ user.country }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">ZIP Code</h4>
+                            <p class="text-gray-900 dark:text-white">
+                                {% if user.zip_code %}
+                                    {{ user.zip_code }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Security Section -->
+            <div id="security" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Security</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
+                        <div class="mb-4 sm:mb-0">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Aadhaar Number</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {% if user.aadhaar_number %}
+                                    •••• •••• {{ user.aadhaar_number|slice:"-4:" }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
+                        <div class="mb-4 sm:mb-0">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">PAN Number</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {% if user.pan_number %}
+                                    {{ user.pan_number|slice:"0:2" }}••••••{{ user.pan_number|slice:"-1:" }}
+                                {% else %}
+                                    Not provided
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Billing Section -->
+            <div id="billing" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Billing Information</h2>
+                </div>
+
+                <div class="space-y-6">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
+                        <div class="mb-4 sm:mb-0">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Registration Status</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                {% if user.registration_fee_paid %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                                        Paid
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
+                                        Pending
+                                    </span>
+                                {% endif %}
+                            </p>
+                        </div>
+                        {% if not user.registration_fee_paid %}
+                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                Pay Registration Fee
+                            </button>
+                        {% endif %}
+                    </div>
+
+                    {% if user.registration_fee_paid %}
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between">
+                        <div class="mb-4 sm:mb-0">
+                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Amount Paid</h4>
+                            <p class="text-sm text-gray-500 dark:text-gray-400">
+                                ₹{{ user.amount_paid|default:"0.00" }}
+                            </p>
+                        </div>
+                        <button class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">View Receipt</button>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function copyToClipboard(text) {
+        navigator.clipboard.writeText(text).then(function() {
+            // Show a success message (you can implement a toast notification here)
+            alert('Referral code copied to clipboard!');
+        }, function(err) {
+            console.error('Could not copy text: ', err);
+        });
+    }
+</script>
+{% endblock %}

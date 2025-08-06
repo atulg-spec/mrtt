@@ -1,0 +1,26 @@
+{% extends 'dashboard/base.html' %}
+{% load social_tags %}
+{% block title %}
+MRT Tree Plantation | Dashboard
+{% endblock %}
+
+{% block page %}My Dashboard{% endblock page %}
+
+{% block body %}
+<div class="min-h-screen">
+    <!-- Main Content -->
+    <main class="bg-forest-50 leaf-pattern container mx-auto px-1 py-6 max-w-7xl">
+        <!-- Invitation Network Section -->
+        <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden mb-8">
+            <div class="p-6">
+                {% include 'dashboard/includes/my-invites.html' %}
+            </div>
+        </div>
+    </main>
+</div>
+    
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

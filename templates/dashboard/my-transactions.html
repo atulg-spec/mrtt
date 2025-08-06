@@ -34,7 +34,7 @@ MRT Tree Plantation | My Transactions
                     </div>
                     <div>
                         <p class="text-sm text-gray-500">Total Transactions</p>
-                        <p class="text-2xl font-bold text-gray-900">{{ payments.count }}</p>
+                        <p class="text-2xl font-bold text-gray-900">{{payments_count}}</p>
                     </div>
                 </div>
             </div>
@@ -72,13 +72,14 @@ MRT Tree Plantation | My Transactions
 
         <!-- Transactions Table -->
         <div class="bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
-            <div class="px-6 py-4 border-b border-gray-200 bg-gray-50">
-                <div class="flex flex-col md:flex-row justify-between items-start md:items-center">
+            <div class="px-4 py-3 border-b border-gray-200 bg-gray-50 sm:px-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
                     <h2 class="text-lg font-semibold text-gray-900">Recent Transactions</h2>
-                    <div class="mt-2 md:mt-0">
-                        <select id="filter-select" class="block w-full md:w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
+                    <div class="mt-3 sm:mt-0">
+                        <select id="filter-select"
+                            class="block w-full md:w-auto pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-green-500 focus:border-green-500 sm:text-sm rounded-md">
                             <option value="all">All Transactions</option>
-                            <option value="successful">Successful</option>
+                            <option value="Successful">Successful</option>
                             <option value="failed">Failed</option>
                             <option value="pending">Pending</option>
                         </select>
@@ -128,7 +129,7 @@ MRT Tree Plantation | My Transactions
                         <div class="mt-4 md:mt-0 md:ml-4">
                             <p class="text-lg font-semibold text-gray-900">₹{{ payment.amount_paid }}</p>
                             <div class="mt-1 text-sm text-gray-500 text-right">
-                                {% if payment.status == 'successful' %}
+                                {% if payment.status == 'Successful' %}
                                 <a href="#" class="text-green-600 hover:text-green-800">View Receipt</a>
                                 {% endif %}
                             </div>

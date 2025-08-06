@@ -1,0 +1,135 @@
+<!-- Recent Invites -->
+<div class="mt-2">
+    <div class="flex items-center justify-between mb-6">
+        <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-100">My Invites</h3>
+    </div>
+
+    <!-- Desktop Table (hidden on mobile) -->
+    <div class="hidden md:block">
+        <div class="overflow-hidden rounded-xl border border-gray-100 dark:border-gray-700 shadow-sm">
+            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                <thead class="bg-gray-50 dark:bg-gray-800">
+                    <tr>
+                        <th scope="col"
+                            class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Name</th>
+                        <th scope="col"
+                            class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Status</th>
+                        <th scope="col"
+                            class="px-6 py-4 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">
+                            Date Joined</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white dark:bg-gray-800 divide-y divide-gray-200 dark:divide-gray-700">
+                    {% for referral in referrals %}
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-150 ease-in-out">
+                        <td class="px-6 py-5 whitespace-nowrap">
+                            <div class="flex items-center">
+                                <div class="flex-shrink-0 h-10 w-10">
+                                    <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png"
+                                        alt="Profile Picture"
+                                        class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-600"
+                                        loading="lazy">
+                                </div>
+                                <div class="ml-4">
+                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">
+                                        {{referral.get_full_name|default:referral.username}}
+                                    </div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">{{ referral.email }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-5 whitespace-nowrap">
+                            <span
+                                class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full {% if referral.is_donated %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200{% endif %}">
+                                {% if referral.is_donated %}Donor{% else %}Supporter{% endif %}
+                            </span>
+                        </td>
+                        <td class="px-6 py-5 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
+                            {{ referral.date_joined|date:"M d, Y" }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="px-6 py-8 text-center">
+                            <div class="flex flex-col items-center justify-center">
+                                <div class="bg-gray-100 dark:bg-gray-700 p-4 rounded-full">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                        class="h-8 w-8 text-gray-400 dark:text-gray-300" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                                            d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                </div>
+                                <h4 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No invites yet
+                                </h4>
+                                <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Invite friends to join your
+                                    network</p>
+                                <button
+                                    class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                                    Invite Friends
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Mobile Cards (shown on mobile) -->
+    <div class="md:hidden space-y-3">
+        {% for referral in referrals %}
+        <div
+            class="bg-white dark:bg-gray-800 p-4 rounded-lg shadow-xs border border-gray-100 dark:border-gray-700 transition-all duration-200 hover:shadow-sm">
+            <div class="flex items-center">
+                <div class="flex-shrink-0 h-10 w-10">
+                    <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png" alt="Profile Picture"
+                        class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-gray-600" loading="lazy">
+                </div>
+                <div class="ml-4 flex-1 min-w-0">
+                    <div class="flex justify-between items-start space-x-2">
+                        <div class="truncate">
+                            <div class="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
+                                {{referral.get_full_name|default:referral.username}}
+                            </div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 truncate">{{ referral.email }}</div>
+                        </div>
+                        <span
+                            class="flex-shrink-0 px-2.5 py-0.5 inline-flex text-xs leading-5 font-semibold rounded-full {% if referral.is_donated %}bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200{% else %}bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200{% endif %}">
+                            {% if referral.is_donated %}Donor{% else %}Supporter{% endif %}
+                        </span>
+                    </div>
+                    <div class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="inline mr-1 h-3 w-3" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                        </svg>
+                        Joined {{ referral.date_joined|date:"M d, Y" }}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div
+            class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xs border border-gray-100 dark:border-gray-700 text-center">
+            <div class="bg-gray-100 dark:bg-gray-700 p-3 rounded-full inline-flex">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-400 dark:text-gray-300" fill="none"
+                    viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+            <h4 class="mt-4 text-lg font-medium text-gray-900 dark:text-gray-100">No invites yet</h4>
+            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Invite friends to join your network</p>
+            <button
+                class="mt-4 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
+                Invite Friends
+            </button>
+        </div>
+        {% endfor %}
+    </div>
+</div>

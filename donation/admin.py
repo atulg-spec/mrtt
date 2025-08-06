@@ -31,7 +31,7 @@ class PaymentGatewayAdmin(admin.ModelAdmin):
 @admin.register(Payments)
 class PaymentsAdmin(admin.ModelAdmin):
     list_display = ('razorpay_payment_id', 'user', 'payment_method', 'amount_paid', 'status', 'created_at')
-    list_filter = ('payment_method', 'status', 'created_at')
+    list_filter = ('payment_method', 'user', 'status', 'created_at')
     search_fields = ('razorpay_payment_id', 'user__username', 'user__email')
     date_hierarchy = 'created_at'
     ordering = ('-created_at',)
