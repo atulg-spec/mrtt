@@ -111,7 +111,7 @@ MRT Tree Plantation | My Transactions
                             </div>
                             <div class="flex-1 min-w-0">
                                 <p class="text-sm font-medium text-gray-900 truncate">
-                                    Payment ID: {{ payment.razorpay_payment_id|default:"N/A" }}
+                                    Payment ID: {{ payment.id|default:"N/A" }}
                                 </p>
                                 <p class="text-sm text-gray-500">
                                     {{ payment.created_at|date:"F j, Y, g:i a" }}
@@ -127,10 +127,10 @@ MRT Tree Plantation | My Transactions
                             </div>
                         </div>
                         <div class="mt-4 md:mt-0 md:ml-4">
-                            <p class="text-lg font-semibold text-gray-900">₹{{ payment.amount_paid }}</p>
+                            <p class="text-lg font-semibold text-gray-900 text-right">₹{{ payment.amount }}</p>
                             <div class="mt-1 text-sm text-gray-500 text-right">
                                 {% if payment.status == 'Successful' %}
-                                <a href="#" class="text-green-600 hover:text-green-800">View Receipt</a>
+                                <a href="#" class="text-green-600 text-right hover:text-green-800">View Receipt</a>
                                 {% endif %}
                             </div>
                         </div>

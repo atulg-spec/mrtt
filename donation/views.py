@@ -4,11 +4,11 @@ from accounts.utils import phone_number_required
 import razorpay
 from django.template.loader import render_to_string
 # from notifications.utils.email_utils import send_emails
-from .models import PaymentGateway, Payments, Donation, Registration_fee
+from .models import PaymentGateway, Payments, Donation, Registration_fee, ManualPayment
 from .forms import DonationForm
 from django.views.decorators.csrf import csrf_exempt
 from django.contrib import messages
-
+import decimal
 
 def donate(request):
     context = {
@@ -263,47 +263,56 @@ def proceed_payment(request):
 
             currency = 'INR'
 
-            # Create RazorPay client
-            client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))
-
-            # Create a RazorPay order
-            try:
-                razorpay_order = client.order.create({
-                    'amount': int(amount * 100),  # Amount in paise
-                    'currency': currency,
-                    'receipt': f'Thanks for your support of {amount} Rs.',
-                    'payment_capture': '1'
-                })
-
-                paymentobj = Payments.objects.create(user=request.user, 
-                                                     razorpay_order_id=razorpay_order['id'],
-                                                     payment_method='RAZORPAY', 
-                                                     amount_paid=amount, 
-                                                     status='Pending')
-
-                # Prepare context for the template
+            if gateway.use == 'MANUAL':
                 context = {
-                    'user': request.user,
-                    'order_id': razorpay_order['id'],
-                    'razorpay_key_id': gateway.razorpay_id,
-                    'amount': amount,
-                    'currency': currency,
-                    'name': request.user.first_name,
-                    'email': request.user.email,
-                    'contact': request.user.phone_number,
-                    'callback_url': f"{request.scheme}://{request.get_host()}/donate/razorpay_callback/",
+                    'gateway': gateway,
+                    'amount': amount
                 }
-                return render(request, 'payment/razorpay_payment.html', context)
+                return render(request, 'payment/manual-payment.html', context)
+            else:
+                # Create RazorPay client
+                client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))
 
-            except Exception as e:
-                messages.error(request, f"Error creating Razorpay order: {str(e)}")
-                return redirect('/donate/')
+                # Create a RazorPay order
+                try:
+                    razorpay_order = client.order.create({
+                        'amount': int(amount * 100),  # Amount in paise
+                        'currency': currency,
+                        'receipt': f'Thanks for your support of {amount} Rs.',
+                        'payment_capture': '1'
+                    })
+
+                    paymentobj = Payments.objects.create(user=request.user, 
+                                                         razorpay_order_id=razorpay_order['id'],
+                                                         payment_method='RAZORPAY', 
+                                                         amount_paid=amount, 
+                                                         status='Pending')
+
+                    # Prepare context for the template
+                    context = {
+                        'user': request.user,
+                        'order_id': razorpay_order['id'],
+                        'razorpay_key_id': gateway.razorpay_id,
+                        'amount': amount,
+                        'currency': currency,
+                        'name': request.user.first_name,
+                        'email': request.user.email,
+                        'contact': request.user.phone_number,
+                        'callback_url': f"{request.scheme}://{request.get_host()}/donate/razorpay_callback/",
+                    }
+                    return render(request, 'payment/razorpay_payment.html', context)
+
+                except Exception as e:
+                    messages.error(request, f"Error creating Razorpay order: {str(e)}")
+                    return redirect('/donate/')
 
         else:
             messages.warning(request, "Invalid donation form.")
             return redirect('/donate/')
 
     return redirect('/donate/')
+
+
 
 
 @login_required
@@ -458,3 +467,63 @@ def razorpay_failure(request):
         print(f'RazorPay failure error: {e}')
 
     return redirect("/donate/")
+
+
+# Manual Payments Logics
+@login_required(login_url='login')
+def proceed_manual_payment(request):
+    # Get payment settings
+    try:
+        payment_settings = PaymentGateway.objects.first()
+    except PaymentGateway.DoesNotExist:
+        messages.error(request, "Payment system is currently unavailable. Please try again later.")
+        return redirect('/dashboard/')
+    
+    if request.method == 'POST':
+        amount = request.POST.get('amount')
+        transaction_id = request.POST.get('transaction_id')
+        screenshot = request.FILES.get('screenshot')
+        
+        # Validate inputs
+        errors = []
+        
+        if not amount:
+            errors.append("Please enter the amount")
+        else:
+            try:
+                amount = decimal.Decimal(amount)
+                if amount < 1:
+                    errors.append("Amount must be greater than zero")
+            except decimal.InvalidOperation:
+                errors.append("Please enter a valid amount")
+        
+        if not transaction_id:
+            errors.append("Please provide the transaction ID")
+        
+        if errors:
+            for error in errors:
+                messages.error(request, error)
+            return redirect('proceed_manual_payment')
+        
+        # Create manual payment record
+        try:
+            manual_payment = ManualPayment.objects.create(
+                user=request.user,
+                amount=amount,
+                transaction_id=transaction_id.strip(),
+                screenshot=screenshot,
+                status='PENDING'
+            )
+                        
+            messages.success(request, "Your payment has been submitted for verification. We'll notify you once it's processed.")
+            # return redirect('my_transactions')
+            context = {
+                'manual_payment': manual_payment
+            }
+            return render(request, 'donation/payment_submitted.html', context)
+        
+        except Exception as e:
+            messages.error(request, f"An error occurred: {str(e)}")
+            return redirect('donate')
+    else:
+        return redirect('/donate/')

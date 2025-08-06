@@ -1,15 +1,19 @@
 from django.db import models
 from accounts.models import CustomUser as User
-
+from django.utils import timezone
 
 class PaymentGateway(models.Model):
     USE = (
         ('RAZORPAY', 'RAZORPAY'),
+        ('MANUAL', 'MANUAL'),
     )
 
     use = models.CharField(choices=USE,max_length=10,default='RAZORPAY')
     razorpay_id = models.CharField(max_length=500,default="")
     razorpay_secret = models.CharField(max_length=500,default="")
+
+    payment_qr = models.ImageField(upload_to='payment/', verbose_name="Payment QR", null=True, blank=True)
+    payment_upi_id = models.CharField(max_length=255, blank=True, null=True, help_text="Enter your Payment UPI ID.")
 
     mode = models.CharField(max_length=10,help_text="LIVE or TEST")
 
@@ -70,3 +74,42 @@ class Donation(models.Model):
 
     def __str__(self):
         return f'{self.user.first_name} donated {self.amount}'
+    
+
+
+class ManualPayment(models.Model):
+    STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('VERIFIED', 'Verified'),
+        ('REJECTED', 'Rejected'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_id = models.CharField(max_length=200)
+    screenshot = models.ImageField(upload_to='manual_payments/', blank=True, null=True)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default='PENDING')
+    notes = models.TextField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    verified_at = models.DateTimeField(blank=True, null=True)
+    verified_by = models.ForeignKey(
+        User, 
+        on_delete=models.SET_NULL, 
+        blank=True, 
+        null=True, 
+        related_name='verified_manual_payments'
+    )
+
+    class Meta:
+        verbose_name = "Manual Payment"
+        verbose_name_plural = "Manual Payments"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Manual Payment #{self.id} - {self.user.username} - ₹{self.amount}"
+
+    def save(self, *args, **kwargs):
+        # Update verified_at when status changes to VERIFIED
+        if self.status == 'VERIFIED' and not self.verified_at:
+            self.verified_at = timezone.now()
+        super().save(*args, **kwargs)

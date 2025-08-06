@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from accounts.utils import phone_number_required
 from accounts.models import CustomUser
 from django.core.paginator import Paginator  # Add this import
-from donation.models import Donation, Payments, Registration_fee
+from donation.models import Donation, Payments, Registration_fee, ManualPayment
 from django.db.models import Sum
 
 def pyramid_users(user):
@@ -147,40 +147,93 @@ def my_donations(request):
     
     return render(request, 'dashboard/my-donations.html', context)
 
-
 @login_required(login_url='login')
 @phone_number_required
 def my_transactions(request):
-    # Get all payments for the current user
+    # Get all transactions for the current user
     payments = Payments.objects.filter(user=request.user)
+    manual_payments = ManualPayment.objects.filter(user=request.user,status='PENDING')
     
+    # Get status filter from request
+    status_filter = request.GET.get('status')
+    
+    # Combine both querysets with consistent structure
+    all_transactions = []
+    
+    # Process regular payments
+    for payment in payments:
+        all_transactions.append({
+            'id': payment.razorpay_payment_id,
+            'type': 'Payment',
+            'payment_method': payment.payment_method,
+            'amount': float(payment.amount_paid),
+            'status': payment.status,
+            'date': payment.created_at,
+            'is_manual': False,
+            'transaction_id': payment.razorpay_payment_id if payment.payment_method != 'manual' else payment.manual_transaction_id,
+            'screenshot': None
+        })
+    
+    # Process manual payments (convert status to match regular payments)
+    for manual_payment in manual_payments:
+        status_map = {
+            'PENDING': 'Pending',
+            'VERIFIED': 'Successful',
+            'REJECTED': 'Failed'
+        }
+        all_transactions.append({
+            'id': manual_payment.transaction_id,
+            'type': 'Manual Payment',
+            'payment_method': 'manual',
+            'amount': manual_payment.amount,
+            'status': status_map.get(manual_payment.status, manual_payment.status),
+            'date': manual_payment.created_at,
+            'is_manual': True,
+            'transaction_id': manual_payment.transaction_id,
+            'screenshot': manual_payment.screenshot.url if manual_payment.screenshot else None
+        })
     
     # Apply status filter if provided
-    status_filter = request.GET.get('status')
     if status_filter:
-        payments = payments.filter(status__iexact=status_filter)
+        status_filter = status_filter.lower()
+        if status_filter == 'pending':
+            all_transactions = [t for t in all_transactions if t['status'].lower() == 'pending']
+        elif status_filter == 'successful':
+            all_transactions = [t for t in all_transactions if t['status'].lower() == 'successful']
+        elif status_filter == 'failed':
+            all_transactions = [t for t in all_transactions if t['status'].lower() == 'failed']
+    
+    # Sort all transactions by date (newest first)
+    all_transactions.sort(key=lambda x: x['date'], reverse=True)
     
     # Calculate summary statistics
-    total_amount = payments.filter(status='Successful').aggregate(total=Sum('amount_paid'))['total'] or 0
-    successful_payments = payments.filter(status__iexact='successful').count()
-    
-    # Order by most recent first
-    payments = payments.order_by('-created_at')
+    total_amount = sum(
+        float(t['amount']) for t in all_transactions 
+        if t['status'].lower() == 'successful'
+    )
+    successful_payments = sum(
+        1 for t in all_transactions 
+        if t['status'].lower() == 'successful'
+    )
+    pending_payments = sum(
+        1 for t in all_transactions 
+        if t['status'].lower() == 'pending'
+    )
     
     # Pagination
-    paginator = Paginator(payments, 10)  # Show 10 transactions per page
+    paginator = Paginator(all_transactions, 10)  # Show 10 transactions per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
     
     context = {
         'payments': page_obj,
-        'payments_count': payments.count,
+        'payments_count': len(all_transactions),
         'total_amount': total_amount,
         'successful_payments': successful_payments,
+        'pending_payments': pending_payments,
     }
     
     return render(request, 'dashboard/my-transactions.html', context)
-
 
 def apply_job(request):
     if request.method == 'POST':
