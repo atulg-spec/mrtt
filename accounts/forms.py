@@ -18,7 +18,7 @@ class KYCVerificationForm(forms.Form):
         label='Date of Birth',
         widget=forms.DateInput(attrs={'type': 'date'})  # provides date picker
     )
-    pan_number = forms.CharField(label='PAN Number', max_length=10)
+    pan_number = forms.CharField(label='PAN Number', max_length=10, required=False)
 
 class UserForm(forms.ModelForm):
     class Meta:
