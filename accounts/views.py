@@ -57,7 +57,10 @@ def kyc_verification(request):
         if form.is_valid():
             request.user.aadhaar_number = form.cleaned_data['aadhaar_number']
             request.user.date_of_birth = form.cleaned_data['date_of_birth']
-            request.user.pan_number = form.cleaned_data['pan_number']
+            try:
+                request.user.pan_number = form.cleaned_data['pan_number']
+            except:
+                pass
             request.user.save()
             return redirect('/dashboard/')
     else:
