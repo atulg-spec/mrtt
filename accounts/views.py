@@ -30,7 +30,7 @@ def phone_number_registration(request):
 
     # If user already has phone number, redirect
     if user.phone_number:
-        if not user.aadhaar_number or not user.date_of_birth or not user.pan_number:
+        if not user.aadhaar_number or not user.date_of_birth:
             return redirect('/accounts/kyc-verification/')
         else:
             return redirect('/dashboard/')
