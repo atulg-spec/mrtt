@@ -44,42 +44,49 @@ def registration_proceed_payment(request):
 
             currency = 'INR'
 
-            # Create RazorPay client
-            client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))
-
-            # Create a RazorPay order
-            try:
-                razorpay_order = client.order.create({
-                    'amount': int(amount * 100),  # Amount in paise
-                    'currency': currency,
-                    'receipt': f'Thanks for your support of {amount} Rs.',
-                    'payment_capture': '1'
-                })
-
-                paymentobj = Payments.objects.create(user=request.user, 
-                                                     razorpay_order_id=razorpay_order['id'],
-                                                     payment_method='RAZORPAY', 
-                                                     amount_paid=amount, 
-                                                     status='Pending')
-
-                # Prepare context for the template
+            if gateway.use == 'MANUAL':
                 context = {
-                    'user': request.user,
-                    'order_id': razorpay_order['id'],
-                    'razorpay_key_id': gateway.razorpay_id,
-                    'amount': amount,
-                    'currency': currency,
-                    'name': request.user.first_name,
-                    'email': request.user.email,
-                    'contact': request.user.phone_number,
-                    'callback_url': f"{request.scheme}://{request.get_host()}/donate/register/razorpay_callback/",
+                    'gateway': gateway,
+                    'amount': amount
                 }
-                return render(request, 'payment/registration_razorpay_payment.html', context)
+                return render(request, 'payment/manual-payment.html', context)
+            
+            else:
+                # Create RazorPay client
+                client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))
 
-            except Exception as e:
-                messages.error(request, f"Error creating Razorpay order: {str(e)}")
-                return redirect('/donate/complete-registration/')
+                # Create a RazorPay order
+                try:
+                    razorpay_order = client.order.create({
+                        'amount': int(amount * 100),  # Amount in paise
+                        'currency': currency,
+                        'receipt': f'Thanks for your support of {amount} Rs.',
+                        'payment_capture': '1'
+                    })
 
+                    paymentobj = Payments.objects.create(user=request.user, 
+                                                         razorpay_order_id=razorpay_order['id'],
+                                                         payment_method='RAZORPAY', 
+                                                         amount_paid=amount, 
+                                                         status='Pending')
+
+                    # Prepare context for the template
+                    context = {
+                        'user': request.user,
+                        'order_id': razorpay_order['id'],
+                        'razorpay_key_id': gateway.razorpay_id,
+                        'amount': amount,
+                        'currency': currency,
+                        'name': request.user.first_name,
+                        'email': request.user.email,
+                        'contact': request.user.phone_number,
+                        'callback_url': f"{request.scheme}://{request.get_host()}/donate/register/razorpay_callback/",
+                    }
+                    return render(request, 'payment/registration_razorpay_payment.html', context)
+
+                except Exception as e:
+                    messages.error(request, f"Error creating Razorpay order: {str(e)}")
+                    return redirect('/donate/complete-registration/')
         else:
             messages.warning(request, "Invalid donation form.")
             return redirect('/donate/complete-registration/')
