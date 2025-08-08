@@ -11,8 +11,10 @@
         {% endblock %}
     </title>
     <!-- Basic SEO -->
-    <meta name="description" content="Join MRT's mission to plant 100 crore trees and restore India’s green cover. Together, let's build a greener, sustainable future.">
-    <meta name="keywords" content="tree plantation, green india, environmental NGO, plant trees, climate change India, MRT Green, 100 crore trees">
+    <meta name="description"
+        content="Join MRT's mission to plant 100 crore trees and restore India’s green cover. Together, let's build a greener, sustainable future.">
+    <meta name="keywords"
+        content="tree plantation, green india, environmental NGO, plant trees, climate change India, MRT Green, 100 crore trees">
     <meta name="author" content="MRT Group">
     <meta name="robots" content="index, follow">
     <link rel="canonical" href="https://www.mrtt.org.in/" />
@@ -23,7 +25,8 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website" />
     <meta property="og:title" content="MRT Tree Plantation | Secure Nature, Save Life" />
-    <meta property="og:description" content="Join MRT's mission to plant 100 crore trees across India and help fight climate change." />
+    <meta property="og:description"
+        content="Join MRT's mission to plant 100 crore trees across India and help fight climate change." />
     <meta property="og:image" content="https://www.mrtt.org.in/static/img/logo.png" />
     <meta property="og:url" content="https://www.mrtt.org.in/" />
     <meta property="og:site_name" content="MRT Tree Plantation" />
@@ -31,7 +34,8 @@
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="MRT Tree Plantation | Secure Nature, Save Life" />
-    <meta name="twitter:description" content="Help us restore India's forests by planting 100 crore trees. Be part of the green revolution!" />
+    <meta name="twitter:description"
+        content="Help us restore India's forests by planting 100 crore trees. Be part of the green revolution!" />
     <meta name="twitter:image" content="https://www.mrtt.org.in/static/img/logo.png" />
     <meta name="twitter:site" content="@mrtgreen" />
     <meta name="twitter:creator" content="@mrtgreen" />
@@ -39,7 +43,7 @@
     <!-- Theme Color -->
     <meta name="theme-color" content="#253f26" />
 
-     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 
     <!-- Schema.org Structured Data -->
     <script type="application/ld+json">
@@ -58,56 +62,53 @@
         "description": "MRT is on a mission to plant 100 crore trees and create a greener, healthier India for future generations."
     }
     </script>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     fontFamily: {
-                        'playfair': ['"Playfair Display"', 'serif'],
-                        'poppins': ['Poppins', 'sans-serif'],
-                    },
-                    colors: {
-                        primary: '#14532d',     // Deep Forest Green (main CTA + titles)
-                        accent: '#14532d',      // Deep Forest Green (highlight/accent like buttons)
-                        secondary: '#1c1c1c',   // Almost Black (text, backgrounds, footer)
-                        leaf: '#22c55e',        // Fresh Leaf Green (for highlights/icons)
-                        soil: '#78350f',        // Earthy Brown (optional secondary accent)
-                        'forest': {
-                            '50': '#f4f9f4',
-                            '100': '#e6f2e6',
-                            '200': '#cde4cd',
-                            '300': '#a4cea5',
-                            '400': '#73b174',
-                            '500': '#4f9351',
-                            '600': '#3d753f',
-                            '700': '#325e33',
-                            '800': '#2b4c2c',
-                            '900': '#253f26',
-                            '950': '#102211',
-                        },
-                        'sage': {
-                            '50': '#f6f8f4',
-                            '100': '#e9f0e4',
-                            '200': '#d4e1cb',
-                            '300': '#b1c9a4',
-                            '400': '#86aa75',
-                            '500': '#648d54',
-                            '600': '#4e7140',
-                            '700': '#3f5a35',
-                            '800': '#34492d',
-                            '900': '#2c3d27',
-                            '950': '#152012',
-                        },
-
-                    },
-                    fontFamily: {
+                        playfair: ['"Playfair Display"', 'serif'],
+                        poppins: ['Poppins', 'sans-serif'],
                         sans: ['Inter', 'sans-serif'],
                     },
-                }
-            }
+                    colors: {
+                        primary: '#14532d',
+                        accent: '#14532d',
+                        secondary: '#1c1c1c',
+                        leaf: '#22c55e',
+                        soil: '#78350f',
+                        forest: {
+                            50: '#f4f9f4',
+                            100: '#e6f2e6',
+                            200: '#cde4cd',
+                            300: '#a4cea5',
+                            400: '#73b174',
+                            500: '#4f9351',
+                            600: '#3d753f',
+                            700: '#325e33',
+                            800: '#2b4c2c',
+                            900: '#253f26',
+                            950: '#102211',
+                        },
+                        sage: {
+                            50: '#f6f8f4',
+                            100: '#e9f0e4',
+                            200: '#d4e1cb',
+                            300: '#b1c9a4',
+                            400: '#86aa75',
+                            500: '#648d54',
+                            600: '#4e7140',
+                            700: '#3f5a35',
+                            800: '#34492d',
+                            900: '#2c3d27',
+                            950: '#152012',
+                        },
+                    },
+                },
+            },
         }
     </script>
-
     <!-- Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 
@@ -118,7 +119,7 @@
         :root {
             --swiper-navigation-size: 16px;
         }
-        
+
         .swiper-slide {
             display: flex;
             justify-content: center;
@@ -166,7 +167,6 @@
         .leaf-pattern {
             background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M54.627 18.307c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM30.59 7.615c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785zM9.412 21.429c1.33.902 1.184 2.728-.326 4.078-1.51 1.35-3.906 1.687-5.236.785-1.33-.902-1.184-2.728.326-4.078 1.51-1.35 3.906-1.687 5.236-.785z' fill='%233d753f' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
         }
-
     </style>
 </head>
 

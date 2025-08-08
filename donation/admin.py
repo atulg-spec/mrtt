@@ -1,6 +1,7 @@
 from django.contrib import admin
 from .models import PaymentGateway, Payments, Donation, Registration_fee, ManualPayment
 from django.utils import timezone
+from django.utils.html import format_html
 
 @admin.register(Registration_fee)
 class RegistrationFeeAdmin(admin.ModelAdmin):
@@ -59,21 +60,45 @@ class DonationAdmin(admin.ModelAdmin):
 
 @admin.register(ManualPayment)
 class ManualPaymentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'amount', 'status', 'created_at', 'verified_at')
+    list_display = ('id', 'user', 'amount', 'status', 'created_at', 'verified_at', 'screenshot_tag')
     list_filter = ('status', 'created_at')
     search_fields = ('user__username', 'transaction_id')
-    readonly_fields = ('created_at',)
+    readonly_fields = ('created_at', 'screenshot_preview')
     actions = ['verify_payments', 'reject_payments']
     
     fieldsets = (
         (None, {
-            'fields': ('user', 'amount', 'transaction_id', 'status')
+            'fields': ('user', 'amount', 'transaction_id', 'status', 'screenshot', 'screenshot_preview', 'notes', 'verified_at', 'verified_by')
         }),
-        ('Verification Details', {
-            'fields': ('screenshot', 'notes', 'verified_at', 'verified_by'),
-            'classes': ('collapse',)
-        }),
+        # ('Verification Details', {
+        #     'fields': ('screenshot', 'screenshot_preview', 'notes', 'verified_at', 'verified_by'),
+        #     'classes': ('collapse',)
+        # }),
     )
+
+    def screenshot_tag(self, obj):
+        """Show thumbnail in list display"""
+        if obj.screenshot:
+            return format_html(
+                '<img src="{}" style="height: 50px; width: auto; border-radius: 4px; box-shadow: 0 0 4px rgba(0,0,0,0.3);" />',
+                obj.screenshot.url
+            )
+        return "No Image"
+    screenshot_tag.short_description = "Screenshot"
+
+    def screenshot_preview(self, obj):
+        """Show bigger preview in detail view"""
+        if obj.screenshot:
+            return format_html(
+                '<a href="{0}" target="_blank">'
+                '<img src="{0}" style="max-height: 300px; max-width: 100%; '
+                'border: 1px solid #ddd; border-radius: 6px; padding: 4px; background: #f9f9f9;" />'
+                '</a>',
+                obj.screenshot.url
+            )
+        return "No Image Uploaded"
+    screenshot_preview.short_description = "Screenshot Preview"
+
     
     def save_model(self, request, obj, form, change):
         if 'status' in form.changed_data and obj.status == 'VERIFIED':
