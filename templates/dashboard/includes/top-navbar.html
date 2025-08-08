@@ -28,3 +28,16 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const toggleBtn = document.querySelector(".lg\\:hidden button"); // Your toggle button
+        const sideNavbar = document.getElementById("side-navbar");
+
+        // Hide menu when clicking outside
+        document.addEventListener("click", function (e) {
+            if (!sideNavbar.contains(e.target) && !toggleBtn.contains(e.target)) {
+                sideNavbar.classList.add("hidden");
+            }
+        });
+    });
+</script>
