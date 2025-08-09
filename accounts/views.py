@@ -41,7 +41,8 @@ def phone_number_registration(request):
             form.save()
             return redirect('/accounts/kyc-verification/')
         else:
-            messages.error('Some error occured.')
+            for e in form.errors:
+                messages.error(request,e)
             return redirect('/')
     else:
         form = PhoneNumberForm(instance=user)
