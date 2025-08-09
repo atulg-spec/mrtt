@@ -40,6 +40,9 @@ def phone_number_registration(request):
         if form.is_valid():
             form.save()
             return redirect('/accounts/kyc-verification/')
+        else:
+            messages.error('Some error occured.')
+            return redirect('/')
     else:
         form = PhoneNumberForm(instance=user)
 
