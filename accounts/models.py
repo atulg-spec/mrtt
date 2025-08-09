@@ -1,11 +1,16 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
+from django.core.validators import RegexValidator
 
 class CustomUser(AbstractUser):
     username = models.CharField(max_length=150, unique=True)
     email = models.EmailField(unique=True)
-    phone_number = models.PositiveIntegerField(blank=True, null=True)
+    phone_number = models.CharField(
+        max_length=15,  # enough for country code like +919876543210
+        blank=True,
+        null=True,
+        validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number')])
     address_line_1 = models.CharField(blank=True, max_length=100)
     address_line_2 = models.CharField(blank=True, max_length=100)
     profile_picture = models.ImageField(blank=True, upload_to='userprofile')
