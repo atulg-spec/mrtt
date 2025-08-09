@@ -18,7 +18,7 @@
             <div class="md:hidden flex">
                 <a href="/dashboard/"
                    class="bg-green-900 text-white text-center p-2 text-sm rounded-md hover:bg-green-700 transition duration-300 font-medium shadow-md">
-                   Join Now
+                   {% if user.is_authenticated %}Dashbord{% else %}Join Now{% endif %}
                 </a>
             </div>
 
