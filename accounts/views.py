@@ -43,7 +43,7 @@ def phone_number_registration(request):
         else:
             for e in form.errors:
                 messages.error(request,e)
-            return redirect('/')
+            return redirect('/accounts/phone-number-registration/')
     else:
         form = PhoneNumberForm(instance=user)
 
