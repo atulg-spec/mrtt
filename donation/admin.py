@@ -98,19 +98,6 @@ class ManualPaymentAdmin(admin.ModelAdmin):
             )
         return "No Image Uploaded"
     screenshot_preview.short_description = "Screenshot Preview"
-
-    
-    def save_model(self, request, obj, form, change):
-        if 'status' in form.changed_data and obj.status == 'VERIFIED':
-            obj.verified_by = request.user
-            print('working')
-            payment = Payments.objects.create(user=obj.user,payment_method='MANUAL',razorpay_payment_id=obj.transaction_id,razorpay_order_id=obj.transaction_id,razorpay_signature=obj.transaction_id,amount_paid=obj.amount,status='Successful')
-            if obj.user.registration_fee_paid:
-                Donation.objects.create(user=obj.user, amount=payment.amount_paid)
-            else:
-                Registration_fee.objects.create(user=obj.user, amount=payment.amount_paid)
-
-        super().save_model(request, obj, form, change)
     
     def verify_payments(self, request, queryset):
         updated = queryset.filter(status='PENDING').update(
@@ -118,6 +105,23 @@ class ManualPaymentAdmin(admin.ModelAdmin):
             verified_at=timezone.now(),
             verified_by=request.user
         )
+        for x in queryset:
+            payment = Payments.objects.create(
+                user=x.user,
+                payment_method='MANUAL',
+                razorpay_payment_id=x.transaction_id,
+                razorpay_order_id=x.transaction_id,
+                razorpay_signature=x.transaction_id,
+                amount_paid=x.amount,
+                status='Successful'
+            )
+            if x.user.registration_fee_paid:
+                Donation.objects.create(user=x.user, amount=payment.amount_paid)
+            else:
+                try:
+                    Registration_fee.objects.create(user=x.user, amount=payment.amount_paid)
+                except:
+                    pass
         self.message_user(request, f"{updated} payments verified successfully.")
     
     def reject_payments(self, request, queryset):

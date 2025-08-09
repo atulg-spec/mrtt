@@ -76,7 +76,6 @@ class Donation(models.Model):
         return f'{self.user.first_name} donated {self.amount}'
     
 
-
 class ManualPayment(models.Model):
     STATUS_CHOICES = (
         ('PENDING', 'Pending'),
