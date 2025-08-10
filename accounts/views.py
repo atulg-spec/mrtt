@@ -85,5 +85,5 @@ def login(request):
 @phone_number_required
 def logout(request):
     auth.logout(request)
-    messages.success(request, 'You are logged out.')
+    messages.success(request, "You have successfully logged out. See you again soon!")
     return redirect('login')

@@ -85,6 +85,10 @@ WSGI_APPLICATION = 'treedonation.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+DATE_INPUT_FORMATS = ['%d/%m/%Y']
+DATE_FORMAT = 'd/m/Y'
+
+
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.sqlite3',

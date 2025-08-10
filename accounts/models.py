@@ -29,9 +29,15 @@ class CustomUser(AbstractUser):
     registration_fee_paid = models.BooleanField(default=False)
     amount_paid = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
 
-    aadhaar_number = models.CharField(max_length=12, blank=True, null=True)
+    aadhaar_number = models.CharField(
+        max_length=12,
+        unique=True,
+        blank=True,
+        null=True,
+        validators=[RegexValidator(r'^\d{12}$', 'Enter a valid 12-digit Aadhaar number')]
+    )
     date_of_birth = models.DateField(blank=True, null=True)
-    pan_number = models.CharField(max_length=10, blank=True, null=True)
+    pan_number = models.CharField(max_length=10, blank=True, null=True, unique=True)
 
     referral_code = models.CharField(max_length=100, unique=True, blank=True, null=True)
     referred_by = models.ForeignKey('self', on_delete=models.SET_NULL, null=True, blank=True, related_name='referrals')
