@@ -16,7 +16,7 @@
                                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture" 
                                      class="h-28 w-28 rounded-full object-cover ring-4 ring-white dark:ring-gray-700 shadow-md transition-transform duration-200 group-hover:scale-105">
                             {% else %}
-                                <div class="h-28 w-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-4xl font-bold text-gray-500 dark:text-gray-300">
+                                <div class="h-28 w-28 rounded-full bg-gray-200 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-4xl font-bold text-gray-500 dark:text-gray-300">
                                     {{ user.username|first|upper }}
                                 </div>
                             {% endif %}
