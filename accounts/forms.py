@@ -24,3 +24,19 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = CustomUser
         fields = ('first_name', 'last_name', 'phone_number', 'address_line_1', 'address_line_2', 'city', 'state', 'zip_code', 'country')
+
+
+class UserProfileForm(forms.ModelForm):
+    date_of_birth = forms.DateField(
+        widget=forms.DateInput(attrs={'type': 'date'}),
+        required=False
+    )
+
+    class Meta:
+        model = CustomUser
+        fields = [
+            'first_name', 'last_name', 'username', 'email', 'phone_number',
+            'date_of_birth', 'address_line_1', 'address_line_2',
+            'city', 'state', 'country', 'zip_code',
+            'aadhaar_number', 'pan_number', 'profile_picture'
+        ]

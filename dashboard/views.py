@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404, redirect
-from management.models import JobOpening
+from django.contrib import messages
 from .forms import JobApplicationForm
 from django.contrib.auth.decorators import login_required
 from accounts.utils import phone_number_required
@@ -7,6 +7,7 @@ from accounts.models import CustomUser
 from django.core.paginator import Paginator  # Add this import
 from donation.models import Donation, Payments, Registration_fee, ManualPayment
 from django.db.models import Sum
+from accounts.forms import UserProfileForm
 
 def pyramid_users(user):
     community = list(user.getCommunity())
@@ -251,4 +252,15 @@ def apply_job(request):
 @login_required(login_url = 'login')
 @phone_number_required
 def my_account(request):
-    return render(request, 'dashboard/my-account.html')
+    if request.method == "POST":
+        form = UserProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Profile updated successfully.")
+            return redirect('my_account')  # Replace with your URL name
+        else:
+            messages.error(request, "Please correct the errors below.")
+    else:
+        form = UserProfileForm(instance=request.user)
+
+    return render(request, 'dashboard/my-account.html', {'form': form})

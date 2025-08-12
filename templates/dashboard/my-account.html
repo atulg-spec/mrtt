@@ -2,41 +2,60 @@
 {% load static %}
 
 {% block body %}
-<div class="max-w-7xl mx-auto px-1 sm:px-6 lg:px-8 py-8">
-    <div class="lg:flex lg:space-x-8">
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <form method="post" enctype="multipart/form-data" class="lg:flex lg:space-x-6">
+        {% csrf_token %}
         <!-- Sidebar Navigation -->
-        <div class="lg:w-1/4 mb-8 lg:mb-0">
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-                <!-- Profile Summary -->
-                <div class="p-6 border-b border-gray-200 dark:border-gray-700">
-                    <div class="flex flex-col items-center">
-                        <div class="relative mb-4">
+        <div class="lg:w-1/4 mb-8 lg:mb-0 space-y-6">
+            <!-- Profile Card -->
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden transition-all duration-200 hover:shadow-md">
+                <div class="p-6 border-b border-gray-200 dark:border-gray-700 flex flex-col items-center">
+                    <div class="relative mb-4 group">
+                        <div class="relative">
                             {% if user.profile_picture %}
                                 <img src="{{ user.profile_picture.url }}" alt="Profile Picture" 
-                                     class="h-24 w-24 rounded-full object-cover ring-4 ring-white dark:ring-gray-700 shadow-sm">
+                                     class="h-28 w-28 rounded-full object-cover ring-4 ring-white dark:ring-gray-700 shadow-md transition-transform duration-200 group-hover:scale-105">
                             {% else %}
-                                <div class="h-24 w-24 rounded-full bg-gray-200 dark:bg-gray-600 flex items-center justify-center text-3xl font-bold text-gray-500 dark:text-gray-300">
+                                <div class="h-28 w-28 rounded-full bg-gradient-to-br from-gray-200 to-gray-300 dark:from-gray-600 dark:to-gray-700 flex items-center justify-center text-4xl font-bold text-gray-500 dark:text-gray-300">
                                     {{ user.username|first|upper }}
                                 </div>
                             {% endif %}
-                            <span class="absolute bottom-0 right-0 bg-green-500 rounded-full w-4 h-4 border-2 border-white dark:border-gray-700"></span>
+                            <div class="absolute inset-0 rounded-full bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center">
+                                <span class="text-white text-sm font-medium">Change</span>
+                            </div>
                         </div>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-white">{{ user.get_full_name|default:user.username }}</h3>
-                        <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">{{ user.email }}</p>
-                        <span class="mt-2 px-3 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
-                            {% if user.is_staff %}Admin{% else %}Member{% endif %}
-                        </span>
+                        <input type="file" name="profile_picture" accept="image/*" 
+                               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer">
+                        <span class="absolute bottom-2 right-2 bg-green-500 rounded-full w-4 h-4 border-2 border-white dark:border-gray-700"></span>
                     </div>
+                    
+                    <div class="w-full space-y-3">
+                        <input type="text" name="first_name" value="{{ user.first_name }}" placeholder="First Name"
+                               class="w-full px-4 py-2 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                        <input type="text" name="last_name" value="{{ user.last_name }}" placeholder="Last Name"
+                               class="w-full px-4 py-2 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                        <input type="email" name="email" value="{{ user.email }}" placeholder="Email"
+                               class="w-full px-4 py-2 text-center border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
+                    </div>
+                    
+                    <span class="mt-3 px-4 py-1 text-xs font-medium rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+                        {% if user.is_staff %}Admin{% else %}Member{% endif %}
+                    </span>
                 </div>
             </div>
 
             <!-- Referral Card -->
-            <div class="mt-6 bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Your Referral Code</h4>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:shadow-md">
+                <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                    </svg>
+                    Your Referral Code
+                </h4>
                 <div class="flex items-center justify-between bg-gray-50 dark:bg-gray-700 rounded-lg p-3 mb-4">
                     <span class="font-mono text-gray-900 dark:text-gray-100">{{ request.user.referral_code }}</span>
-                    <button onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}')" 
-                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">
+                    <button type="button" onclick="copyToClipboard('{{ request.scheme }}://{{ request.get_host }}/accounts/login/?ref={{ request.user.referral_code }}')" 
+                        class="text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300 transition-colors duration-200">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path>
                         </svg>
@@ -47,215 +66,156 @@
         </div>
 
         <!-- Main Content -->
-        <div class="lg:w-3/4">
+        <div class="lg:w-3/4 space-y-6">
             <!-- Profile Section -->
-            <div id="profile" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
-                <div class="flex justify-between items-center mb-6">
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:shadow-md">
+                <div class="flex items-center justify-between mb-6">
                     <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Profile Information</h2>
+                    <div class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+                        <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                        </svg>
+                        Required fields
+                    </div>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Full Name</h4>
-                        <p class="text-gray-900 dark:text-white">
-                            {% if user.get_full_name %}
-                                {{ user.get_full_name }}
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Username</label>
+                        <input type="text" name="username" value="{{ user.username }}" 
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     </div>
                     <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Username</h4>
-                        <p class="text-gray-900 dark:text-white">{{ user.username }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Phone Number</label>
+                        <input type="text" name="phone_number" value="{{ user.phone_number }}" 
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     </div>
                     <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Email</h4>
-                        <p class="text-gray-900 dark:text-white">{{ user.email }}</p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Phone</h4>
-                        <p class="text-gray-900 dark:text-white">
-                            {% if user.phone_number %}
-                                {{ user.phone_number }}
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Date of Birth</h4>
-                        <p class="text-gray-900 dark:text-white">
-                            {% if user.date_of_birth %}
-                                {{ user.date_of_birth|date:"M d, Y" }}
-                            {% else %}
-                                Not provided
-                            {% endif %}
-                        </p>
-                    </div>
-                    <div>
-                        <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Member Since</h4>
-                        <p class="text-gray-900 dark:text-white">{{ user.date_joined|date:"M d, Y" }}</p>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
+                        <input type="date" name="date_of_birth" value="{{ user.date_of_birth|date:'Y-m-d' }}" 
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     </div>
                 </div>
 
                 <!-- Address Section -->
                 <div class="mt-8">
-                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Address Information</h3>
+                    <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4 flex items-center">
+                        <svg class="w-5 h-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        Address Information
+                    </h3>
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div class="md:col-span-2">
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Address Line 1</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.address_line_1 %}
-                                    {{ user.address_line_1 }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address Line 1</label>
+                            <input type="text" name="address_line_1" value="{{ user.address_line_1 }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div class="md:col-span-2">
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Address Line 2</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.address_line_2 %}
-                                    {{ user.address_line_2 }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Address Line 2</label>
+                            <input type="text" name="address_line_2" value="{{ user.address_line_2 }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">City</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.city %}
-                                    {{ user.city }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
+                            <input type="text" name="city" value="{{ user.city }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">State</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.state %}
-                                    {{ user.state }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State</label>
+                            <input type="text" name="state" value="{{ user.state }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">Country</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.country %}
-                                    {{ user.country }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Country</label>
+                            <input type="text" name="country" value="{{ user.country }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                         <div>
-                            <h4 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">ZIP Code</h4>
-                            <p class="text-gray-900 dark:text-white">
-                                {% if user.zip_code %}
-                                    {{ user.zip_code }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">ZIP Code</label>
+                            <input type="text" name="zip_code" value="{{ user.zip_code }}" 
+                                   class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                         </div>
                     </div>
                 </div>
             </div>
 
             <!-- Security Section -->
-            <div id="security" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 mb-8">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Security</h2>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
-                        <div class="mb-4 sm:mb-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Aadhaar Number</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {% if user.aadhaar_number %}
-                                    •••• •••• {{ user.aadhaar_number|slice:"-4:" }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
-                        </div>
+            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6 transition-all duration-200 hover:shadow-md">
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-6 flex items-center">
+                    <svg class="w-5 h-5 mr-2 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"></path>
+                    </svg>
+                    Security Information
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Aadhaar Number</label>
+                        <input type="text" name="aadhaar_number" value="{{ user.aadhaar_number }}" 
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     </div>
-
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
-                        <div class="mb-4 sm:mb-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">PAN Number</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {% if user.pan_number %}
-                                    {{ user.pan_number|slice:"0:2" }}••••••{{ user.pan_number|slice:"-1:" }}
-                                {% else %}
-                                    Not provided
-                                {% endif %}
-                            </p>
-                        </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PAN Number</label>
+                        <input type="text" name="pan_number" value="{{ user.pan_number }}" 
+                               class="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all">
                     </div>
                 </div>
             </div>
 
-            <!-- Billing Section -->
-            <div id="billing" class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Billing Information</h2>
-                </div>
-
-                <div class="space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-200 dark:border-gray-700 pb-6">
-                        <div class="mb-4 sm:mb-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Registration Status</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                {% if user.registration_fee_paid %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                        Paid
-                                    </span>
-                                {% else %}
-                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">
-                                        Pending
-                                    </span>
-                                {% endif %}
-                            </p>
-                        </div>
-                        {% if not user.registration_fee_paid %}
-                            <button class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors duration-200">
-                                Pay Registration Fee
-                            </button>
-                        {% endif %}
-                    </div>
-
-                    {% if user.registration_fee_paid %}
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between">
-                        <div class="mb-4 sm:mb-0">
-                            <h4 class="text-sm font-medium text-gray-900 dark:text-white mb-1">Amount Paid</h4>
-                            <p class="text-sm text-gray-500 dark:text-gray-400">
-                                ₹{{ user.amount_paid|default:"0.00" }}
-                            </p>
-                        </div>
-                        <button class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-800 dark:hover:text-blue-300">View Receipt</button>
-                    </div>
-                    {% endif %}
-                </div>
+            <!-- Save Button -->
+            <div class="flex justify-end space-x-4">
+                <button type="button" class="px-6 py-2.5 border border-gray-300 dark:border-gray-600 rounded-lg text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors duration-200">
+                    Cancel
+                </button>
+                <button type="submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg shadow-sm transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2">
+                    Save Changes
+                </button>
             </div>
         </div>
-    </div>
+    </form>
 </div>
 
 <script>
     function copyToClipboard(text) {
         navigator.clipboard.writeText(text).then(function() {
-            // Show a success message (you can implement a toast notification here)
-            alert('Referral code copied to clipboard!');
-        }, function(err) {
+            // Create and show a toast notification
+            const toast = document.createElement('div');
+            toast.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center animate-fade-in-up';
+            toast.innerHTML = `
+                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                Referral link copied!
+            `;
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.classList.remove('animate-fade-in-up');
+                toast.classList.add('animate-fade-out');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }).catch(function(err) {
             console.error('Could not copy text: ', err);
         });
     }
 </script>
+
+<style>
+    @keyframes fadeInUp {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeOut {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(20px); }
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.3s ease-out forwards;
+    }
+    .animate-fade-out {
+        animation: fadeOut 0.3s ease-out forwards;
+    }
+</style>
 {% endblock %}
