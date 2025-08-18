@@ -1,5 +1,6 @@
 from django import forms
 from .models import CustomUser
+from django.core.exceptions import ValidationError
 
 class PhoneNumberForm(forms.ModelForm):
     class Meta:
@@ -19,6 +20,31 @@ class KYCVerificationForm(forms.Form):
         widget=forms.DateInput(attrs={'type': 'date'})  # provides date picker
     )
     pan_number = forms.CharField(label='PAN Number', max_length=10, required=False)
+
+    def __init__(self, *args, **kwargs):
+        self.user = kwargs.pop('user', None)  # current user passed from view
+        super().__init__(*args, **kwargs)
+
+    def clean_aadhaar_number(self):
+        aadhaar = self.cleaned_data.get('aadhaar_number')
+        if aadhaar:
+            qs = CustomUser.objects.filter(aadhaar_number=aadhaar)
+            if self.user and self.user.pk:  # check only if user is available
+                qs = qs.exclude(pk=self.user.pk)
+            if qs.exists():
+                raise ValidationError("This Aadhaar number is already registered with another account.")
+        return aadhaar
+    
+    def clean_pan_number(self):
+        pan = self.cleaned_data.get('pan_number')
+        if pan:
+            qs = CustomUser.objects.filter(pan_number=pan)
+            if self.user and self.user.pk:
+                qs = qs.exclude(pk=self.user.pk)
+            if qs.exists():
+                raise ValidationError("This PAN number is already registered with another account.")
+        return pan
+
 
 class UserForm(forms.ModelForm):
     class Meta:

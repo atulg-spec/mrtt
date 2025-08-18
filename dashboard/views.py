@@ -29,6 +29,9 @@ def dashboard(request):
     if not user.registration_fee_paid:
         return redirect('/donate/complete-registration/')
     
+    if not request.user.has_usable_password():
+        return redirect("set_password")
+    
     # Calculate donation metrics
     donations = Donation.objects.filter(user=user).aggregate(
         total_donated=Sum('amount')
