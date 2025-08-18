@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserForm
 from .models import CustomUser
 from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth import authenticate, login as auth_login, logout
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 from accounts.utils import phone_number_required
@@ -96,7 +97,21 @@ def set_password_view(request):
 def login(request):
     if request.user.is_authenticated:
         return redirect('/dashboard/')
-    return render(request, 'accounts/login-signup.html')
+
+    if request.method == "POST":
+        email = request.POST.get("username")   # form field name = id_username
+        password = request.POST.get("password")
+
+        user = authenticate(request, email=email, password=password)
+
+        if user is not None:
+            auth_login(request, user)
+            messages.success(request, 'Logged in Successfully !')
+            return redirect("/dashboard/")  # redirect after successful login
+        else:
+            messages.error(request, "Invalid email or password. Please try again.")
+
+    return render(request, "accounts/login-signup.html")   # template file
 
 
 @login_required(login_url = 'login')
