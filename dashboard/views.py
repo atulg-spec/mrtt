@@ -45,7 +45,7 @@ def dashboard(request):
     jobs_created = round(float(total_donated) / 5000, 1)  # ₹5000 = 1 day employment
     
     # Get referral data
-    referrals = user.referrals.all()
+    referrals = user.referrals.all().order_by("joined_date")
     total_referrals = referrals.count()
     
 
@@ -59,11 +59,7 @@ def dashboard(request):
         'jobs_created': jobs_created,
         'total_referrals': total_referrals,
         'referrals': referrals,
-        'user_rows': pyramid_users(
-            type('TempUser', (), {
-                "getCommunity": lambda self: sorted(request.user.getCommunity(), key=lambda u: u.date_joined)
-            })()
-        ),
+        'user_rows': pyramid_users(request.user),
     }
     
     return render(request, 'dashboard/dashboard.html', context)
