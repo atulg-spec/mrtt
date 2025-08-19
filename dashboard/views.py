@@ -45,7 +45,7 @@ def dashboard(request):
     jobs_created = round(float(total_donated) / 5000, 1)  # ₹5000 = 1 day employment
     
     # Get referral data
-    referrals = user.referrals.all()
+    referrals = user.referrals.all().order_by("date_joined")
     total_referrals = referrals.count()
     
 
