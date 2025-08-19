@@ -59,7 +59,11 @@ def dashboard(request):
         'jobs_created': jobs_created,
         'total_referrals': total_referrals,
         'referrals': referrals,
-        'user_rows': pyramid_users(request.user),
+        'user_rows': pyramid_users(
+            type('TempUser', (), {
+                "getCommunity": lambda self: sorted(request.user.getCommunity(), key=lambda u: u.date_joined)
+            })()
+        ),
     }
     
     return render(request, 'dashboard/dashboard.html', context)
