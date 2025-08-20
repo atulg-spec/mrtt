@@ -1,5 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import UserForm
+from django.db.models import Q
 from .models import CustomUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth import authenticate, login as auth_login, logout
@@ -99,19 +100,32 @@ def login(request):
         return redirect('/dashboard/')
 
     if request.method == "POST":
-        email = request.POST.get("username")   # form field name = id_username
+        identifier = request.POST.get("identifier")   # email OR phone number entered
         password = request.POST.get("password")
 
-        user = authenticate(request, email=email, password=password)
+        user = None
+
+        try:
+            # First, find user by email or phone_number
+            user_obj = CustomUser.objects.filter(
+                Q(email=identifier) | Q(phone_number=identifier)
+            ).first()
+
+            if user_obj:
+                # authenticate using the username field (Django default)
+                user = authenticate(request, username=user_obj.email, password=password)
+
+        except CustomUser.DoesNotExist:
+            user = None
 
         if user is not None:
             auth_login(request, user)
-            messages.success(request, 'Logged in Successfully !')
-            return redirect("/dashboard/")  # redirect after successful login
+            messages.success(request, 'Logged in Successfully!')
+            return redirect("/dashboard/")
         else:
-            messages.error(request, "Invalid email or password. Please try again.")
+            messages.error(request, "Invalid email/phone or password. Please try again.")
 
-    return render(request, "accounts/login-signup.html")   # template file
+    return render(request, "accounts/login-signup.html")
 
 
 @login_required(login_url = 'login')

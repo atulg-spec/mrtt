@@ -9,6 +9,7 @@ class CustomUser(AbstractUser):
     phone_number = models.CharField(
         max_length=15,  # enough for country code like +919876543210
         blank=True,
+        unique=True,
         null=True,
         validators=[RegexValidator(r'^\d{10}$', 'Enter a valid 10-digit phone number')])
     address_line_1 = models.CharField(blank=True, max_length=100)
