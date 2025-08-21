@@ -22,7 +22,7 @@ class RegistrationFeeAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentGateway)
 class PaymentGatewayAdmin(admin.ModelAdmin):
-    list_display = ('id', 'use', 'mode')
+    list_display = ('use', 'mode')
     list_filter = ('use', 'mode')
     search_fields = ('use', 'mode')
     readonly_fields = ('id',)
@@ -60,7 +60,7 @@ class DonationAdmin(admin.ModelAdmin):
 
 @admin.register(ManualPayment)
 class ManualPaymentAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user', 'amount', 'status', 'created_at', 'verified_at', 'screenshot_tag')
+    list_display = ('transaction_id', 'user', 'amount', 'status', 'created_at', 'verified_at', 'screenshot_tag')
     list_filter = ('status', 'created_at')
     search_fields = ('user__username', 'transaction_id')
     readonly_fields = ('created_at', 'screenshot_preview')

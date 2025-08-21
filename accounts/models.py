@@ -1,6 +1,8 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 import uuid
+from django.conf import settings
+from django.utils import timezone
 from django.core.validators import RegexValidator
 
 class CustomUser(AbstractUser):
@@ -52,6 +54,10 @@ class CustomUser(AbstractUser):
         verbose_name_plural = "Users"
 
     def save(self, *args, **kwargs):
+        if self.pan_number == "":
+            self.pan_number = None
+        if self.aadhaar_number == "":
+            self.aadhaar_number = None
         if not self.referral_code:
             self.referral_code = str(uuid.uuid4()).replace('-', '')[:10]  # Generate unique referral code
         super().save(*args, **kwargs)
@@ -75,3 +81,31 @@ class CustomUser(AbstractUser):
 
     def __str__(self):
         return self.username
+    
+def selfie_upload_path(instance, filename):
+    # e.g. selfies/<user_id>/2025/08/21/<filename>
+    return f"selfies/{instance.user.id}/{timezone.now().strftime('%Y/%m/%d')}/{filename}"
+
+
+class SelfieWithTree(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="tree_selfies"
+    )
+    selfie_image = models.ImageField(upload_to=selfie_upload_path)
+    uploaded_at = models.DateTimeField(auto_now_add=True)
+    is_verified = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ["-uploaded_at"]
+        verbose_name = "Selfie with Tree"
+        verbose_name_plural = "Selfies with Trees"
+
+    def __str__(self):
+        return f"Selfie by {self.user} • {self.uploaded_at:%Y-%m-%d %H:%M}"
+
+    def verify(self):
+        """Convenience method to mark a selfie as verified."""
+        self.is_verified = True
+        self.save(update_fields=["is_verified"])
