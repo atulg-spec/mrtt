@@ -34,16 +34,18 @@ def phone_number_registration(request):
 
     # If user already has phone number, redirect
     if user.phone_number:
-        if not user.aadhaar_number or not user.date_of_birth:
-            return redirect('/accounts/kyc-verification/')
-        else:
-            return redirect('/dashboard/')
+        # if not user.aadhaar_number or not user.date_of_birth:
+        #     return redirect('/accounts/kyc-verification/')
+        # else:
+        #     return redirect('/dashboard/')
+        return redirect('/dashboard/')
 
     if request.method == 'POST':
         form = PhoneNumberForm(request.POST, instance=user)
         if form.is_valid():
             form.save()
-            return redirect('/accounts/kyc-verification/')
+            return redirect('/dashboard/')
+            # return redirect('/accounts/kyc-verification/')
         else:
             for field, errors in form.errors.items():
                 for error in errors:

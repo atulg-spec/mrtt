@@ -11,9 +11,8 @@ def phone_number_required(view_func):
             if not request.user.phone_number:
                 return redirect('phone_number_registration')
             
-            if not request.user.aadhaar_number or not request.user.date_of_birth:
-                print('redirecting')
-                return redirect('kyc_verification')
+            # if not request.user.aadhaar_number or not request.user.date_of_birth:
+            #     return redirect('kyc_verification')
 
             return view_func(request, *args, **kwargs)
         else:
