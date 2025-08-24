@@ -1,5 +1,5 @@
 from django import forms
-from .models import CustomUser
+from .models import CustomUser, SelfieWithTree
 from django.core.exceptions import ValidationError
 
 class PhoneNumberForm(forms.ModelForm):
@@ -66,3 +66,23 @@ class UserProfileForm(forms.ModelForm):
             'city', 'state', 'country', 'zip_code',
             'aadhaar_number', 'pan_number', 'profile_picture'
         ]
+
+
+
+
+class SelfieUploadForm(forms.ModelForm):
+    class Meta:
+        model = SelfieWithTree
+        fields = ["selfie_image"]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        user = self.initial.get("user")
+
+        if user and hasattr(user, "tree_selfie"):
+            selfie = user.tree_selfie
+            if selfie.status == "verified":
+                raise forms.ValidationError("You cannot upload a new selfie after verification.")
+            elif selfie.status == "pending":
+                raise forms.ValidationError("Your selfie is still under review.")
+        return cleaned_data

@@ -1,0 +1,261 @@
+{% extends 'dashboard/base.html' %}
+{% load social_tags %}
+{% block title %}
+MRT Tree Plantation | Dashboard
+{% endblock %}
+
+{% block page %}My Dashboard{% endblock page %}
+
+{% block body %}
+<div class="flex justify-center items-center">
+    <div class="bg-white w-full min-h-screen max-w-[500px] rounded-2xl shadow-xl overflow-hidden">
+        <div class="bg-forest-800 text-white py-6 px-5 text-center">
+            <h1 class="text-2xl font-semibold flex items-center justify-center gap-2.5">
+                <i class="fas fa-tree"></i> Take Selfie with Tree
+            </h1>
+        </div>
+        
+        <div class="p-6">
+            <!-- Django Messages -->
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="rounded-xl mb-5 p-4 text-center 
+                        {% if message.tags == 'success' %}bg-green-100 text-green-800 border border-green-200
+                        {% elif message.tags == 'error' %}bg-red-100 text-red-800 border border-red-200
+                        {% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                        {{ message }}
+                    </div>
+                {% endfor %}
+            {% endif %}
+            
+            <div id="statusMessage" class="hidden rounded-xl mb-5 p-4 text-center"></div>
+            
+            <!-- Display current selfie status if exists -->
+            {% if selfie %}
+                <div class="mb-5 p-4 rounded-xl 
+                    {% if selfie.status == 'verified' %}bg-green-100 text-green-800 border border-green-200
+                    {% elif selfie.status == 'rejected' %}bg-red-100 text-red-800 border border-red-200
+                    {% else %}bg-blue-100 text-blue-800 border border-blue-200{% endif %}">
+                    <p class="font-semibold">
+                        {% if selfie.status == 'verified' %}
+                            <i class="fas fa-check-circle"></i> Your selfie has been verified!
+                        {% elif selfie.status == 'rejected' %}
+                            <i class="fas fa-times-circle"></i> Your selfie was rejected.
+                            {% if selfie.rejection_reason %}
+                                <p class="mt-2 font-normal">Reason: {{ selfie.rejection_reason }}</p>
+                            {% endif %}
+                        {% else %}
+                            <i class="fas fa-clock"></i> Your selfie is pending verification.
+                        {% endif %}
+                    </p>
+                </div>
+                
+                {% if selfie.status == 'verified' or selfie.status == 'pending' %}
+                    <div class="text-center mb-5">
+                        <p class="font-semibold mb-2.5 text-tree-green">Your Current Selfie:</p>
+                        <img src="{{ selfie.selfie_image.url }}" class="max-w-full rounded-xl border-2 border-tree-green mx-auto" alt="Current selfie">
+                    </div>
+                {% endif %}
+            {% endif %}
+            
+            <!-- Camera interface (only show if allowed to upload) -->
+            {% if not selfie or selfie.status == 'rejected' %}
+                <div class="relative w-full pt-[75%] bg-gray-100 rounded-xl overflow-hidden mb-5">
+                    <video id="videoElement" class="absolute top-0 left-0 w-full h-full object-cover -scale-x-100" autoplay playsinline></video>
+                    <canvas id="canvasElement" class="hidden"></canvas>
+                    <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white w-11 h-11 rounded-full flex justify-center items-center cursor-pointer z-10" id="switchCamera">
+                        <i class="fas fa-sync-alt"></i>
+                    </div>
+                </div>
+                
+                <div class="flex justify-center gap-4 mb-5">
+                    <button id="captureBtn" class="bg-forest-800 text-white py-3.5 px-6 rounded-full font-semibold cursor-pointer flex items-center gap-2 transition-colors hover:bg-forest-800-dark">
+                        <i class="fas fa-camera"></i> Capture
+                    </button>
+                    <button id="retakeBtn" class="bg-gray-100 text-gray-800 py-3.5 px-6 rounded-full font-semibold cursor-pointer flex items-center gap-2 transition-colors hover:bg-gray-200 hidden">
+                        <i class="fas fa-redo"></i> Retake
+                    </button>
+                </div>
+                
+                <div class="text-center mt-5">
+                    <p class="font-semibold mb-2.5 text-tree-green">Your Selfie Preview:</p>
+                    <img id="imagePreview" class="max-w-full rounded-xl border-2 border-tree-green hidden mx-auto" alt="Captured selfie">
+                </div>
+                
+                <form id="selfieForm" method="POST" action="{% url 'selfie_with_tree' %}" enctype="multipart/form-data" class="mt-5">
+                    {% csrf_token %}
+                    <input type="file" id="hiddenFileInput" name="selfie_image" accept="image/*" style="display: none;">
+                    <button type="submit" id="submitBtn" class="bg-forest-800 text-white w-full py-3.5 px-6 rounded-full font-semibold cursor-pointer flex items-center justify-center gap-2 transition-colors hover:bg-forest-800-dark hidden">
+                        <i class="fas fa-cloud-upload-alt"></i> Submit Selfie
+                    </button>
+                </form>
+            {% endif %}
+            {% if selfie.status != 'verified' %}
+            <div class="bg-gray-50 p-4 rounded-xl mt-5 text-sm text-gray-600">
+                <h3 class="text-tree-green mb-2 font-semibold">How to take a good tree selfie:</h3>
+                <ul class="list-disc pl-5">
+                    <li class="mb-1">Make sure the tree is clearly visible in the background</li>
+                    <li class="mb-1">Position yourself so that both you and the tree are in frame</li>
+                    <li class="mb-1">Use good lighting - natural light is best</li>
+                    <li>Hold still while capturing the photo</li>
+                </ul>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Only initialize camera if the user is allowed to upload
+            {% if not selfie or selfie.status == 'rejected' %}
+            const video = document.getElementById('videoElement');
+            const canvas = document.getElementById('canvasElement');
+            const captureBtn = document.getElementById('captureBtn');
+            const retakeBtn = document.getElementById('retakeBtn');
+            const switchCameraBtn = document.getElementById('switchCamera');
+            const imagePreview = document.getElementById('imagePreview');
+            const submitBtn = document.getElementById('submitBtn');
+            const selfieForm = document.getElementById('selfieForm');
+            const hiddenFileInput = document.getElementById('hiddenFileInput');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            let stream = null;
+            let facingMode = 'user'; // Start with front camera
+            
+            // Check if the browser supports media devices
+            function hasGetUserMedia() {
+                return !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+            }
+            
+            // Initialize the camera
+            async function initializeCamera() {
+                if (!hasGetUserMedia()) {
+                    showStatus('Your browser does not support camera access. Please use a modern browser.', 'error');
+                    return;
+                }
+                
+                const constraints = {
+                    video: { 
+                        facingMode: facingMode,
+                        width: { ideal: 1280 },
+                        height: { ideal: 720 }
+                    },
+                    audio: false
+                };
+                
+                try {
+                    // Stop any existing stream
+                    if (stream) {
+                        stream.getTracks().forEach(track => track.stop());
+                    }
+                    
+                    // Get new media stream
+                    stream = await navigator.mediaDevices.getUserMedia(constraints);
+                    video.srcObject = stream;
+                    
+                } catch (err) {
+                    console.error('Error accessing camera:', err);
+                    showStatus('Error accessing camera: ' + err.message, 'error');
+                }
+            }
+            
+            // Stop the camera
+            function stopCamera() {
+                if (stream) {
+                    stream.getTracks().forEach(track => track.stop());
+                    stream = null;
+                }
+            }
+            
+            // Switch between front and back camera
+            switchCameraBtn.addEventListener('click', () => {
+                facingMode = facingMode === 'user' ? 'environment' : 'user';
+                initializeCamera();
+            });
+            
+            // Capture image from video stream
+            captureBtn.addEventListener('click', () => {
+                const context = canvas.getContext('2d');
+                
+                // Set canvas dimensions to match video
+                canvas.width = video.videoWidth;
+                canvas.height = video.videoHeight;
+                
+                // Draw current video frame to canvas
+                context.save();
+                if (facingMode === 'user') {
+                    context.scale(-1, 1); // Mirror for front camera
+                    context.drawImage(video, -canvas.width, 0, canvas.width, canvas.height);
+                } else {
+                    context.drawImage(video, 0, 0, canvas.width, canvas.height);
+                }
+                context.restore();
+                
+                // Convert canvas to blob and create a file
+                canvas.toBlob(function(blob) {
+                    // Create a file from the blob
+                    const file = new File([blob], 'selfie.png', { type: 'image/png' });
+                    
+                    // Create a data transfer object to hold the file
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    
+                    // Set the file input's files to the data transfer's files
+                    hiddenFileInput.files = dataTransfer.files;
+                    
+                    // Display preview
+                    const imageDataUrl = URL.createObjectURL(blob);
+                    imagePreview.src = imageDataUrl;
+                    imagePreview.classList.remove('hidden');
+                    
+                    // Show retake and submit buttons, hide capture button
+                    retakeBtn.classList.remove('hidden');
+                    submitBtn.classList.remove('hidden');
+                    captureBtn.classList.add('hidden');
+                    switchCameraBtn.classList.add('hidden');
+                    
+                    // Stop the camera after capturing
+                    stopCamera();
+                }, 'image/png');
+            });
+            
+            // Retake photo
+            retakeBtn.addEventListener('click', () => {
+                // Hide preview and retake button, show capture button
+                imagePreview.classList.add('hidden');
+                retakeBtn.classList.add('hidden');
+                submitBtn.classList.add('hidden');
+                captureBtn.classList.remove('hidden');
+                switchCameraBtn.classList.remove('hidden');
+                
+                // Clear the file input
+                hiddenFileInput.value = '';
+                
+                // Restart the camera
+                initializeCamera();
+            });
+            
+            // Show status message
+            function showStatus(message, type) {
+                statusMessage.textContent = message;
+                let className = 'rounded-xl mb-5 p-4 text-center ';
+                
+                if (type === 'success') {
+                    className += 'bg-green-100 text-green-800 border border-green-200';
+                } else if (type === 'error') {
+                    className += 'bg-red-100 text-red-800 border border-red-200';
+                } else if (type === 'info') {
+                    className += 'bg-blue-100 text-blue-800 border border-blue-200';
+                }
+                
+                statusMessage.className = className;
+                statusMessage.classList.remove('hidden');
+            }
+            
+            // Initialize the camera when page loads
+            initializeCamera();
+            {% endif %}
+        });
+    </script>
+{% endblock %}

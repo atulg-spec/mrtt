@@ -53,39 +53,23 @@ admin.site.register(CustomUser, CustomUserAdmin)
 
 @admin.register(SelfieWithTree)
 class SelfieWithTreeAdmin(admin.ModelAdmin):
-    list_display = (
-        "thumbnail",
-        "user",
-        "uploaded_at",
-        "is_verified",
-    )
-    list_filter = ("is_verified", "uploaded_at")
-    search_fields = ("user__username", "user__email")
-    readonly_fields = ("preview", "uploaded_at")
-    actions = ["mark_as_verified"]
+    list_display = ("user", "status", "uploaded_at", "selfie_preview")
+    list_filter = ("status",)
+    search_fields = ("user__username",)
 
-    def thumbnail(self, obj):
-        """Small image preview for list view"""
+    def selfie_preview(self, obj):
         if obj.selfie_image:
-            return format_html(
-                '<img src="{}" width="60" height="60" style="border-radius:8px; object-fit:cover;" />',
-                obj.selfie_image.url,
-            )
+            return format_html('<img src="{}" width="80" height="80" style="border-radius:8px;object-fit:cover;" />', obj.selfie_image.url)
         return "No Image"
-    thumbnail.short_description = "Selfie"
 
-    def preview(self, obj):
-        """Larger image preview inside detail view"""
-        if obj.selfie_image:
-            return format_html(
-                '<img src="{}" width="250" style="border-radius:12px; box-shadow:0 2px 8px rgba(0,0,0,0.15);" />',
-                obj.selfie_image.url,
-            )
-        return "No Image"
-    preview.short_description = "Selfie Preview"
+    selfie_preview.short_description = "Selfie"
 
-    @admin.action(description="Mark selected selfies as verified ✅")
-    def mark_as_verified(self, request, queryset):
-        updated = queryset.update(is_verified=True)
-        self.message_user(request, f"{updated} selfies marked as verified ✅")
+    actions = ["mark_verified", "mark_rejected"]
 
+    def mark_verified(self, request, queryset):
+        queryset.update(status="verified", rejection_reason=None)
+    mark_verified.short_description = "Mark selected selfies as Verified"
+
+    def mark_rejected(self, request, queryset):
+        queryset.update(status="rejected")
+    mark_rejected.short_description = "Mark selected selfies as Rejected"

@@ -3,7 +3,7 @@ from django.contrib import messages
 from .forms import JobApplicationForm
 from django.contrib.auth.decorators import login_required
 from accounts.utils import phone_number_required
-from accounts.models import CustomUser
+from accounts.forms import SelfieUploadForm
 from django.core.paginator import Paginator  # Add this import
 from donation.models import Donation, Payments, Registration_fee, ManualPayment
 from django.db.models import Sum
@@ -267,3 +267,41 @@ def my_account(request):
         form = UserProfileForm(instance=request.user)
 
     return render(request, 'dashboard/my-account.html', {'form': form})
+
+
+
+@login_required
+def selfie_with_tree(request):
+    user = request.user
+    selfie = getattr(user, "tree_selfie", None)
+
+    if request.method == "POST":
+        if selfie and selfie.status == "rejected":
+            # Reupload case
+            form = SelfieUploadForm(request.POST, request.FILES, instance=selfie, initial={"user": user})
+            if form.is_valid():
+                form.instance.status = "pending"
+                form.instance.rejection_reason = None
+                form.save()
+                messages.success(request, "Your new selfie has been submitted for verification.")
+                return redirect("selfie_with_tree")
+        elif not selfie:
+            # First upload
+            form = SelfieUploadForm(request.POST, request.FILES, initial={"user": user})
+            if form.is_valid():
+                obj = form.save(commit=False)
+                obj.user = user
+                obj.status = "pending"
+                obj.save()
+                messages.success(request, "Selfie uploaded successfully. Awaiting verification.")
+                return redirect("selfie_with_tree")
+        else:
+            messages.warning(request, "You cannot upload a new selfie unless your current one is rejected.")
+            return redirect("selfie_with_tree")
+    else:
+        form = SelfieUploadForm(initial={"user": user})
+
+    return render(request, "dashboard/selfie-with-tree.html", {
+        "form": form,
+        "selfie": selfie,
+    })

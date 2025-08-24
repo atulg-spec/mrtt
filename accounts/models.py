@@ -88,14 +88,21 @@ def selfie_upload_path(instance, filename):
 
 
 class SelfieWithTree(models.Model):
-    user = models.ForeignKey(
+    STATUS_CHOICES = [
+        ("pending", "Pending Verification"),
+        ("verified", "Verified"),
+        ("rejected", "Rejected"),
+    ]
+
+    user = models.OneToOneField(   # one selfie per user
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
-        related_name="tree_selfies"
+        related_name="tree_selfie"
     )
     selfie_image = models.ImageField(upload_to=selfie_upload_path)
     uploaded_at = models.DateTimeField(auto_now_add=True)
-    is_verified = models.BooleanField(default=False)
+    status = models.CharField(max_length=10, choices=STATUS_CHOICES, default="pending")
+    rejection_reason = models.TextField(blank=True, null=True)  # optional feedback
 
     class Meta:
         ordering = ["-uploaded_at"]
@@ -106,6 +113,22 @@ class SelfieWithTree(models.Model):
         return f"Selfie by {self.user} • {self.uploaded_at:%Y-%m-%d %H:%M}"
 
     def verify(self):
-        """Convenience method to mark a selfie as verified."""
-        self.is_verified = True
-        self.save(update_fields=["is_verified"])
+        """Mark selfie as verified."""
+        self.status = "verified"
+        self.rejection_reason = None
+        self.save(update_fields=["status", "rejection_reason"])
+
+    def reject(self, reason=None):
+        """Reject selfie with an optional reason."""
+        self.status = "rejected"
+        self.rejection_reason = reason
+        self.save(update_fields=["status", "rejection_reason"])
+
+    def reupload(self, new_image):
+        """Allow user to reupload if rejected."""
+        if self.status == "rejected":
+            self.selfie_image = new_image
+            self.status = "pending"
+            self.rejection_reason = None
+            self.uploaded_at = timezone.now()
+            self.save()

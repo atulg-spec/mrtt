@@ -8,4 +8,5 @@ urlpatterns = [
     path('my-donations/', views.my_donations, name='my_donations'),
     path('my-transactions/', views.my_transactions, name='my_transactions'),
     path('apply/', views.apply_job, name='apply_job'),
+    path('selfie-with-tree/', views.selfie_with_tree, name='selfie_with_tree'),
 ]
