@@ -195,3 +195,6 @@ MEDIA_URL="/media/"
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+PAPER_ENVIRONMENT_NAME = "MRTT FOUNDATION"
+PAPER_ENVIRONMENT_COLOR = "#09D320"

@@ -17,3 +17,8 @@ class ContactFormAdmin(admin.ModelAdmin):
     list_display = ('name', 'email', 'phone', 'service')
     search_fields = ('name', 'email', 'phone', 'service')
     ordering = ('-id',)
+
+
+admin.site.site_header = "MRTT FOUNDATION ADMIN"
+admin.site.site_title = "MRTT ADMIN PANEL"
+admin.site.index_title = "Welcome to Mrtt Foundation Administration"
