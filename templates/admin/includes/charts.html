@@ -1,3 +1,9 @@
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- Date adapter (required for time scale) -->
+<script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+
 <div class="stat-card card-header borderless mb-4">
     <h5>Platform Analysis</h5>
 </div>
@@ -14,20 +20,18 @@
     </div>
 </div>
 
-
-
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        // Chart 1
-        const ctx1 = document.getElementById('chart1').getContext('2d');
-        const chartData1 = {{chart_data|safe}};
-    chartData1.forEach((d) => { d.x = new Date(d.date); });
+document.addEventListener('DOMContentLoaded', () => {
+    const ctx1 = document.getElementById('chart1').getContext('2d');
+    const chartData1 = {{ chart_data|safe }};
+
+    chartData1.forEach(d => d.x = new Date(d.x));
 
     new Chart(ctx1, {
         type: 'bar',
         data: {
             datasets: [{
-                label: 'Number of Users',
+                label: 'Users Joined',
                 data: chartData1,
                 backgroundColor: 'rgba(34, 197, 94, 0.2)',
                 borderColor: 'rgba(34, 197, 94, 1)',
@@ -36,25 +40,31 @@
         },
         options: {
             responsive: true,
+            parsing: false,
             scales: {
-                xAxes: [{
+                x: {
                     type: 'time',
                     time: {
                         unit: 'day',
-                        round: 'day',
+                        tooltipFormat: 'MMM d, yyyy',
                         displayFormats: {
-                            day: 'MMM D',
+                            day: 'MMM d',
                         },
                     },
-                }],
-                yAxes: [{
-                    ticks: {
-                        beginAtZero: true,
-                    },
-                }],
+                    title: {
+                        display: true,
+                        text: 'Date Joined'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Number of Users'
+                    }
+                }
             }
         }
     });
-    });
-
+});
 </script>
