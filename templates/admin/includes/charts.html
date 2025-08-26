@@ -1,0 +1,60 @@
+<div class="stat-card card-header borderless mb-4">
+    <h5>Platform Analysis</h5>
+</div>
+<div class="row">
+    <div class="col-xl-6 mb-4">
+        <div class="card card-header-actions h-80">
+            <div class="stat-card rounded card-header">
+                <i class="fas fa-users me-2 mr-2"></i> Users
+            </div>
+            <div class="card-body bg-white">
+                <canvas id="chart1"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Chart 1
+        const ctx1 = document.getElementById('chart1').getContext('2d');
+        const chartData1 = {{chart_data|safe}};
+    chartData1.forEach((d) => { d.x = new Date(d.date); });
+
+    new Chart(ctx1, {
+        type: 'bar',
+        data: {
+            datasets: [{
+                label: 'Number of Users',
+                data: chartData1,
+                backgroundColor: 'rgba(34, 197, 94, 0.2)',
+                borderColor: 'rgba(34, 197, 94, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                xAxes: [{
+                    type: 'time',
+                    time: {
+                        unit: 'day',
+                        round: 'day',
+                        displayFormats: {
+                            day: 'MMM D',
+                        },
+                    },
+                }],
+                yAxes: [{
+                    ticks: {
+                        beginAtZero: true,
+                    },
+                }],
+            }
+        }
+    });
+    });
+
+</script>
