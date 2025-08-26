@@ -1,0 +1,235 @@
+{% extends "admin/base_site.html" %}
+{% load static %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block extrastyle %}
+{{ block.super }}
+<!-- Chart.js for beautiful graphs -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    /* Modern Dashboard Styles */
+    .dashboard-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-card {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        border-left: 4px solid #06042c;
+        /* Indigo accent */
+    }
+
+    .stat-card__value {
+        font-size: 2rem;
+        font-weight: 700;
+        line-height: 1;
+        color: #1f2937;
+        /* Gray-800 */
+        margin-bottom: 0.5rem;
+    }
+
+    .stat-card__label {
+        color: #6b7280;
+        /* Gray-500 */
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        font-size: 0.875rem;
+    }
+
+    .stat-card__icon {
+        float: right;
+        font-size: 2.5rem;
+        opacity: 0.75;
+        color: #4f46e5;
+        /* Indigo */
+    }
+
+    .dashboard-charts {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+    }
+
+    .chart-container {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .chart-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #1f2937;
+        /* Gray-800 */
+        margin-bottom: 1rem;
+    }
+
+    .recent-activity {
+        background: #fff;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    }
+
+    .activity-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .activity-item {
+        display: flex;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #f3f4f6;
+        /* Gray-100 */
+    }
+
+    .activity-item:last-child {
+        border-bottom: none;
+    }
+
+    .activity-icon {
+        background: #f0f9ff;
+        /* Light blue */
+        color: #0369a1;
+        /* Dark blue */
+        border-radius: 50%;
+        width: 2.5rem;
+        height: 2.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        flex-shrink: 0;
+    }
+
+    .activity-content {
+        flex-grow: 1;
+    }
+
+    .activity-content strong {
+        color: #1f2937;
+        /* Gray-800 */
+    }
+
+    .activity-time {
+        color: #6b7280;
+        /* Gray-500 */
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+</style>
+{% endblock %}
+
+{% block main %}
+<div class="px-4">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Welcome to Mrtt Foundation Administration</h1>
+        <a href="#" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+            <i class="bi bi-download text-white-50 me-1"></i> Generate Report
+        </a>
+    </div>
+
+    {% include 'admin/includes/dash-info.html' %}
+
+
+    <!-- Charts Row -->
+    <div class="dashboard-charts">
+        <!-- Main Chart -->
+        <div class="chart-container">
+            <h3 class="chart-title">Revenue Overview</h3>
+            <canvas id="revenueChart"></canvas>
+        </div>
+
+        <!-- Doughnut Chart -->
+        <div class="chart-container">
+            <h3 class="chart-title">User Distribution</h3>
+            <canvas id="userChart"></canvas>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extrajs %}
+{{ block.super }}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Revenue Line Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                datasets: [{
+                    label: 'Revenue in $',
+                    data: [12000, 19000, 15000, 18000, 16000, 21000, 19500, 23000, 21500, 24500, 22000, 26000],
+                    borderColor: '#4f46e5',
+                    tension: 0.3,
+                    fill: true,
+                    backgroundColor: 'rgba(79, 70, 229, 0.05)',
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: {
+                        display: false
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            drawBorder: false
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        }
+                    }
+                }
+            }
+        });
+
+        // User Doughnut Chart
+        const userCtx = document.getElementById('userChart').getContext('2d');
+        const userChart = new Chart(userCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Admins', 'Editors', 'Customers', 'Guests'],
+                datasets: [{
+                    data: [5, 12, 854, 383],
+                    backgroundColor: [
+                        '#4f46e5', // Indigo
+                        '#6366f1', // Indigo light
+                        '#818cf8', // Indigo lighter
+                        '#a5b4fc'  // Indigo lightest
+                    ],
+                    borderWidth: 0,
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    legend: {
+                        position: 'bottom'
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}
