@@ -6,7 +6,7 @@ from .models import CustomUser, SelfieWithTree
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     list_display = ('username', 'email', 'phone_number', 'is_staff', 'date_joined', 'registration_fee_paid', 'amount_paid')
-    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'referred_by')
+    list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'referred_by', 'registration_fee_paid')
 
     fieldsets = (
         (None, {'fields': ('username', 'email', 'password')}),
