@@ -33,7 +33,7 @@ def registration_proceed_payment(request):
         form = DonationForm(request.POST)
         if form.is_valid():
             amount = form.cleaned_data['amount']
-            if amount < 1:
+            if amount < 11:
                 messages.warning(request, "Registration fees amount can't be below 1 Rupees.")
                 return redirect('/donate/complete-registration/')
 
