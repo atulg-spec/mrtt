@@ -70,10 +70,11 @@ class CustomUser(AbstractUser):
 
         def traverse(user):
             if user not in community:
-                community.add(user)
-                # Traverse all users referred by 'user'
-                for referral in user.referrals.all():
-                    traverse(referral)
+                if user.registration_fee_paid:
+                    community.add(user)
+                    # Traverse all users referred by 'user'
+                    for referral in user.referrals.all():
+                        traverse(referral)
 
         traverse(self)
         return community

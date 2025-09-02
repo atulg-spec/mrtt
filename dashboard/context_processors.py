@@ -3,6 +3,7 @@ from django.db.models.functions import TruncDay
 from django.db.models import Count
 import json
 from django.core.serializers.json import DjangoJSONEncoder
+from django.utils.timezone import now, timedelta
 
 def custom_admin_context(request):
     from accounts.models import CustomUser, SelfieWithTree
@@ -17,13 +18,22 @@ def custom_admin_context(request):
         total_registration_fees = round(Registration_fee.objects.aggregate(total=models.Sum('amount'))['total'] or 0, 2)
 
         # Chart data (x = date, y = number of users)
-        chart_data = (
-            CustomUser.objects.annotate(x=TruncDay("date_joined"))
-            .values("x")
-            .annotate(y=Count("id"))
-            .order_by("x")
-        )
+        thirty_days_ago = now() - timedelta(days=60)
+        chart_data = CustomUser.objects.filter(date_joined__gte=thirty_days_ago) \
+            .annotate(date=TruncDay("date_joined")) \
+            .values("date") \
+            .annotate(y=Count("id")) \
+            .order_by("-date")
 
+
+        chart_data2 = CustomUser.objects.all() \
+            .annotate(date=TruncDay("date_joined")) \
+            .values("date") \
+            .annotate(y=Count("id")) \
+            .order_by("-date")
+
+
+        print(chart_data2)
         context = {
             "total_users": total_users,
             "total_donations": total_donations,
