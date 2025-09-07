@@ -77,7 +77,7 @@ def invitations_view(request, user_id=None):
     else:
         user = request.user  
 
-    referrals = user.referrals.all().filter(registration_fee_paid=False)  # all people referred by this user
+    referrals = user.referrals.filter(registration_fee_paid=False)  # all people referred by this user
 
     return render(request, "dashboard/invitations.html", {
         "user_obj": user,
@@ -88,7 +88,7 @@ def invitations_view(request, user_id=None):
 @login_required
 def referral_children(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
-    referrals = user.referrals.all().filter(registration_fee_paid=False)
+    referrals = user.referrals.filter(registration_fee_paid=False)
     
     html = render_to_string("dashboard/partials/referral_tiles.html", {"referrals": referrals}, request=request)
     return JsonResponse({"html": html})
