@@ -1,28 +1,38 @@
 <!-- templates/partials/referral_tiles.html -->
-<div class="flex flex-col items-center space-y-6">
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
   {% for referral in referrals %}
-  <div class="flex flex-col items-center">
-    <!-- Tile -->
-    <div class="bg-white border border-gray-300 rounded-lg w-48 h-20 flex flex-col justify-center items-center 
-                text-center shadow-sm hover:shadow-md transition relative">
-      <h2 class="text-sm font-semibold text-gray-900 truncate w-full px-2">{{ referral.username }}</h2>
-      <p class="text-xs text-gray-600 truncate w-full px-2">{{ referral.email }}</p>
-      
-      {% if referral.referrals.exists %}
-      <button onclick="toggleChildren({{ referral.id }}, this)" 
-              class="absolute bottom-0 right-0 text-blue-600 hover:text-blue-800 text-xs p-1">
-        ↓
-      </button>
-      {% endif %}
+  <div class="bg-gradient-to-br from-white to-gray-50 shadow-soft rounded-xl p-5 flex flex-col items-center text-center transition-all duration-300 hover:shadow-medium hover:-translate-y-1 border border-gray-100">
+    <div class="relative mb-4">
+      <div class="w-20 h-20 rounded-full bg-gradient-to-r from-primary-500 to-primary-600 p-1 shadow-inner">
+        <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png" 
+             alt="Profile" class="w-full h-full rounded-full object-cover border-2 border-white">
+      </div>
+      <div class="absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-primary-500 flex items-center justify-center border-2 border-white">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 text-white" viewBox="0 0 20 20" fill="currentColor">
+          <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" />
+        </svg>
+      </div>
+    </div>
+    
+    <h2 class="text-lg font-semibold text-neutral-800 mb-1">{{ referral.username }}</h2>
+    <p class="text-sm text-neutral-600 mb-3">{{ referral.email }}</p>
+    <div class="flex items-center text-xs text-neutral-500 mt-1">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1 text-primary-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+      </svg>
+      <span>Joined: {{ referral.date_joined|date:"M d, Y" }}</span>
     </div>
 
-    <!-- Connector line -->
+    <!-- Expand Button -->
     {% if referral.referrals.exists %}
-    <div class="w-0.5 h-6 bg-gray-400"></div>
+    <button onclick="toggleChildren({{ referral.id }}, this)" 
+            class="mt-4 px-4 py-2 bg-white text-primary-600 hover:text-primary-700 text-sm font-medium rounded-lg border border-primary-100 hover:border-primary-200 transition-all duration-200 flex items-center shadow-xs hover:shadow-sm">
+      View Referrals
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+      </svg>
+    </button>
     {% endif %}
-
-    <!-- Children container (injected dynamically) -->
-    <div class="children-container"></div>
   </div>
   {% endfor %}
 </div>
