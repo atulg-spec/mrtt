@@ -8,6 +8,7 @@ from django.core.paginator import Paginator  # Add this import
 from donation.models import Donation, Payments, Registration_fee, ManualPayment
 from django.db.models import Sum
 from accounts.forms import UserProfileForm
+from accounts.models import CustomUser
 
 def pyramid_users(user):
     community = list(user.getCommunity())
@@ -63,6 +64,23 @@ def dashboard(request):
     }
     
     return render(request, 'dashboard/dashboard.html', context)
+
+
+@login_required
+def invitations_view(request, user_id=None):
+    # if user_id is not provided, start from logged-in user
+    if user_id:
+        user = get_object_or_404(CustomUser, id=user_id)
+    else:
+        user = request.user  
+
+    referrals = user.referrals.all()  # all people referred by this user
+
+    return render(request, "dashboard/invitations.html", {
+        "user_obj": user,
+        "referrals": referrals,
+    })
+
 
 
 
