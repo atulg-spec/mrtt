@@ -23,7 +23,7 @@ MRT Tree Plantation | Dashboard
         <p class="text-xs md:text-sm text-gray-600">Tap on any member to expand their referrals</p>
       </div>
       <div class="p-3 md:p-4 lg:p-6 bg-gray-50">
-        <div id="referral-container" class="space-y-4 md:space-y-6">
+        <div id="referral-container" class="space-y-4 md:space-y-6 overflow-x-auto">
           {% include "dashboard/partials/referral_tiles.html" with referrals=referrals %}
         </div>
       </div>
