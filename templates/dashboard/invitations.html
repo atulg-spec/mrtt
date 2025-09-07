@@ -4,49 +4,131 @@
 MRT Tree Plantation | Dashboard
 {% endblock %}
 
-{% block page %}My Dashboard{% endblock page %}
+{% block page %}Invitations{% endblock page %}
 
 {% block body %}
-<div class="min-h-screen">
-    <!-- Main Content -->
-    <main class="bg-forest-50 leaf-pattern container mx-auto px-1 py-6 max-w-7xl">
-        <div class="min-h-screen bg-gray-100 py-8 px-6">
-            <div class="max-w-5xl mx-auto">
-                <h1 class="text-3xl font-bold text-gray-800 mb-6">
-                    Referrals of {{ user_obj.username }}
-                </h1>
+<div class="min-h-screen bg-gray-50">
+  <!-- Main Content -->
+  <main class="container mx-auto py-6 md:py-8 max-w-7xl">
+    <!-- Header Section -->
+    <div class="mb-6 md:mb-8 px-4">
+      <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">Referral Network</h1>
+      <p class="text-sm sm:text-base text-gray-600 mt-1 sm:mt-2">Track your network growth and contributions to our reforestation mission</p>
+    </div>
 
-                <div id="referral-container" class="space-y-6">
-                    {% include "dashboard/partials/referral_tiles.html" with referrals=referrals %}
-                </div>
-            </div>
+    <!-- Network Visualization -->
+    <div class="bg-white rounded-xl md:rounded-2xl shadow-md overflow-hidden mb-6 md:mb-8">
+      <div class="px-4 md:px-6 py-3 md:py-4 border-b border-gray-100">
+        <h2 class="text-lg md:text-xl font-semibold text-gray-800">Your Network Tree</h2>
+        <p class="text-xs md:text-sm text-gray-600">Tap on any member to expand their referrals</p>
+      </div>
+      <div class="p-3 md:p-4 lg:p-6 bg-gray-50">
+        <div id="referral-container" class="space-y-4 md:space-y-6">
+          {% include "dashboard/partials/referral_tiles.html" with referrals=referrals %}
         </div>
-
-    </main>
+      </div>
+    </div>
+  </main>
 </div>
-<script>
-async function toggleChildren(userId, element) {
-  let container = element.parentElement.querySelector(".children-container");
 
+<script>
+// Track expansion state and level for color coding
+const expansionState = new Map();
+
+async function toggleChildren(userId, element, level = 1) {
+  // parent wrapper (the flex-col around each referral)
+  let parentWrapper = element.closest(".referral-wrapper");
+  let container = parentWrapper.querySelector(".children-container");
+  
+  // Toggle icon
+  const icon = element.querySelector('svg');
+  
   // If already loaded, just toggle visibility
-  if (container) {
+  if (container && container.children.length > 0) {
     container.classList.toggle("hidden");
+    icon.classList.toggle('rotate-90');
     return;
   }
 
+  // Show loading state
+  container.innerHTML = '<div class="p-3 text-center text-gray-500 text-sm">Loading referrals...</div>';
+  container.classList.remove("hidden");
+  
   // Fetch children from server
-  let response = await fetch(`/dashboard/invitations/children/${userId}/`);
-  let data = await response.json();
+  try {
+    let response = await fetch(`/dashboard/invitations/children/${userId}/`);
+    let data = await response.json();
+    
+    // Clear loading state
+    container.innerHTML = '';
+    
+    // Create container for children with level-based styling
+    let div = document.createElement("div");
+    div.className = `flex flex-col space-y-3 ml-4 md:ml-8 mt-3 pl-3 md:pl-4 border-l-2 border-${getLevelColor(level)}-200`;
+    div.innerHTML = data.html;
+    
+    container.appendChild(div);
+    icon.classList.add('rotate-90');
+    
+    // Store expansion state
+    expansionState.set(userId, true);
+  } catch (error) {
+    console.error('Error loading referrals:', error);
+    container.innerHTML = '<div class="p-3 text-center text-red-500 text-sm">Failed to load referrals</div>';
+  }
+}
 
-  let div = document.createElement("div");
-  div.className = "children-container ml-10 mt-4"; // indent children
-  div.innerHTML = data.html;
-  element.parentElement.appendChild(div);
+function getLevelColor(level) {
+  const colors = ['emerald', 'blue', 'amber', 'purple'];
+  return colors[Math.min(level, colors.length) - 1];
+}
+
+// Mobile menu toggle if needed
+function toggleMobileMenu() {
+  const menu = document.getElementById('mobile-menu');
+  menu.classList.toggle('hidden');
 }
 </script>
 
+<style>
+.rotate-90 {
+  transform: rotate(90deg);
+  transition: transform 0.2s ease-in-out;
+}
+
+.referral-tile {
+  transition: all 0.2s ease;
+}
+
+.referral-tile:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Smooth expansion animation */
+.children-container {
+  transition: all 0.3s ease;
+}
+
+/* Level-based coloring */
+.level-1 .referral-tile { border-left-color: #10b981; }
+.level-2 .referral-tile { border-left-color: #3b82f6; }
+.level-3 .referral-tile { border-left-color: #f59e0b; }
+.level-4 .referral-tile { border-left-color: #8b5cf6; }
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  .stats-carousel {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+  }
+  
+  .stats-carousel::-webkit-scrollbar {
+    display: none; /* Chrome, Safari and Opera */
+  }
+}
+</style>
 {% endblock %}
 
 {% block extra_js %}
-
 {% endblock %}

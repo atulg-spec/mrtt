@@ -31,6 +31,8 @@ class Command(BaseCommand):
             # Create user
             user = User.objects.create_user(
                 username=username,
+                first_name=fake.first_name(),
+                last_name=fake.last_name(),
                 email=email,
                 password="password123",  # Default password
                 phone_number=phone_number,
