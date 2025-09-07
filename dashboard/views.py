@@ -90,7 +90,7 @@ def referral_children(request, user_id):
     user = get_object_or_404(CustomUser, id=user_id)
     referrals = user.referrals.all()
     
-    html = render_to_string("dashbord/partials/referral_tiles.html", {"referrals": referrals}, request=request)
+    html = render_to_string("dashboard/partials/referral_tiles.html", {"referrals": referrals}, request=request)
     return JsonResponse({"html": html})
 
 
