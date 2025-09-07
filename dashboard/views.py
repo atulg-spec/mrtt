@@ -9,6 +9,9 @@ from donation.models import Donation, Payments, Registration_fee, ManualPayment
 from django.db.models import Sum
 from accounts.forms import UserProfileForm
 from accounts.models import CustomUser
+from django.http import JsonResponse
+from django.template.loader import render_to_string
+
 
 def pyramid_users(user):
     community = list(user.getCommunity())
@@ -81,6 +84,14 @@ def invitations_view(request, user_id=None):
         "referrals": referrals,
     })
 
+
+@login_required
+def referral_children(request, user_id):
+    user = get_object_or_404(CustomUser, id=user_id)
+    referrals = user.referrals.all()
+    
+    html = render_to_string("partials/referral_tiles.html", {"referrals": referrals}, request=request)
+    return JsonResponse({"html": html})
 
 
 

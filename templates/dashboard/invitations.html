@@ -10,43 +10,40 @@ MRT Tree Plantation | Dashboard
 <div class="min-h-screen">
     <!-- Main Content -->
     <main class="bg-forest-50 leaf-pattern container mx-auto px-1 py-6 max-w-7xl">
-        <!-- Invitation Network Section -->
         <div class="min-h-screen bg-gray-100 py-8 px-6">
             <div class="max-w-5xl mx-auto">
-                <!-- Header -->
                 <h1 class="text-3xl font-bold text-gray-800 mb-6">
                     Referrals of {{ user_obj.username }}
                 </h1>
 
-                <!-- Back button -->
-                {% if user_obj.referred_by %}
-                <a href="{% url 'invitations_detail' user_obj.referred_by.id %}"
-                    class="inline-block mb-4 text-blue-600 hover:text-blue-800">
-                    ← Back to {{ user_obj.referred_by.username }}
-                </a>
-                {% endif %}
-
-                <!-- Referral tiles -->
-                {% if referrals %}
-                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                    {% for referral in referrals %}
-                    <a href="{% url 'invitations_detail' referral.id %}"
-                        class="bg-white shadow-md rounded-2xl p-4 flex flex-col items-center text-center hover:shadow-lg transition">
-                        <img src="https://cdn-icons-png.flaticon.com/512/8847/8847419.png" alt="Profile"
-                            class="w-20 h-20 rounded-full object-cover mb-3">
-                        <h2 class="text-lg font-semibold text-gray-900">{{ referral.username }}</h2>
-                        <p class="text-sm text-gray-600">{{ referral.email }}</p>
-                        <p class="mt-2 text-xs text-gray-500">Joined: {{ referral.date_joined|date:"M d, Y" }}</p>
-                    </a>
-                    {% endfor %}
+                <div id="referral-container" class="space-y-6">
+                    {% include "dashboard/partials/referral_tiles.html" with referrals=referrals %}
                 </div>
-                {% else %}
-                <p class="text-gray-600">No referrals yet.</p>
-                {% endif %}
             </div>
         </div>
+
     </main>
 </div>
+<script>
+async function toggleChildren(userId, element) {
+  let container = element.parentElement.querySelector(".children-container");
+
+  // If already loaded, just toggle visibility
+  if (container) {
+    container.classList.toggle("hidden");
+    return;
+  }
+
+  // Fetch children from server
+  let response = await fetch(`/dashboard/invitations/children/${userId}/`);
+  let data = await response.json();
+
+  let div = document.createElement("div");
+  div.className = "children-container ml-10 mt-4"; // indent children
+  div.innerHTML = data.html;
+  element.parentElement.appendChild(div);
+}
+</script>
 
 {% endblock %}
 

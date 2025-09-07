@@ -5,7 +5,7 @@ urlpatterns = [
     path('', views.dashboard, name='dashboard'),
 
     path("invitations/", views.invitations_view, name="invitations"),
-    path("invitations/<int:user_id>/", views.invitations_view, name="invitations_detail"),
+    path("invitations/children/<int:user_id>/", views.referral_children, name="referral_children"),
 
 
     path('my-invites/', views.my_invites, name='my_invites'),
