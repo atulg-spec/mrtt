@@ -13,6 +13,7 @@ urlpatterns = [
     path('donate/', include('donation.urls')),
     path('', include('home.urls')),
     path('dashboard/', include('dashboard.urls')),
+    path('earnings/', include('earning.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
