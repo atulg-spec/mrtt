@@ -71,7 +71,7 @@
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                              d="M12 4v16m8-8H4" />
                    </svg>
-                   Referral Network
+                   Invitation Network
                 </a>
 
                 <a href="{% url 'earning-dashboard' %}"
@@ -81,7 +81,17 @@
                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
                              d="M3 17l6-6 4 4 8-8" />
                    </svg>
-                   My Earnings
+                   My Rewards
+                </a>
+
+                <a href="{% url 'withdrawal_history' %}"
+                   class="group flex items-center px-4 py-3 text-sm font-medium rounded-lg transition-all duration-200 
+                         {% if request.resolver_match.url_name == 'withdrawal_history' %}bg-green-50 text-green-700{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="mr-3 h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" 
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                   Withdraw History
                 </a>
 
                 <!-- Referrals -->

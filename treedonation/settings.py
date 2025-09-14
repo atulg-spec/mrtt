@@ -45,7 +45,8 @@ INSTALLED_APPS = [
     'home',
     'dashboard',
     'management',
-    'donation'
+    'donation',
+    'earning'
 ]
 
 MIDDLEWARE = [
@@ -89,6 +90,7 @@ WSGI_APPLICATION = 'treedonation.wsgi.application'
 DATE_INPUT_FORMATS = ['%d/%m/%Y']
 DATE_FORMAT = 'd/m/Y'
 
+DATA_UPLOAD_MAX_NUMBER_FIELDS = 5000
 
 # DATABASES = {
 #     'default': {

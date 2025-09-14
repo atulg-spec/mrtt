@@ -11,6 +11,7 @@ from accounts.forms import UserProfileForm
 from accounts.models import CustomUser
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from earning.models import Wallet
 
 
 def pyramid_users(user):
@@ -47,6 +48,9 @@ def dashboard(request):
     total_co2 = round(trees_planted * 20, 1)  # 20kg CO2 per tree
     oxygen_produced = round(trees_planted * 118, 1)  # 118kg O2 per tree
     jobs_created = round(float(total_donated) / 5000, 1)  # ₹5000 = 1 day employment
+
+    wallet = Wallet.objects.get(user=user)
+    total_earnings = wallet.balance + wallet.locked_balance
     
     # Get referral data
     referrals = user.referrals.all().order_by("date_joined")
@@ -57,6 +61,7 @@ def dashboard(request):
     context = {
         'donations': donations,
         'total_donated': total_donated,
+        'total_earnings': total_earnings,
         'total_trees': trees_planted,
         'total_co2': total_co2,
         'oxygen_produced': oxygen_produced,

@@ -1,0 +1,487 @@
+{% extends 'dashboard/base.html' %}
+{% load social_tags %}
+{% block title %}
+MRT Tree Plantation | Withdraw Funds
+{% endblock %}
+
+{% block page %}Withdraw Funds{% endblock page %}
+
+{% block body %}
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- Header Section -->
+    <div class="mb-8 text-center">
+        <h1 class="text-3xl font-bold text-gray-800">Withdraw Your Earnings</h1>
+        <p class="text-gray-600 mt-2">Transfer your funds securely to your preferred payment method</p>
+    </div>
+
+    <!-- Messages -->
+    {% if messages %}
+    <div class="mb-6">
+        {% for message in messages %}
+        <div class="p-4 rounded-lg flex items-start {% if message.tags == 'success' %}bg-emerald-50 text-emerald-800 border border-emerald-200{% else %}bg-red-50 text-red-800 border border-red-200{% endif %}">
+            <span class="mr-3 mt-0.5 flex-shrink-0">
+                {% if message.tags == 'success' %}
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path>
+                </svg>
+                {% else %}
+                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"></path>
+                </svg>
+                {% endif %}
+            </span>
+            <div>
+                <p class="font-medium">{{ message }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <!-- Stats Overview -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <!-- Available Balance Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm font-medium">Available Balance</p>
+                    <h2 class="text-2xl font-bold text-gray-800">₹{{ wallet.balance|floatformat:2 }}</h2>
+                </div>
+                <div class="bg-emerald-50 p-3 rounded-full">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Withdrawals -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Pending Withdrawals</p>
+                <h2 class="text-2xl font-bold text-gray-800">₹{{ pending_amount|floatformat:2 }}</h2>
+                <p class="text-sm text-gray-600 mt-1">{{ pending_count }} transaction{{ pending_count|pluralize }}</p>
+            </div>
+        </div>
+
+        <!-- Withdrawal History Card -->
+        <div class="bg-white rounded-xl shadow-sm p-6 border border-gray-100">
+            <div>
+                <p class="text-gray-500 text-sm font-medium">Withdrawal History</p>
+                <h2 class="text-2xl font-bold text-gray-800">{{ withdrawal_history|length }} Transactions</h2>
+                <p class="text-sm text-gray-600 mt-1">All withdrawals processed</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Withdrawal Form Section -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8 border border-gray-100">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-xl font-semibold text-gray-800">Withdrawal Request</h2>
+            <p class="text-gray-600 text-sm">Enter the amount you want to withdraw</p>
+        </div>
+        
+        <div class="p-6">
+            <form method="POST" id="withdrawal-form">
+                {% csrf_token %}
+                
+                <!-- Amount Input -->
+                <div class="mb-6">
+                    <label for="id_amount" class="block text-sm font-medium text-gray-700 mb-2">Withdrawal Amount (₹)</label>
+                    <div class="relative">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                            <span class="text-gray-500">₹</span>
+                        </div>
+                        <input type="number" name="amount" id="id_amount" step="0.01" min="100" max="{{ wallet.balance }}" 
+                               class="pl-10 w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" 
+                               placeholder="0.00" required value="{{ form.amount.value|default:'' }}">
+                    </div>
+                    {% if form.amount.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.amount.errors.0 }}</p>
+                    {% endif %}
+                    <div class="flex justify-between mt-2">
+                        <p class="text-xs text-gray-500">Minimum: ₹100</p>
+                        <p class="text-xs text-gray-500">Available: ₹{{ wallet.balance|floatformat:2 }}</p>
+                    </div>
+                </div>
+
+                <!-- Payment Method Selection -->
+                <div class="mb-6">
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Select Payment Method</label>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        {% for value, label in form.method.field.choices %}
+                        <div class="relative">
+                            <input class="sr-only peer" id="method-{{ value }}" type="radio" name="method" value="{{ value }}" {% if form.method.value == value %}checked{% endif %}>
+                            <label class="flex flex-col p-4 bg-white border border-gray-200 rounded-lg cursor-pointer focus:outline-none hover:border-emerald-400 peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-500 transition duration-200" for="method-{{ value }}">
+                                <div class="text-xl mb-2 flex justify-center">
+                                    {% if value == 'bank' %}
+                                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l9-4 9 4m-9-4v20m-7-6h14M6 10h12M6 14h12M6 18h12"></path>
+                                    </svg>
+                                    {% elif value == 'upi' %}
+                                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                                    </svg>
+                                    {% else %}
+                                    <svg class="w-8 h-8 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                    </svg>
+                                    {% endif %}
+                                </div>
+                                <span class="font-medium text-gray-900 text-center">{{ label }}</span>
+                                <span class="text-xs text-gray-500 text-center mt-1">
+                                    {% if value == 'bank' %}1-2 business days{% elif value == 'upi' %}Instant{% else %}Instant{% endif %}
+                                </span>
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% if form.method.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.method.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- Bank Accounts -->
+                <div id="bank-section" class="mb-6 {% if form.method.value != 'bank' %}hidden{% endif %}">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Select Bank Account</label>
+                        <button type="button" onclick="openModal('bank-modal')" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add New Bank
+                        </button>
+                    </div>
+                    
+                    {% if bank_accounts %}
+                    <div class="space-y-3">
+                        {% for account in bank_accounts %}
+                        <div class="relative">
+                            <input class="sr-only peer" id="bank-{{ account.id }}" type="radio" name="bank_account" value="{{ account.id }}" {% if account.is_primary %}checked{% endif %}>
+                            <label class="flex items-center p-4 bg-white border border-gray-200 rounded-lg cursor-pointer focus:outline-none hover:border-emerald-400 peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-500 transition duration-200" for="bank-{{ account.id }}">
+                                <div class="flex-1">
+                                    <span class="font-medium text-gray-900">{{ account.bank_name }}</span>
+                                    <p class="text-sm text-gray-600">XXXX{{ account.account_number|slice:"-4:" }} • {{ account.account_holder_name }}</p>
+                                </div>
+                                {% if account.is_primary %}
+                                <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full">Primary</span>
+                                {% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-4 bg-gray-50 rounded-lg text-center border border-dashed border-gray-300">
+                        <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 6l9-4 9 4m-9-4v20m-7-6h14M6 10h12M6 14h12M6 18h12"></path>
+                        </svg>
+                        <p class="text-gray-600 mb-2">No bank accounts found.</p>
+                        <button type="button" onclick="openModal('bank-modal')" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
+                            Add your first bank account
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% if form.bank_account.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.bank_account.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- UPI Accounts -->
+                <div id="upi-section" class="mb-6 {% if form.method.value != 'upi' %}hidden{% endif %}">
+                    <div class="flex justify-between items-center mb-4">
+                        <label class="block text-sm font-medium text-gray-700">Select UPI ID</label>
+                        <button type="button" onclick="openModal('upi-modal')" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium flex items-center">
+                            <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                            </svg>
+                            Add New UPI
+                        </button>
+                    </div>
+                    
+                    {% if upi_accounts %}
+                    <div class="space-y-3">
+                        {% for account in upi_accounts %}
+                        <div class="relative">
+                            <input class="sr-only peer" id="upi-{{ account.id }}" type="radio" name="upi_account" value="{{ account.id }}" {% if account.is_primary %}checked{% endif %}>
+                            <label class="flex items-center p-4 bg-white border border-gray-200 rounded-lg cursor-pointer focus:outline-none hover:border-emerald-400 peer-checked:border-emerald-500 peer-checked:ring-2 peer-checked:ring-emerald-500 transition duration-200" for="upi-{{ account.id }}">
+                                <div class="flex-1">
+                                    <span class="font-medium text-gray-900">{{ account.upi_id }}</span>
+                                    <p class="text-sm text-gray-600">Verified UPI ID</p>
+                                </div>
+                                {% if account.is_primary %}
+                                <span class="bg-emerald-100 text-emerald-800 text-xs px-2.5 py-1 rounded-full">Primary</span>
+                                {% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <div class="p-4 bg-gray-50 rounded-lg text-center border border-dashed border-gray-300">
+                        <svg class="w-12 h-12 mx-auto text-gray-400 mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                        </svg>
+                        <p class="text-gray-600 mb-2">No UPI accounts found.</p>
+                        <button type="button" onclick="openModal('upi-modal')" class="text-emerald-600 hover:text-emerald-700 text-sm font-medium">
+                            Add your first UPI ID
+                        </button>
+                    </div>
+                    {% endif %}
+                    {% if form.upi_account.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.upi_account.errors.0 }}</p>
+                    {% endif %}
+                </div>
+
+                <!-- PayTM Mobile -->
+                <div id="paytm-section" class="mb-6 {% if form.method.value != 'paytm' %}hidden{% endif %}">
+                    <label for="id_paytm_mobile" class="block text-sm font-medium text-gray-700 mb-2">PayTM Registered Mobile Number</label>
+                    <input type="tel" name="paytm_mobile" id="id_paytm_mobile" 
+                           class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" 
+                           placeholder="Enter 10-digit mobile number" pattern="[0-9]{10}" value="{{ form.paytm_mobile.value|default:'' }}">
+                    {% if form.paytm_mobile.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.paytm_mobile.errors.0 }}</p>
+                    {% endif %}
+                    <p class="text-xs text-gray-500 mt-2">Enter the mobile number registered with your PayTM account</p>
+                </div>
+
+                <!-- Terms and Submit -->
+                <div class="flex items-start mb-4">
+                    <div class="flex items-center h-5">
+                        <input id="terms" name="terms" type="checkbox" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded" required>
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="terms" class="text-gray-700">
+                            I agree to the <a href="#" class="text-emerald-600 hover:text-emerald-500 font-medium" target="_blank">terms and conditions</a>
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-3 px-4 rounded-lg transition duration-200 flex items-center justify-center focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>
+                    Process Withdrawal
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Recent Withdrawals Section -->
+    <div class="bg-white rounded-xl shadow-sm overflow-hidden border border-gray-100">
+        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50">
+            <h2 class="text-xl font-semibold text-gray-800">Recent Withdrawals</h2>
+            <p class="text-gray-600 text-sm">Your last {{ withdrawal_history|length }} transactions</p>
+        </div>
+        
+        <div class="divide-y divide-gray-100">
+            {% if withdrawal_history %}
+                {% for withdrawal in withdrawal_history %}
+                <div class="px-6 py-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <div class="bg-emerald-50 p-3 rounded-full mr-4">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="font-medium text-gray-800">₹{{ withdrawal.amount|floatformat:2 }} via {{ withdrawal.get_method_display }}</h3>
+                            <p class="text-sm text-gray-600">Processed on {{ withdrawal.created_at|date:"M d, Y" }}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                            {% if withdrawal.status == 'completed' %}bg-emerald-100 text-emerald-800
+                            {% elif withdrawal.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif withdrawal.status == 'processing' %}bg-blue-100 text-blue-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ withdrawal.get_status_display }}
+                        </span>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="px-6 py-8 text-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <p class="text-gray-600">No withdrawal history yet.</p>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Add Bank Account Modal -->
+<div id="bank-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+    <div class="bg-white rounded-xl w-full max-w-md p-6 m-4 shadow-xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Add Bank Account</h3>
+            <button onclick="closeModal('bank-modal')" class="text-gray-400 hover:text-gray-600 rounded-full p-1 hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <form method="POST" action="{% url 'add_bank_account' %}" id="bank-form">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Account Holder Name</label>
+                    <input type="text" name="account_holder_name" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="John Doe">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Account Number</label>
+                    <input type="text" name="account_number" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="1234567890" pattern="[0-9]{9,18}">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">IFSC Code</label>
+                    <input type="text" name="ifsc_code" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="ABCD0123456" pattern="^[A-Z]{4}0[A-Z0-9]{6}$">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bank Name</label>
+                    <input type="text" name="bank_name" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="Bank Name">
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Branch Name (Optional)</label>
+                    <input type="text" name="branch_name" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="Branch Name">
+                </div>
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="bank-primary" name="is_primary" type="checkbox" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="bank-primary" class="text-gray-700">Set as primary account</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="closeModal('bank-modal')" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition duration-200">Add Account</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Add UPI Account Modal -->
+<div id="upi-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden z-50 px-4">
+    <div class="bg-white rounded-xl w-full max-w-md p-6 m-4 shadow-xl">
+        <div class="flex justify-between items-center mb-4">
+            <h3 class="text-lg font-semibold text-gray-800">Add UPI ID</h3>
+            <button onclick="closeModal('upi-modal')" class="text-gray-400 hover:text-gray-600 rounded-full p-1 hover:bg-gray-100">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
+        <form method="POST" action="{% url 'add_upi_account' %}" id="upi-form">
+            {% csrf_token %}
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">UPI ID</label>
+                    <input type="text" name="upi_id" required class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:border-emerald-500 transition duration-200" placeholder="yourname@upi" pattern="[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}">
+                    <p class="text-xs text-gray-500 mt-1">Enter your UPI ID (e.g., username@upi)</p>
+                </div>
+                <div class="flex items-start">
+                    <div class="flex items-center h-5">
+                        <input id="upi-primary" name="is_primary" type="checkbox" class="h-4 w-4 text-emerald-600 focus:ring-emerald-500 border-gray-300 rounded">
+                    </div>
+                    <div class="ml-3 text-sm">
+                        <label for="upi-primary" class="text-gray-700">Set as primary account</label>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6 flex justify-end space-x-3">
+                <button type="button" onclick="closeModal('upi-modal')" class="px-4 py-2 text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 transition duration-200">Cancel</button>
+                <button type="submit" class="px-4 py-2 bg-emerald-600 text-white rounded-lg hover:bg-emerald-700 transition duration-200">Add UPI ID</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Show/hide account details based on payment method selection
+    document.querySelectorAll('input[name="method"]').forEach((radio) => {
+        radio.addEventListener('change', function() {
+            // Hide all sections
+            document.getElementById('bank-section').classList.add('hidden');
+            document.getElementById('upi-section').classList.add('hidden');
+            document.getElementById('paytm-section').classList.add('hidden');
+            
+            // Show the selected one
+            if (this.value === 'bank') {
+                document.getElementById('bank-section').classList.remove('hidden');
+            } else if (this.value === 'upi') {
+                document.getElementById('upi-section').classList.remove('hidden');
+            } else if (this.value === 'paytm') {
+                document.getElementById('paytm-section').classList.remove('hidden');
+            }
+        });
+    });
+    
+    // Modal functions
+    function openModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+    
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+    
+    // Close modal when clicking outside
+    document.querySelectorAll('.fixed').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal(this.id);
+            }
+        });
+    });
+
+    // Amount validation
+    const amountInput = document.getElementById('id_amount');
+    if (amountInput) {
+        amountInput.addEventListener('change', function() {
+            const balance = parseFloat('{{ wallet.balance }}');
+            const amount = parseFloat(this.value);
+            
+            if (amount < 100) {
+                alert('Minimum withdrawal amount is ₹100');
+                this.value = '';
+            } else if (amount > balance) {
+                alert('You cannot withdraw more than your available balance');
+                this.value = balance.toFixed(2);
+            }
+        });
+    }
+
+    // Form validation
+    document.getElementById('withdrawal-form').addEventListener('submit', function(e) {
+        const method = document.querySelector('input[name="method"]:checked').value;
+        let isValid = true;
+        
+        if (method === 'bank') {
+            const bankSelected = document.querySelector('input[name="bank_account"]:checked');
+            if (!bankSelected) {
+                alert('Please select a bank account');
+                isValid = false;
+            }
+        } else if (method === 'upi') {
+            const upiSelected = document.querySelector('input[name="upi_account"]:checked');
+            if (!upiSelected) {
+                alert('Please select a UPI ID');
+                isValid = false;
+            }
+        } else if (method === 'paytm') {
+            const paytmMobile = document.getElementById('id_paytm_mobile').value;
+            if (!paytmMobile || !/^[0-9]{10}$/.test(paytmMobile)) {
+                alert('Please enter a valid 10-digit mobile number');
+                isValid = false;
+            }
+        }
+        
+        if (!isValid) {
+            e.preventDefault();
+        }
+    });
+</script>
+{% endblock %}

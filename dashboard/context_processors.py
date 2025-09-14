@@ -33,7 +33,7 @@ def custom_admin_context(request):
             .order_by("-date")
 
 
-        print(chart_data2)
+        # print(chart_data2)
         context = {
             "total_users": total_users,
             "total_donations": total_donations,
