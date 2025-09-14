@@ -7,6 +7,7 @@ def get_paid_downline(root_user):
     """
     Return a set of distinct CustomUser objects that are in root_user's downline
     (exclude root_user) and have registration_fee_paid=True.
+    Traversal stops if a user has not paid (like getCommunity).
     """
     visited = set()
     paid_users = set()
@@ -14,26 +15,25 @@ def get_paid_downline(root_user):
 
     while q:
         u = q.popleft()
-        # ensure we don't revisit
         if u.id in visited:
             continue
         visited.add(u.id)
 
-        # iterate referrals of u
-        for ref in u.referrals.all():
-            if ref.id in visited:
-                # already seen
-                continue
-            q.append(ref)
-            # if this referred user paid, add to paid_users (still allow its children to be traversed)
-            if getattr(ref, 'registration_fee_paid', False):
-                paid_users.add(ref)  # add the model instance (unique by id)
+        # ✅ Only traverse referrals if current user has paid
+        if getattr(u, 'registration_fee_paid', False):
+            for ref in u.referrals.all():
+                if ref.id not in visited:
+                    q.append(ref)
+
+            # add to paid_users (but skip root later)
+            paid_users.add(u)
 
     # ensure root_user not included
     if root_user in paid_users:
         paid_users.remove(root_user)
 
     return paid_users
+
 
 
 @transaction.atomic
