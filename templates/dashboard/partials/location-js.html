@@ -1,0 +1,47 @@
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Fetch the user's IP address using ipify
+        fetch('https://api64.ipify.org?format=json')
+            .then(response => response.json())
+            .then(ipData => {
+                const ip = ipData.ip;
+                // console.log('User IP:', ip);
+                // Fetch the location data based on the user's IP using ipwhois
+                fetch(`https://ipwhois.app/json/${ip}`)
+                    .then(response => response.json())
+                    .then(locationData => {
+                        const region = locationData.region;
+                        const city = locationData.city;
+                        const country = locationData.country;
+                        const lat = locationData.latitude;
+                        const lon = locationData.longitude;
+                        const timezone = locationData.timezone;
+                        const isp = locationData.isp;
+                        // Send the data to Django backend via AJAX to update the user model
+                        fetch('/accounts/update-user-location/', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                            },
+                            body: JSON.stringify({
+                                region_name: region,
+                                city: city,
+                                zip_code: country,  // Use country as zip code, you can adjust this logic
+                                lat: lat,
+                                lon: lon,
+                                timezone: timezone,
+                                isp: isp,
+                            }),
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                console.log('User data updated:', data);
+                            })
+                            .catch(error => console.error('Error updating user data:', error));
+                    })
+                    .catch(error => console.error('Error fetching location info:', error));
+            })
+            .catch(error => console.error('Error fetching IP info:', error));
+    });
+</script>
