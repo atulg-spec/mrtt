@@ -89,11 +89,7 @@ def withdraw_funds(request):
                         return redirect('withdraw_funds')
                     
                     withdrawal.save()
-                    
-                    # Deduct amount from wallet immediately
-                    wallet.balance -= withdrawal.amount
-                    wallet.save()
-                    
+                                        
                     messages.success(request, f'Withdrawal request for ₹{withdrawal.amount} submitted successfully!')
                     return redirect('withdrawal_history')
                     

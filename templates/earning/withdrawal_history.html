@@ -24,17 +24,10 @@ MRT Tree Plantation | Withdrawal History
     </div>
 
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-emerald-500">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">        
+        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
             <div>
                 <p class="text-gray-500 text-sm font-medium">Total Withdrawals</p>
-                <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals.count }}</h2>
-            </div>
-        </div>
-        
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-blue-500">
-            <div>
-                <p class="text-gray-500 text-sm font-medium">Completed</p>
                 <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'completed'|length }}</h2>
             </div>
         </div>

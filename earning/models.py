@@ -161,13 +161,3 @@ class WithdrawalRequest(models.Model):
         if not self.transaction_id:
             self.transaction_id = f"WD{uuid.uuid4().hex[:10].upper()}"
         super().save(*args, **kwargs)
-
-
-
-@receiver(post_save, sender=WithdrawalRequest)
-def process_withdrawal(sender, instance, created, **kwargs):
-    # If withdrawal is completed, deduct from wallet
-    if instance.status == 'completed' and created:
-        wallet = instance.user.wallet
-        wallet.balance -= instance.amount
-        wallet.save()
