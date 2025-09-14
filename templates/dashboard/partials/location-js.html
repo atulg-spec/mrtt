@@ -1,7 +1,8 @@
+{% csrf_token %}
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         // Fetch the user's IP address using ipify
-        fetch('https://api64.ipify.org?format=json')
+        fetch('https://api.ipify.org?format=json')
             .then(response => response.json())
             .then(ipData => {
                 const ip = ipData.ip;
