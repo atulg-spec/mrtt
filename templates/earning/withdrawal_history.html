@@ -1,21 +1,21 @@
 {% extends 'dashboard/base.html' %}
 {% load social_tags %}
 {% load filters %}
-{% block title %}
-MRT Tree Plantation | Withdrawal History
-{% endblock %}
 
+{% block title %}MRT Tree Plantation | Withdrawal History{% endblock %}
 {% block page %}Withdrawal History{% endblock page %}
 
 {% block body %}
 <div class="container mx-auto px-4 py-8">
     <!-- Header Section -->
-    <div class="mb-8 flex justify-between items-center">
+    <div class="mb-8 flex flex-col md:flex-row justify-between md:items-center gap-4">
         <div>
             <h1 class="text-3xl font-bold text-gray-800">Withdrawal History</h1>
             <p class="text-gray-600">Track all your withdrawal requests and their status</p>
         </div>
-        <a href="{% url 'withdraw_funds' %}" class="bg-emerald-600 hover:bg-emerald-700 text-white font-medium py-2 px-4 rounded-lg transition duration-200 flex items-center">
+        <a href="{% url 'withdraw_funds' %}" 
+           class="bg-forest-500 hover:from-emerald-700 hover:to-emerald-800 
+                  text-white font-medium py-2.5 px-5 rounded-lg transition duration-300 flex items-center shadow-md">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
             </svg>
@@ -24,64 +24,49 @@ MRT Tree Plantation | Withdrawal History
     </div>
 
     <!-- Stats Overview -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">        
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-green-500">
-            <div>
-                <p class="text-gray-500 text-sm font-medium">Total Withdrawals</p>
-                <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'completed'|length }}</h2>
-            </div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-green-500">
+            <p class="text-gray-500 text-sm font-medium">Total Withdrawals</p>
+            <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'completed'|length }}</h2>
         </div>
-        
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-yellow-500">
-            <div>
-                <p class="text-gray-500 text-sm font-medium">Pending</p>
-                <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'pending'|length }}</h2>
-            </div>
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-yellow-500">
+            <p class="text-gray-500 text-sm font-medium">Pending</p>
+            <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'pending'|length }}</h2>
         </div>
-        
-        <div class="bg-white rounded-xl shadow-md p-6 border-l-4 border-red-500">
-            <div>
-                <p class="text-gray-500 text-sm font-medium">Rejected</p>
-                <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'rejected'|length }}</h2>
-            </div>
+        <div class="bg-white rounded-xl shadow hover:shadow-lg transition p-6 border-l-4 border-red-500">
+            <p class="text-gray-500 text-sm font-medium">Rejected</p>
+            <h2 class="text-2xl font-bold text-gray-800">{{ withdrawals|filter_status:'rejected'|length }}</h2>
         </div>
     </div>
 
-    <!-- Withdrawals Table -->
-    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+    <!-- Withdrawals -->
+    <div class="bg-white rounded-xl shadow overflow-hidden">
         <div class="px-6 py-4 border-b border-gray-200">
             <h2 class="text-xl font-semibold text-gray-800">All Withdrawals</h2>
         </div>
-        
-        <div class="overflow-x-auto">
+
+        <!-- Desktop Table -->
+        <div class="hidden md:block overflow-x-auto">
             <table class="w-full">
                 <thead>
                     <tr class="bg-gray-50">
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Transaction ID</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Method</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Transaction ID</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Amount</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Method</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+                        <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-gray-200">
                     {% if withdrawals %}
                         {% for withdrawal in withdrawals %}
-                        <tr>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">{{ withdrawal.transaction_id }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm font-medium text-gray-900">₹{{ withdrawal.amount }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-900">{{ withdrawal.get_method_display }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <div class="text-sm text-gray-500">{{ withdrawal.created_at|date:"M d, Y" }}</div>
-                            </td>
-                            <td class="px-6 py-4 whitespace-nowrap">
-                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium 
+                        <tr class="hover:bg-gray-50 transition">
+                            <td class="px-6 py-4">{{ withdrawal.transaction_id }}</td>
+                            <td class="px-6 py-4 font-medium">₹{{ withdrawal.amount }}</td>
+                            <td class="px-6 py-4">{{ withdrawal.get_method_display }}</td>
+                            <td class="px-6 py-4 text-gray-500">{{ withdrawal.created_at|date:"M d, Y" }}</td>
+                            <td class="px-6 py-4">
+                                <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold 
                                     {% if withdrawal.status == 'completed' %}bg-emerald-100 text-emerald-800
                                     {% elif withdrawal.status == 'pending' %}bg-yellow-100 text-yellow-800
                                     {% elif withdrawal.status == 'processing' %}bg-blue-100 text-blue-800
@@ -93,39 +78,62 @@ MRT Tree Plantation | Withdrawal History
                         {% endfor %}
                     {% else %}
                         <tr>
-                            <td colspan="5" class="px-6 py-8 text-center">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12 mx-auto text-gray-400 mb-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                                </svg>
-                                <p class="text-gray-600">No withdrawal history yet.</p>
-                            </td>
+                            <td colspan="5" class="px-6 py-8 text-center text-gray-600">No withdrawal history yet.</td>
                         </tr>
                     {% endif %}
                 </tbody>
             </table>
         </div>
-        
+
+        <!-- Mobile Cards -->
+        <div class="md:hidden p-4 space-y-4">
+            {% if withdrawals %}
+                {% for withdrawal in withdrawals %}
+                <div class="bg-gray-50 rounded-xl shadow-sm p-4 border hover:shadow-md transition">
+                    <div class="flex justify-between items-center mb-3">
+                        <h3 class="font-semibold text-gray-800">₹{{ withdrawal.amount }}</h3>
+                        <span class="px-2.5 py-0.5 text-xs rounded-full font-medium
+                            {% if withdrawal.status == 'completed' %}bg-emerald-100 text-emerald-800
+                            {% elif withdrawal.status == 'pending' %}bg-yellow-100 text-yellow-800
+                            {% elif withdrawal.status == 'processing' %}bg-blue-100 text-blue-800
+                            {% else %}bg-red-100 text-red-800{% endif %}">
+                            {{ withdrawal.get_status_display }}
+                        </span>
+                    </div>
+                    <p class="text-sm text-gray-500">Txn ID: {{ withdrawal.transaction_id }}</p>
+                    <p class="text-sm text-gray-500">Method: {{ withdrawal.get_method_display }}</p>
+                    <p class="text-sm text-gray-400">Date: {{ withdrawal.created_at|date:"M d, Y" }}</p>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="text-center py-6 text-gray-600">
+                    No withdrawal history yet.
+                </div>
+            {% endif %}
+        </div>
+
+        <!-- Pagination -->
         {% if withdrawals.has_other_pages %}
         <div class="px-6 py-4 border-t border-gray-200">
-            <div class="flex justify-between items-center">
+            <div class="flex flex-col md:flex-row justify-between md:items-center gap-3">
                 <div class="text-sm text-gray-700">
                     Showing {{ withdrawals.start_index }} to {{ withdrawals.end_index }} of {{ withdrawals.paginator.count }} results
                 </div>
                 <div class="flex space-x-2">
                     {% if withdrawals.has_previous %}
-                    <a href="?page={{ withdrawals.previous_page_number }}" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">Previous</a>
+                    <a href="?page={{ withdrawals.previous_page_number }}" class="px-3 py-1 rounded-lg border text-sm hover:bg-gray-100">Previous</a>
                     {% endif %}
-                    
+
                     {% for num in withdrawals.paginator.page_range %}
                         {% if withdrawals.number == num %}
-                        <span class="px-3 py-1 bg-emerald-600 border border-emerald-600 rounded-md text-sm font-medium text-white">{{ num }}</span>
+                        <span class="px-3 py-1 rounded-lg bg-emerald-600 text-white text-sm">{{ num }}</span>
                         {% else %}
-                        <a href="?page={{ num }}" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">{{ num }}</a>
+                        <a href="?page={{ num }}" class="px-3 py-1 rounded-lg border text-sm hover:bg-gray-100">{{ num }}</a>
                         {% endif %}
                     {% endfor %}
-                    
+
                     {% if withdrawals.has_next %}
-                    <a href="?page={{ withdrawals.next_page_number }}" class="px-3 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50">Next</a>
+                    <a href="?page={{ withdrawals.next_page_number }}" class="px-3 py-1 rounded-lg border text-sm hover:bg-gray-100">Next</a>
                     {% endif %}
                 </div>
             </div>
