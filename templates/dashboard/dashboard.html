@@ -26,6 +26,31 @@ MRT Tree Plantation | Dashboard
 
         <!-- Stats Grid with Hover Effects -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Rewards</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">₹{{ total_earnings }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-purple-50/80 text-purple-600 backdrop-blur-sm">
+                            <!-- Gift Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
+                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7m16 0H4m16 0l-2-5h-3a2 2 0 110-4c1.104 0 2 .896 2 2h-2M4 12l2-5h3a2 2 0 100-4c-1.104 0-2 .896-2 2h2" />
+                            </svg>
+                        </div>
+                    </div>
+                    <div class="mt-4">
+                        <div class="flex items-center justify-between text-sm text-gray-500">
+                            <span>Rewards earned</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <!-- Donations Card -->
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
@@ -136,30 +161,6 @@ MRT Tree Plantation | Dashboard
                 </div>
             </div>
 
-            <div
-                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-                <div class="p-5">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Rewards</p>
-                            <p class="text-2xl font-semibold text-gray-800 mt-1">₹{{ total_earnings }}</p>
-                        </div>
-                        <div class="p-3 rounded-lg bg-purple-50/80 text-purple-600 backdrop-blur-sm">
-                            <!-- Gift Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
-                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                    d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7m16 0H4m16 0l-2-5h-3a2 2 0 110-4c1.104 0 2 .896 2 2h-2M4 12l2-5h3a2 2 0 100-4c-1.104 0-2 .896-2 2h2" />
-                            </svg>
-                        </div>
-                    </div>
-                    <div class="mt-4">
-                        <div class="flex items-center justify-between text-sm text-gray-500">
-                            <span>Rewards earned</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <!-- Impact and Invitation Section -->
