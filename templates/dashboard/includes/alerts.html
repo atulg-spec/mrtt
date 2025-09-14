@@ -2,7 +2,8 @@
 <div class="fixed inset-0 flex items-start justify-end pointer-events-none z-[100]">
     <div class="space-y-3 p-4 w-full max-w-md pointer-events-auto">
         {% for message in messages %}
-        <div class="{% if message.tags %}{{ message.tags }}{% endif %} rounded-lg shadow-xl border border-opacity-20 overflow-hidden transform transition-all duration-300 ease-out">
+        <div id="alert-{{ forloop.counter }}" 
+             class="{% if message.tags %}{{ message.tags }}{% endif %} rounded-lg shadow-xl border border-opacity-20 overflow-hidden transform transition-all duration-300 ease-out">
             <div class="p-4 flex items-start bg-white bg-opacity-95 backdrop-blur-sm">
                 <div class="flex-shrink-0">
                     {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
@@ -40,7 +41,8 @@
                     </p>
                 </div>
                 <div class="ml-4 flex-shrink-0 flex">
-                    <button class="inline-flex rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}text-emerald-400 hover:text-emerald-500 focus:ring-emerald-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}text-red-400 hover:text-red-500 focus:ring-red-500{% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}text-amber-400 hover:text-amber-500 focus:ring-amber-500{% else %}text-blue-400 hover:text-blue-500 focus:ring-blue-500{% endif %}">
+                    <button id="close-{{ forloop.counter }}" 
+                            class="inline-flex rounded-md focus:outline-none">
                         <svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
                         </svg>
@@ -55,27 +57,23 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Close button functionality
-        document.querySelectorAll('[class*="rounded-md"]').forEach(button => {
-            button.addEventListener('click', function() {
-                this.closest('[class*="rounded-lg"]').classList.add('opacity-0', 'scale-95', 'translate-y-1');
-                setTimeout(() => {
-                    this.closest('[class*="rounded-lg"]').remove();
-                }, 300);
-            });
+        {% for message in messages %}
+        // Close button
+        document.getElementById("close-{{ forloop.counter }}").addEventListener("click", function() {
+            let alertBox = document.getElementById("alert-{{ forloop.counter }}");
+            alertBox.classList.add("opacity-0", "scale-95", "translate-y-1");
+            setTimeout(() => alertBox.remove(), 300);
         });
 
-        // Auto-hide alerts after 5 seconds
-        document.querySelectorAll('[class*="rounded-lg"]').forEach(alert => {
-            setTimeout(() => {
-                if (alert && !alert.classList.contains('opacity-0')) {
-                    alert.classList.add('opacity-0', 'scale-95', 'translate-y-1');
-                    setTimeout(() => {
-                        alert.remove();
-                    }, 300);
-                }
-            }, 5000);
-        });
+        // Auto-hide after 5 sec
+        setTimeout(() => {
+            let alertBox = document.getElementById("alert-{{ forloop.counter }}");
+            if (alertBox && !alertBox.classList.contains("opacity-0")) {
+                alertBox.classList.add("opacity-0", "scale-95", "translate-y-1");
+                setTimeout(() => alertBox.remove(), 300);
+            }
+        }, 5000);
+        {% endfor %}
     });
 </script>
 {% endif %}
