@@ -90,7 +90,7 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
 @admin.register(UserLevelReward)
 class UserLevelRewardAdmin(admin.ModelAdmin):
     list_display = ("id", "user", "level", "reward", "given_at")   # Columns in list view
-    list_filter = ("level", "given_at")                           # Side filters
+    list_filter = ("level", 'user', "given_at")                           # Side filters
     search_fields = ("user__username", "user__email")             # Search by username/email
     ordering = ("-given_at",)                                     # Latest first
     readonly_fields = ("given_at",)                               # Prevent editing
