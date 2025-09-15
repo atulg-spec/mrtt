@@ -12,7 +12,7 @@ from accounts.models import CustomUser
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from earning.models import Wallet
-
+from earning.utils import get_level, get_paid_downline
 
 def pyramid_users(user):
     community = list(user.getCommunity())
@@ -55,10 +55,14 @@ def dashboard(request):
     # Get referral data
     referrals = user.referrals.all().order_by("date_joined")
     total_referrals = referrals.count()
-    
+
+    total_team_memebers = len(get_paid_downline(request.user))
+    user_level = get_level(len(get_paid_downline(request.user)))
 
     donations = Donation.objects.filter(user=user)
     context = {
+        'total_team_memebers': total_team_memebers,
+        'user_level': user_level,
         'donations': donations,
         'total_donated': total_donated,
         'total_earnings': total_earnings,

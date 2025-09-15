@@ -25,7 +25,7 @@ MRT Tree Plantation | Dashboard
         </div>
 
         <!-- Stats Grid with Hover Effects -->
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-5 mb-8">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                 <div class="p-5">
@@ -36,8 +36,8 @@ MRT Tree Plantation | Dashboard
                         </div>
                         <div class="p-3 rounded-lg bg-purple-50/80 text-purple-600 backdrop-blur-sm">
                             <!-- Gift Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" 
-                                viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor" stroke-width="2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                     d="M20 12v7a2 2 0 01-2 2H6a2 2 0 01-2-2v-7m16 0H4m16 0l-2-5h-3a2 2 0 110-4c1.104 0 2 .896 2 2h-2M4 12l2-5h3a2 2 0 100-4c-1.104 0-2 .896-2 2h2" />
                             </svg>
@@ -50,7 +50,7 @@ MRT Tree Plantation | Dashboard
                     </div>
                 </div>
             </div>
-
+        
             <!-- Donations Card -->
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
@@ -78,7 +78,7 @@ MRT Tree Plantation | Dashboard
                     </div>
                 </div>
             </div>
-
+        
             <!-- Trees Planted Card -->
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
@@ -106,7 +106,7 @@ MRT Tree Plantation | Dashboard
                     </div>
                 </div>
             </div>
-
+        
             <!-- CO2 Reduced Card -->
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
@@ -134,33 +134,75 @@ MRT Tree Plantation | Dashboard
                     </div>
                 </div>
             </div>
-
-            <!-- Invites Card -->
+        
+            <!-- Direct Invites Card -->
             <div
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                 <div class="p-5">
                     <div class="flex items-start justify-between">
                         <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Total Invites</p>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Direct Invites</p>
                             <p class="text-2xl font-semibold text-gray-800 mt-1">{{ total_referrals }}</p>
                         </div>
                         <div class="p-3 rounded-lg bg-purple-50/80 text-purple-600 backdrop-blur-sm">
+                            <!-- User Plus Icon -->
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
                                 stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    d="M18 9v6M15 12h6M12 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            <!-- Team Members Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Team Members</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">{{ total_team_memebers }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-green-50/80 text-green-600 backdrop-blur-sm">
+                            <!-- Users Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M17 20h5v-2a4 4 0 00-3-3.87M9 20H4v-2a4 4 0 013-3.87M16 7a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </div>
                     </div>
                     <div class="mt-4">
                         <div class="flex items-center justify-between text-sm text-gray-500">
                             <span>Leaderboard Rank</span>
-                            <span class="font-semibold text-purple-600">#{{ request.user.rank }}</span>
+                            <span class="font-semibold text-green-600">#{{ user_level }}</span>
                         </div>
                     </div>
                 </div>
             </div>
-
+        
+            <!-- Level Card -->
+            <div
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Level</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">#{{ user_level }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-yellow-50/80 text-yellow-600 backdrop-blur-sm">
+                            <!-- Star Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.905c.969 0 1.371 1.24.588 1.81l-3.974 2.89a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.974-2.89a1 1 0 00-1.176 0l-3.974 2.89c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.974-2.89c-.783-.57-.38-1.81.588-1.81h4.905a1 1 0 00.95-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Impact and Invitation Section -->
