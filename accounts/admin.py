@@ -2,10 +2,11 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
 from django.utils.html import format_html
 from .models import CustomUser, SelfieWithTree
+from earning.utils import get_paid_downline, get_level
 
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
-    list_display = ('username', 'email', 'first_name', 'phone_number', 'is_staff', 'date_joined', 'registration_fee_paid', 'amount_paid')
+    list_display = ('username', 'email', 'first_name', 'phone_number', 'is_staff', 'date_joined', 'registration_fee_paid', 'amount_paid' , 'team_total', 'user_level')
     list_filter = ('is_staff', 'is_superuser', 'is_active', 'groups', 'referred_by', 'registration_fee_paid')
 
     fieldsets = (
@@ -31,6 +32,15 @@ class CustomUserAdmin(UserAdmin):
         }),
         ('Important dates', {'fields': ('last_login',)}),
     )
+
+    def team_total(self, obj):
+        return len(get_paid_downline(obj))
+    team_total.short_description = "Team Members"
+
+    def user_level(self, obj):
+        return get_level(len(get_paid_downline(obj)))
+    user_level.short_description = "Level"
+
 
     readonly_fields = ('date_joined', 'last_login')  # Add date_joined here
 
