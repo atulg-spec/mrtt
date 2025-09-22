@@ -63,6 +63,8 @@ def withdraw_funds(request):
     
     # Withdrawal history
     withdrawal_history = WithdrawalRequest.objects.filter(user=user).order_by('-created_at')[:5]
+
+    pending_withdraws = WithdrawalRequest.objects.filter(user=user,status='pending')
     
     if request.method == 'POST':
         form = WithdrawalForm(request.POST, user=user)
@@ -103,6 +105,7 @@ def withdraw_funds(request):
         'withdrawal_methods': withdrawal_methods,
         'bank_accounts': bank_accounts,
         'upi_accounts': upi_accounts,
+        'pending_withdraws': pending_withdraws.__len__(),
         'withdrawal_history': withdrawal_history,
         'form': form,
     }

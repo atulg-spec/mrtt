@@ -36,12 +36,7 @@ MRT Tree Plantation | Withdraw Funds
             <div>
                 <p class="text-gray-500 text-sm font-medium">Pending Withdrawals</p>
                 <h2 class="text-2xl font-bold text-gray-800">
-                    ₹
-                    {% if pending_amount %}
-                    {{ pending_amount|floatformat:2 }}
-                    {% else %}
-                    0
-                    {% endif %}
+                    {{pending_withdraws}}
                 </h2>
                 <p class="text-sm text-gray-600 mt-1">{{ pending_count }} transaction{{ pending_count|pluralize }}</p>
             </div>

@@ -17,7 +17,7 @@ MRT Tree Plantation | Dashboard
             <div class="absolute -right-5 -bottom-5 w-24 h-24 rounded-full bg-white/5"></div>
             <div class="relative z-10">
                 <h2 class="text-2xl font-bold text-white mb-2">
-                    Welcome back, {{ request.user.first_name|default:"Member" }}!
+                    Hello, {{ request.user.first_name|default:"Member" }}!
                 </h2>
                 <p class="text-green-100 max-w-2xl">You've helped plant {{ total_trees|floatformat:0 }} trees and offset
                     {{ total_co2|floatformat:0 }}kg of CO₂. Keep up the amazing work!</p>
@@ -26,7 +26,7 @@ MRT Tree Plantation | Dashboard
 
         <!-- Stats Grid with Hover Effects -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-8">
-            <div
+            <a href="{% url 'earning-dashboard' %}"
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                 <div class="p-5">
                     <div class="flex items-start justify-between">
@@ -49,10 +49,32 @@ MRT Tree Plantation | Dashboard
                         </div>
                     </div>
                 </div>
-            </div>
+            </a>
+
+            <!-- Level Card -->
+            <a href="{% url 'invitations' %}"
+                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
+                <div class="p-5">
+                    <div class="flex items-start justify-between">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Level</p>
+                            <p class="text-2xl font-semibold text-gray-800 mt-1">#{{ user_level }}</p>
+                        </div>
+                        <div class="p-3 rounded-lg bg-yellow-50/80 text-yellow-600 backdrop-blur-sm">
+                            <!-- Star Icon -->
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                                stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.905c.969 0 1.371 1.24.588 1.81l-3.974 2.89a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.974-2.89a1 1 0 00-1.176 0l-3.974 2.89c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.974-2.89c-.783-.57-.38-1.81.588-1.81h4.905a1 1 0 00.95-.69l1.519-4.674z" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+            </a>
+
         
             <!-- Donations Card -->
-            <div
+            <a href="/dashboard/my-donations/"
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                 <div class="p-5">
                     <div class="flex items-start justify-between">
@@ -77,7 +99,7 @@ MRT Tree Plantation | Dashboard
                         <span>12% from last month</span>
                     </div>
                 </div>
-            </div>
+            </a>
         
             <!-- Trees Planted Card -->
             <div
@@ -157,7 +179,7 @@ MRT Tree Plantation | Dashboard
             </div>
         
             <!-- Team Members Card -->
-            <div
+            <a href="{% url 'invitations' %}"
                 class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
                 <div class="p-5">
                     <div class="flex items-start justify-between">
@@ -181,28 +203,7 @@ MRT Tree Plantation | Dashboard
                         </div>
                     </div>
                 </div>
-            </div>
-        
-            <!-- Level Card -->
-            <div
-                class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-300 hover:shadow-md hover:-translate-y-1">
-                <div class="p-5">
-                    <div class="flex items-start justify-between">
-                        <div>
-                            <p class="text-sm font-medium text-gray-500 uppercase tracking-wider">Level</p>
-                            <p class="text-2xl font-semibold text-gray-800 mt-1">#{{ user_level }}</p>
-                        </div>
-                        <div class="p-3 rounded-lg bg-yellow-50/80 text-yellow-600 backdrop-blur-sm">
-                            <!-- Star Icon -->
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
-                                stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.905c.969 0 1.371 1.24.588 1.81l-3.974 2.89a1 1 0 00-.364 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.974-2.89a1 1 0 00-1.176 0l-3.974 2.89c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 00-.364-1.118l-3.974-2.89c-.783-.57-.38-1.81.588-1.81h4.905a1 1 0 00.95-.69l1.519-4.674z" />
-                            </svg>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            </a>
         </div>
 
         <!-- Impact and Invitation Section -->
