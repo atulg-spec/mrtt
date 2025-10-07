@@ -6,14 +6,18 @@ class PaymentGateway(models.Model):
     USE = (
         ('RAZORPAY', 'RAZORPAY'),
         ('MANUAL', 'MANUAL'),
+        ('UPI GATEWAY', 'UPI GATEWAY'),
     )
 
-    use = models.CharField(choices=USE,max_length=10,default='RAZORPAY')
+    use = models.CharField(choices=USE,max_length=12,default='RAZORPAY')
     razorpay_id = models.CharField(max_length=500,default="")
     razorpay_secret = models.CharField(max_length=500,default="")
 
     payment_qr = models.ImageField(upload_to='payment/', verbose_name="Payment QR", null=True, blank=True)
     payment_upi_id = models.CharField(max_length=255, blank=True, null=True, help_text="Enter your Payment UPI ID.")
+
+    gateway_url = models.URLField(default="https://mrtt.org.in")
+    gateway_key = models.CharField(default="", max_length=255)
 
     mode = models.CharField(max_length=10,help_text="LIVE or TEST")
 
@@ -28,8 +32,8 @@ class PaymentGateway(models.Model):
 class Payments(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     payment_method = models.CharField(max_length=100)
-    razorpay_payment_id = models.CharField(max_length=200, default="")
-    razorpay_order_id = models.CharField(max_length=200, default="")
+    razorpay_payment_id = models.CharField(max_length=200, default="", verbose_name='Payment ID')
+    razorpay_order_id = models.CharField(max_length=200, default="", verbose_name="Order ID")
     razorpay_signature = models.CharField(max_length=200, default="")
     amount_paid = models.CharField(max_length=100)
     status = models.CharField(max_length=100)

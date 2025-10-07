@@ -7,6 +7,8 @@ from django.template.loader import render_to_string
 from .models import PaymentGateway, Payments, Donation, Registration_fee, ManualPayment
 from .forms import DonationForm
 from django.views.decorators.csrf import csrf_exempt
+import random, time
+from donation.utils import create_upi_order
 from django.contrib import messages
 import decimal
 
@@ -276,6 +278,10 @@ def proceed_payment(request):
                     'amount': amount
                 }
                 return render(request, 'payment/manual-payment.html', context)
+            elif gateway.use == 'UPI GATEWAY':
+                orderId = f"TAX{random.randint(10000, 99999)}{int(time.time())}"
+                paymentObj = Payments.objects.create(user=request.user, payment_method='UPI GATEWAY', razorpay_payment_id=orderId, razorpay_signature=orderId, razorpay_order_id=orderId, amount_paid=amount, status='Pending')
+                return redirect(create_upi_order(request.user.phone_number,amount,orderId))
             else:
                 # Create RazorPay client
                 client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))

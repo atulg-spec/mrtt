@@ -22,20 +22,39 @@ class RegistrationFeeAdmin(admin.ModelAdmin):
 
 @admin.register(PaymentGateway)
 class PaymentGatewayAdmin(admin.ModelAdmin):
-    list_display = ('use', 'mode')
+    list_display = ('use', 'mode', 'gateway_url', 'gateway_key', 'payment_upi_id')
     list_filter = ('use', 'mode')
-    search_fields = ('use', 'mode')
-    readonly_fields = ('id',)
+    search_fields = ('gateway_url', 'gateway_key', 'payment_upi_id')
+    ordering = ('use',)
 
     fieldsets = (
-        (None, {
-            'fields': ('use', ('razorpay_id', 'razorpay_secret'), ('payment_qr', 'payment_upi_id'), 'mode')
+        ('🧾 Gateway Type', {
+            'fields': ('use', 'mode'),
+            'description': 'Select which payment gateway to use (Razorpay / Manual / UPI).'
         }),
-        ('Additional Information', {
-            'fields': ('id',),
-            'classes': ('collapse',),
+        ('💳 Razorpay Configuration', {
+            'fields': ('razorpay_id', 'razorpay_secret'),
+            'description': 'Only required if you are using Razorpay as the payment gateway.'
+        }),
+        ('📱 UPI / Manual Payment Settings', {
+            'fields': ('payment_qr', 'payment_upi_id'),
+            'description': 'Upload your UPI QR or enter your UPI ID for manual payments.'
+        }),
+        ('🌐 Gateway Connection Details', {
+            'fields': ('gateway_url', 'gateway_key'),
+            'description': 'Define the payment gateway URL and the key for API connection.'
         }),
     )
+
+    readonly_fields = ()
+    save_on_top = True
+    list_per_page = 10
+
+    def has_add_permission(self, request):
+        """Allow only one PaymentGateway entry."""
+        if PaymentGateway.objects.exists():
+            return False
+        return True
 
     def __str__(self):
         return "Payment Settings"
