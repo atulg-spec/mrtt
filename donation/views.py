@@ -53,6 +53,11 @@ def registration_proceed_payment(request):
                 }
                 return render(request, 'payment/manual-payment.html', context)
             
+            elif gateway.use == 'UPI GATEWAY':
+                orderId = f"TAX{random.randint(10000, 99999)}{int(time.time())}"
+                paymentObj = Payments.objects.create(user=request.user, payment_method='UPI GATEWAY', razorpay_payment_id=orderId, razorpay_signature=orderId, razorpay_order_id=orderId, amount_paid=amount, status='Pending')
+                return redirect(create_upi_order(request.user.phone_number,amount,orderId))
+
             else:
                 # Create RazorPay client
                 client = razorpay.Client(auth=(gateway.razorpay_id, gateway.razorpay_secret))
@@ -326,9 +331,52 @@ def proceed_payment(request):
     return redirect('/donate/')
 
 
+@csrf_exempt
+@login_required
+@phone_number_required
+def upicallback(request, orderId):
+    try:
+        # Find the payment record (using order_id as that's what we stored)
+        payment = Payments.objects.filter(razorpay_order_id=orderId).first()
+
+        if payment and payment.status != 'Success':
+            payment.verify_upi_payment()
+
+            try:
+                variables = {
+                    'payment': payment,
+                    'request': request,
+                }
+                message = render_to_string('emails/donation-confirmation.html', variables)
+                # send_emails('Donation Successful', message, [payment.user.email], message)
+            except Exception as e:
+                print(f'Error sending email: {e}')
+
+            amount = float(payment.amount_paid)
+            trees_planted = round(amount / 100, 2)    
+            co2_absorbed = round(trees_planted * 20, 1)
+            oxygen_produced = round(trees_planted * 118, 1)
+            jobs_created = round(amount / 5000, 1)
+
+            context = {
+                'amount': payment.amount_paid,
+                'transaction_id': payment.razorpay_payment_id,
+                'trees_planted': trees_planted,
+                'co2_absorbed': co2_absorbed,
+                'oxygen_produced': oxygen_produced,
+                'jobs_created': jobs_created,
+            }
+            return render(request, 'donation/donation-completed.html', context)
+        else:
+            messages.error(request, 'Payment Failed!')
+            return redirect('/donate/')
+    except Exception as e:
+        messages.error(request, 'Payment Failed!')
+        return redirect('/donate/')
 
 
 @login_required
+@phone_number_required
 def razorpay_callback(request):
     payment_id = request.GET.get('razorpay_payment_id')
     order_id = request.GET.get('razorpay_order_id')

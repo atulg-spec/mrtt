@@ -45,6 +45,22 @@ class Payments(models.Model):
 
     def __str__(self):
         return self.razorpay_payment_id
+    
+    def verify_upi_payment(self):
+        self.status = 'Success'
+        self.save()
+        print('self.user.registration_fee_paid')
+        print(self.user.registration_fee_paid)
+        if self.user.registration_fee_paid:
+            print('still here')
+            Donation.objects.create(user=self.user, amount=self.amount_paid)
+        else:
+            print('but here')
+            try:
+                Registration_fee.objects.create(user=self.user, amount=self.amount_paid)
+            except:
+                pass
+
 
 
 class Registration_fee(models.Model): 

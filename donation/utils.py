@@ -12,7 +12,7 @@ def create_upi_order(mobile_number, total_amount, order_id):
         "user_token": gateway.gateway_key,
         "amount": total_amount,
         "order_id": order_id,
-        "redirect_url": "https://payment.mrtt.org.in/api/create-order",
+        "redirect_url": f"http://127.0.0.1:8000/donate/upicallback/{order_id}/",
         "remark1": "A contribution",
         "remark2": 'For the future',
     }
