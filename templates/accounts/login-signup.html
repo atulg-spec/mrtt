@@ -9,14 +9,10 @@
 {% block page %}Login or Signup{% endblock page %}
 
 {% block body %}
-<div class="flex items-center justify-center min-h-screen bg-gray-50 py-6 md:px-4 lg:px-8">
+<div class="flex items-center justify-center min-h-screen bg-gray-50 py-2 md:px-4 lg:px-8">
     <div class="w-full max-w-md space-y-8">
         <div class="bg-white rounded-xl shadow-lg overflow-hidden transition-all duration-300 hover:shadow-xl">
-            <!-- Header -->
-            <div class="bg-gradient-to-r from-green-600 to-green-800 py-5 px-6 text-center">
-                <h2 class="text-xl font-bold text-white tracking-tight">JOIN THE GREEN MOVEMENT</h2>
-            </div>
-            
+            <!-- Header -->            
             <div class="px-8 py-8 sm:px-10">
                 <!-- Welcome Section -->
                 <div class="text-center mb-8">
@@ -35,13 +31,13 @@
                 {% include 'includes/alerts.html' %}
 
                 <!-- Login Form -->
-                <form class="mt-6 space-y-6" method="post">
+                <form class="mt-6 space-y-1" method="post">
                     {% csrf_token %}
                     
                     <!-- Email Field -->
                     <div>
                         <label for="id_username" class="block text-sm font-medium text-gray-700 mb-1">Email or Phone Number</label>
-                        <div class="mt-1 relative rounded-md shadow-sm">
+                        <div class="relative rounded-md shadow-sm">
                             <input type="text" name="identifier" id="id_username" required
                                 class="block w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-green-500 focus:border-green-500 placeholder-gray-400 transition duration-150 ease-in-out sm:text-sm sm:leading-5"
                                 placeholder="Enter your email or number">
@@ -93,7 +89,7 @@
                 <!-- Google Login Button -->
                 <div class="mt-6">
                     <a href="/login/{% if request.GET.ref %}?ref={{ request.GET.ref }}{% endif %}"
-                        class="w-full inline-flex justify-center items-center py-3 px-4 rounded-md shadow-sm border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
+                        class="w-full inline-flex justify-center items-center py-3 px-4 rounded-md shadow-sm border border-gray-300 text-white bg-green-800 hover:bg-green-700 text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition duration-150 ease-in-out">
                         <svg class="w-5 h-5 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <path fill="#4285F4" d="M23.745 12.27c0-.79-.07-1.54-.19-2.27h-11.3v4.51h6.47c-.29 1.48-1.14 2.73-2.4 3.58v3h3.86c2.26-2.09 3.56-5.17 3.56-8.82Z"/>
                             <path fill="#34A853" d="M12.255 24c3.24 0 5.95-1.08 7.93-2.91l-3.86-3c-1.08.72-2.45 1.16-4.07 1.16-3.13 0-5.78-2.06-6.73-4.91h-3.98v3.09C3.515 21.3 7.745 24 12.255 24Z"/>

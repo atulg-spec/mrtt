@@ -61,7 +61,7 @@ MRT Tree Plantation | Dashboard
             <!-- Camera interface (only show if allowed to upload) -->
             {% if not selfie or selfie.status == 'rejected' %}
                 <div class="relative w-full pt-[75%] bg-gray-100 min-h-screen rounded-xl overflow-hidden mb-5">
-                    <video id="videoElement" class="absolute top-0 left-0 w-full min-h-screen object-cover -scale-x-100" autoplay playsinline></video>
+                    <video id="videoElement" class="absolute top-0 left-0 w-full min-h-screen object-cover" style="transform: scaleX(-1)" autoplay playsinline></video>
                     <canvas id="canvasElement" class="hidden"></canvas>
                     <div class="absolute bottom-4 right-4 bg-black bg-opacity-50 text-white w-11 h-11 rounded-full flex justify-center items-center cursor-pointer z-10" id="switchCamera">
                         <i class="fas fa-sync-alt"></i>
