@@ -165,10 +165,4 @@ class WithdrawalRequest(models.Model):
                 wallet = self.user.wallet
                 wallet.balance -= self.amount
                 wallet.save()
-
-        if self.status == 'rejected' or self.status == 'cancelled':
-            wallet = self.user.wallet
-            wallet.balance += self.amount
-            wallet.save()
-
         super().save(*args, **kwargs)

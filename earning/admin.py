@@ -65,7 +65,6 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
                 )
                 continue
 
-
             # Update withdrawal status
             withdrawal.status = "completed"
             withdrawal.save()
@@ -79,6 +78,12 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
     def mark_as_rejected(self, request, queryset):
         """Admin action to reject withdrawals (no wallet changes)"""
         updated = queryset.filter(status="pending").update(status="rejected")
+        for withdrawal in queryset.filter(status="rejected"):
+            wallet = withdrawal.user.wallet
+            # Add balance
+            wallet.balance += withdrawal.amount
+            wallet.save()
+
         self.message_user(request, f"{updated} withdrawal(s) rejected.")
 
     mark_as_rejected.short_description = "Reject selected withdrawals"
