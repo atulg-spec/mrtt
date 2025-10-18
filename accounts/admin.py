@@ -38,7 +38,7 @@ class CustomUserAdmin(UserAdmin):
     team_total.short_description = "Team Members"
 
     def user_level(self, obj):
-        return get_level(len(get_paid_downline(obj)))
+        return get_level(len(get_paid_downline(obj)),obj)
     user_level.short_description = "Level"
 
 

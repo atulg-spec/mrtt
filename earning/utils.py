@@ -3,18 +3,23 @@ from collections import deque
 from .models import UserLevelReward, LevelReward
 from django.db import transaction
 
-def get_level(members: int) -> int:
+def get_level(members: int, root_user) -> int:
     """
     Given members count, return the corresponding level.
     Uses the 'Total Members Required' sequence.
     """
     level = 1
     total_required = 2  # level 1 total
-
+ 
+    referrals = root_user.referrals.filter(registration_fee_paid=True).order_by("date_joined")
+    total_direct_referrals = referrals.count()
+    if total_direct_referrals < 2:
+        return 0
+    
     while total_required <= members:
         level += 1
         total_required = (2 ** (level + 1)) - 2  # formula for total members required
-    
+
     return level - 1
 
 def get_paid_downline(root_user):
@@ -60,7 +65,10 @@ def check_and_award_levels(root_user):
     achieved_levels = []
     for lr in available_levels:
         required = (2 ** (lr.level + 1)) - 2  # NEW formula
-        if paid_count >= required:
+        referrals = root_user.referrals.filter(registration_fee_paid=True).order_by("date_joined")
+        total_direct_referrals = referrals.count()
+
+        if paid_count >= required and total_direct_referrals >= 2:
             achieved_levels.append(lr)
         else:
             break

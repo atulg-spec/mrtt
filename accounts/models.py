@@ -73,7 +73,7 @@ class CustomUser(AbstractUser):
                 if user.registration_fee_paid:
                     community.add(user)
                     # Traverse all users referred by 'user'
-                    for referral in user.referrals.all():
+                    for referral in user.referrals.filter(registration_fee_paid=True):
                         traverse(referral)
 
         traverse(self)

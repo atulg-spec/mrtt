@@ -65,9 +65,6 @@ class WithdrawalRequestAdmin(admin.ModelAdmin):
                 )
                 continue
 
-            # Deduct balance
-            wallet.balance -= withdrawal.amount
-            wallet.save()
 
             # Update withdrawal status
             withdrawal.status = "completed"

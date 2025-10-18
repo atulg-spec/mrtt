@@ -53,11 +53,11 @@ def dashboard(request):
     total_earnings = wallet.balance + wallet.locked_balance
     
     # Get referral data
-    referrals = user.referrals.all().order_by("date_joined")
+    referrals = user.referrals.filter(registration_fee_paid=True).order_by("date_joined")
     total_referrals = referrals.count()
 
     total_team_memebers = len(get_paid_downline(request.user))
-    user_level = get_level(len(get_paid_downline(request.user)))
+    user_level = get_level(len(get_paid_downline(request.user)),request.user)
 
     donations = Donation.objects.filter(user=user)
     context = {
@@ -125,7 +125,7 @@ def my_invites(request):
     jobs_created = round(float(total_donated) / 5000, 1)  # ₹5000 = 1 day employment
     
     # Get referral data
-    referrals = user.referrals.all()
+    referrals = user.referrals.filter(registration_fee_paid=True)
     total_referrals = referrals.count()
     
 

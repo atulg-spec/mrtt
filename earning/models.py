@@ -160,4 +160,15 @@ class WithdrawalRequest(models.Model):
     def save(self, *args, **kwargs):
         if not self.transaction_id:
             self.transaction_id = f"WD{uuid.uuid4().hex[:10].upper()}"
+            if self.status == "pending":
+                # Deduct balance
+                wallet = self.user.wallet
+                wallet.balance -= self.amount
+                wallet.save()
+
+        if self.status == 'rejected' or self.status == 'cancelled':
+            wallet = self.user.wallet
+            wallet.balance += self.amount
+            wallet.save()
+
         super().save(*args, **kwargs)
