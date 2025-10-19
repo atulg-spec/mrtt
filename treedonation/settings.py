@@ -203,6 +203,8 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PAPER_ENVIRONMENT_NAME = "MRTT FOUNDATION"
 PAPER_ENVIRONMENT_COLOR = "#09D320"
 
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
