@@ -203,13 +203,10 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 PAPER_ENVIRONMENT_NAME = "MRTT FOUNDATION"
 PAPER_ENVIRONMENT_COLOR = "#09D320"
 
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_USE_SSL = False
+EMAIL_USE_TLS = True       # ✅ must be True for port 587
 EMAIL_HOST_USER = 'atulg0736@gmail.com'
-EMAIL_HOST_PASSWORD = 'gbka bvuh nxrl matz'
+EMAIL_HOST_PASSWORD = 'gbka bvuh nxrl matz'  # Your Gmail App Password
 DEFAULT_FROM_EMAIL = 'MRT Green Foundation <no-reply@mrtt.org.in>'
-
