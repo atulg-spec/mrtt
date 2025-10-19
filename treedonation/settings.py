@@ -205,7 +205,8 @@ PAPER_ENVIRONMENT_COLOR = "#09D320"
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USE_TLS = True
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'atulg0736@gmail.com'
 EMAIL_HOST_PASSWORD = 'gbka bvuh nxrl matz'
 DEFAULT_FROM_EMAIL = 'MRT Green Foundation <no-reply@mrtt.org.in>'
