@@ -209,4 +209,4 @@ EMAIL_PORT = 587
 EMAIL_USE_TLS = True       # ✅ must be True for port 587
 EMAIL_HOST_USER = 'atulg0736@gmail.com'
 EMAIL_HOST_PASSWORD = 'gbka bvuh nxrl matz'  # Your Gmail App Password
-DEFAULT_FROM_EMAIL = 'MRT Green Foundation <no-reply@mrtt.org.in>'
+DEFAULT_FROM_EMAIL = 'atulg0736@gmail.com'
